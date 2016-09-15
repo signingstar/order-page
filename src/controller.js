@@ -11,42 +11,34 @@ import routes from "./frontend/routes";
 let debug = require("debug")('Modules:Order:Controller');
 
 const orderController = function({modules}) {
-  let {pug, logger, jsAsset, cssAsset} = modules;
+  let {pugCompiler, logger, jsAsset, cssAsset} = modules;
   const srcPath = path.join(__dirname, '../main.pug');
-  let fn = pug.compileFile(srcPath , {cache: false, pretty: true});
+  const renderPage = pugCompiler(srcPath);
+  const title = 'Tisko - Place an Order';
 
   return {
-    main: function({attributes, responders, page}) {
-      let {req, res} = attributes;
-
-      let {cookies} = req;
-      const title = 'Tisko - Place an Order';
-
-      let location = req.url;
-      let {category} = req.params;
+    main: ({attributes, responders, page}) => {
+      const {req, res} = attributes;
+      const {cookies, url:location} = req;
       const memoryHistory = createMemoryHistory(location);
       const store = configureStore(memoryHistory);
       const history = syncHistoryWithStore(memoryHistory, store);
 
-      headerPresenter({cookies, topNav:true}, page);
-
-      page.set( {
-        promotional_header: false,
-        javascript: jsAsset('orderjs'),
-        stylesheet: cssAsset('ordercss'),
-        title,
-        body_class: 'order'
-      });
-
       match({routes, location, history}, (error, redirectLocation, renderProps) => {
         if(renderProps) {
-          let {reactHTML, preloadedState} = ReactComponent(renderProps, history);
+          const {reactHTML, preloadedState} = ReactComponent(renderProps, history);
+
+          headerPresenter({cookies, topNav:true}, page);
           page.set( {
+            javascript: jsAsset('orderjs'),
+            stylesheet: cssAsset('ordercss'),
+            body_class: 'order',
+            title,
             reactHTML,
-            preloadedState,
+            preloadedState
           });
 
-          let html = fn(page);
+          const html = renderPage(page);
 
           responders.html(html);
         } else if (redirectLocation) {

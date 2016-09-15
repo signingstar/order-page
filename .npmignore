@@ -1,5 +1,7 @@
 src/**/*.js
 
+src/**/*.jsx
+
 webpack.config.js
 
 .npmignore
@@ -9,3 +11,5 @@ webpack.config.js
 karma.conf.js
 
 .gitignore
+
+.travis.yml

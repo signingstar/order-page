@@ -64,7 +64,7 @@ module.exports =  {
   ],
 
   resolve: {
-      extensions: ["", ".webpack.js", ".web.js", ".js", "css", "scss"]
+      extensions: ["", ".webpack.js", ".web.js", ".js", ".jsx", "css", "scss"]
   },
   // devtool: 'source-map',
   externals: {
