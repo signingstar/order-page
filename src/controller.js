@@ -1,5 +1,6 @@
 import { createMemoryHistory, match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
+import path from "path";
 
 import headerPresenter from "tisko-header";
 
@@ -11,12 +12,13 @@ let debug = require("debug")('Modules:Order:Controller');
 
 const orderController = function({modules}) {
   let {pug, logger, jsAsset, cssAsset} = modules;
-  let srcPath = './modules/order/main.pug';
+  const srcPath = path.join(__dirname, '../main.pug');
+  let fn = pug.compileFile(srcPath , {cache: false, pretty: true});
 
   return {
     main: function({attributes, responders, page}) {
       let {req, res} = attributes;
-      let fn = pug.compileFile(srcPath , {cache: false, pretty: true});
+
       let {cookies} = req;
       const title = 'Tisko - Place an Order';
 

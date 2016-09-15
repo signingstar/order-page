@@ -1,0 +1,111 @@
+figure.single-row {
+  margin: 15px 5px 15px 0;
+
+  .item-tile {
+    align-items: center;
+    border-bottom: 1px dotted $light-gray;
+    display: flex;
+    justify-content: space-between;
+    height: 280px;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 400;
+      margin-top: 5px;
+    }
+
+    .item-image img{
+      height: 240px;
+      width: 380px;
+    }
+
+    .item-description {
+      width: 450px;
+
+      .item-text {
+        height:200px;
+      }
+    }
+  }
+
+  .item-action {
+    margin-top: 10px;
+    text-align: right;
+
+    .button-style {
+      display: inline-block;
+
+      a {
+        background-color: $link-color-normal;
+        color: $link-color-bg;
+        display: block;
+        font-size: 17px;
+        line-height: 35px;
+        text-align: center;
+        width: 150px;
+
+        &:hover {
+          background-color: $link-color-hover;
+        }
+      }
+    }
+  }
+}
+
+figure.multi-row {
+  display: inline-block;
+  margin: 15px 15px 15px 0;
+
+  .item-tile {
+    align-items: center;
+    width: 280px;
+
+    h2 {
+      font-size: 18px;
+      font-weight: 400;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-top: 5px;
+    }
+
+    .item-image img{
+      height: 240px;
+      width: 280px;
+    }
+
+    .item-description {
+      background-color: $lightest-gray;
+      padding: 8px;
+
+      .item-text {
+        height:100px;
+      }
+    }
+  }
+
+  .item-action {
+    margin-top: 10px;
+    text-align: center;
+
+    .button-style {
+      display: inline-block;
+
+      a {
+        background-color: $link-color-normal;
+        color: $link-color-bg;
+        display: block;
+        font-size: 16px;
+        line-height: 35px;
+        text-align: center;
+        width: 125px;
+
+        &:hover {
+          background-color: $link-color-hover;
+        }
+      }
+    }
+  }
+}

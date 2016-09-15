@@ -1,3 +1,11 @@
 src/**/*.js
+
 webpack.config.js
+
 .npmignore
+
+.babelrc
+
+karma.conf.js
+
+.gitignore
