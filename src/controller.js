@@ -10,8 +10,8 @@ import routes from "./frontend/routes";
 
 let debug = require("debug")('Modules:Order:Controller');
 
-const orderController = function({modules}) {
-  let {pugCompiler, logger, jsAsset, cssAsset} = modules;
+const controller = ({modules}) => {
+  const {pugCompiler, logger, jsAsset, cssAsset} = modules;
   const srcPath = path.join(__dirname, '../main.pug');
   const renderPage = pugCompiler(srcPath);
   const title = 'Tisko - Place an Order';
@@ -54,4 +54,4 @@ const orderController = function({modules}) {
   }
 }
 
-export default orderController;
+export default controller;
