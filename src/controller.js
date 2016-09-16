@@ -2,7 +2,7 @@ import { createMemoryHistory, match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import path from "path";
 
-import headerPresenter from "tisko-header";
+import headerPresenter from "tisko-layout";
 
 import ReactComponent from "./react_server";
 import configureStore from "./frontend/store";
@@ -12,7 +12,7 @@ let debug = require("debug")('Modules:Order:Controller');
 
 const controller = ({modules}) => {
   const {pugCompiler, logger, jsAsset, cssAsset} = modules;
-  const srcPath = path.join(__dirname, '../main.pug');
+  const srcPath = path.join(__dirname, '../', 'main');
   const renderPage = pugCompiler(srcPath);
   const title = 'Tisko - Place an Order';
 

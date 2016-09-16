@@ -1,33 +1,11 @@
-doctype html
-html
-  head
-    title= title
-    link(
-      rel='icon'
-      href='/assets/header.png'
-      type='image/png'
-      )
-    link(
-      rel='stylesheet'
-      href='/assets/' + stylesheet
-      type='text/css'
-    )
+extends tisko-layout/views/base
 
-  block top-links
+block contents
+  section
+    .main-contents#main-contents
+      | !{reactHTML}
 
-  body(
-    class= body_class
-    )
-    .body-contents
-      block header
-        header
-          include ../tisko-header/main
-      .main-contents#main-contents
-        | !{reactHTML}
-
-      .c-footer#c-footer
-        include ../../modules/footer/main
-
+block scripts
   script.
     window.__PRELOADED_STATE__= !{JSON.stringify(preloadedState)};
   script(
@@ -35,8 +13,4 @@ html
   )
   script(
     src='/assets/react-dom.js'
-  )
-
-  script(
-    src='/assets/' + javascript
   )
