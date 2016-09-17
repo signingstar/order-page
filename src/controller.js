@@ -28,7 +28,7 @@ const controller = ({modules}) => {
         if(renderProps) {
           const {reactHTML, preloadedState} = ReactComponent(renderProps, history);
 
-          headerPresenter({cookies, topNav:true}, page);
+          headerPresenter({cookies, topNav:true}, page, {jsAsset});
           page.set( {
             javascript: jsAsset('orderjs'),
             stylesheet: cssAsset('ordercss'),
