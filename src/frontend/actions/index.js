@@ -8,6 +8,7 @@ export const QUANTITY = 'quantity';
 export const FOLD = 'fold';
 export const PAPER_QUALITY = 'paper_quality';
 export const FILES = 'files';
+export const TEMPLATE = 'template';
 
 //Action Types
 export const SET_CATEGORY = 'SET_CATEGORY';
@@ -23,6 +24,7 @@ export const SET_COATING = 'SET_COATING';
 export const SET_FOLD = 'SET_FOLD';
 export const SET_PAPER_QUALITY = 'SET_PAPER_QUALITY';
 export const SET_FIELD = 'SET_FIELD';
+export const SET_TEMPLATE = 'SET_TEMPLATE';
 
 export const setCategory = (category) => {
   return {
@@ -98,6 +100,13 @@ export const setPaperQuality = (quality) => {
   return {
     type: SET_PAPER_QUALITY,
     value: quality
+  };
+}
+
+export const setTemplate = (template) => {
+  return {
+    type: SET_TEMPLATE,
+    value: template
   };
 }
 

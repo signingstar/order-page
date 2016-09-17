@@ -56,18 +56,17 @@ class DropDownContainer extends React.Component {
   render() {
     let { category, filter, itemList, label, placeholder, onChange } = this.props;
 
-    let optionButtonNodes = itemList.map((entry) => {
-      let selected = filter === entry.id ? true : false;
+    let optionButtonNodes = itemList.map(entry => {
       return {value: entry.id, label: entry.value};
     });
 
     let {localLabel, localPlaceholder} = this.getLabelString(category);
-    let selected = this.getLabelForValue(filter, optionButtonNodes);
+    const selected = this.getLabelForValue(filter, optionButtonNodes);
 
     label = label ? label : localLabel;
     placeholder = placeholder ? placeholder : localPlaceholder;
 
-    let state = {label, selected, optionButtonNodes, placeholder};
+    const state = {label, selected, optionButtonNodes, placeholder};
 
     return <DropdownComponent
       state={state}

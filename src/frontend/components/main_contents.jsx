@@ -13,14 +13,19 @@ class MainContents extends React.Component {
   }
 }
 
-const mapStateToProps = (orderApp, ownProps) => {
-  let sessionStore = typeof sessionStorage === 'undefined'? undefined : sessionStorage;
+const syncSessionStorage = (orderAppString) => {
+  let sessionStore = typeof sessionStorage === 'undefined' ? undefined : sessionStorage;
 
   if(sessionStore) {
-    let orderAppToStore = JSON.parse(JSON.stringify(orderApp));
+    let orderAppToStore = JSON.parse(orderAppString);
     delete orderAppToStore.selectionState.files;
+
     sessionStore.setItem('orderApp', JSON.stringify(orderAppToStore));
   }
+}
+
+const mapStateToProps = (orderApp, ownProps) => {
+  syncSessionStorage(JSON.stringify(orderApp));
 
   return {
     children: ownProps.children

@@ -1,6 +1,6 @@
 import * as Action_Items from "../actions/index";
-let { RESET, SET_CATEGORY, SET_SIZE, SET_SURFACE, SET_COATING, SET_PAPER_QUALITY, SET_FOLD, SET_QUANTITY, SET_FILES } = Action_Items;
-let { SIZE, SURFACE, COATING, PAPER_QUALITY, FOLD, QUANTITY, FILES } = Action_Items;
+let { RESET, SET_CATEGORY, SET_SIZE, SET_SURFACE, SET_COATING, SET_PAPER_QUALITY, SET_FOLD, SET_QUANTITY, SET_FILES, SET_TEMPLATE } = Action_Items;
+let { SIZE, SURFACE, COATING, PAPER_QUALITY, FOLD, QUANTITY, FILES, TEMPLATE } = Action_Items;
 
 const defaultState = {
   files: [],
@@ -56,6 +56,12 @@ const selectionState = (state = defaultState, action) => {
       newState =  Object.assign({}, state, {
         files: value,
         updateComponents: [FILES]
+      });
+      break;
+    case SET_TEMPLATE:
+      newState =  Object.assign({}, state, {
+        template: value,
+        updateComponents: [TEMPLATE]
       });
       break;
     default:

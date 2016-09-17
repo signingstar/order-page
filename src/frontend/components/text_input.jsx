@@ -1,6 +1,6 @@
 import React from "react";
 
-const TextInputContainer = ({label, value, onChange}) => {
+const TextInputComponent = ({label, value, onChange}) => {
   return (
     <div className='inner-section' id='print-others'>
       <label>{label}</label>
@@ -9,4 +9,4 @@ const TextInputContainer = ({label, value, onChange}) => {
   );
 }
 
-export default TextInputContainer;
+export default TextInputComponent;

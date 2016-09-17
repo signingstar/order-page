@@ -1,11 +1,12 @@
 import React from "react";
 
+import Heading from "../../components/category_heading";
+import DropDown from "../../containers/dropdown";
 import TextInput from "../../containers/text_input";
+import Checkbox from "../../containers/checkbox";
 import DesignFilesBox from "../../containers/design_files";
 import Confirmation from "../../../confirmation/containers/main";
-import Heading from "../../components/category_heading";
-import DropDown from"../../containers/dropdown";
-import { setCoating, setPaperQuality, setQuantity, COATING, PAPER_QUALITY, QUANTITY } from "../../actions/index";
+import { setCoating, setPaperQuality, setQuantity, setTemplate, COATING, PAPER_QUALITY, QUANTITY, TEMPLATE } from "../../actions/index";
 
 const VisitingCard = ({ coatList, paperQualityList, quantityList, fieldsLabel }) => {
   return (
@@ -27,6 +28,10 @@ const VisitingCard = ({ coatList, paperQualityList, quantityList, fieldsLabel })
               category={QUANTITY}
             />
             <DesignFilesBox />
+            <Checkbox
+              onUpdate={setTemplate}
+              category={TEMPLATE}
+            />
           </div>
           <div className='right-panel'>
             <Confirmation fieldsLabel={fieldsLabel} />

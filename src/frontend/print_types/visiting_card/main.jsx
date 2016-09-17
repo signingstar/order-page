@@ -5,7 +5,7 @@ import OrderPresenter from "../../presenter";
 import PrintData from "./print_combination";
 import Component from "./component";
 
-import { CATEGORY, PAPER_QUALITY, COATING, QUANTITY, setCategory } from "../../actions/index";
+import { CATEGORY, PAPER_QUALITY, COATING, QUANTITY, TEMPLATE, setCategory } from "../../actions/index";
 
 class VisitingCard extends React.Component {
   constructor() {
@@ -40,7 +40,7 @@ class VisitingCard extends React.Component {
     }
   }
 
-  getLabelForFields({ category, paper_quality, coat, quantity }) {
+  getLabelForFields({ category, paper_quality, coat, quantity, template }) {
     let typeLabel = this.presenter.fetchLabelForCategoryAndId(CATEGORY, category);
     let paperQualityLabel = this.presenter.fetchLabelForCategoryAndId(PAPER_QUALITY, paper_quality);
     let coatLabel = this.presenter.fetchLabelForCategoryAndId(COATING, coat);
@@ -49,6 +49,7 @@ class VisitingCard extends React.Component {
     labelMap.set(PAPER_QUALITY, {label: 'Paper Quality', value: paperQualityLabel});
     labelMap.set(COATING, {label: 'Coating', value: coatLabel});
     labelMap.set(QUANTITY, {label: 'Quantity', value: quantity});
+    labelMap.set(TEMPLATE, {label: 'Template', value: template ? 'true' : 'false'});
 
     return {
       category: typeLabel,
@@ -57,14 +58,14 @@ class VisitingCard extends React.Component {
   }
 
   render() {
-    let { size, paper_quality, coat, quantity, location } = this.props;
+    let { size, paper_quality, coat, quantity, template, location } = this.props;
     let category = this.category || this.getCategories(location).category;
 
     let coatList = this.presenter.printableDataWithFilter(COATING);
     let quantityList = this.presenter.printableDataWithFilter(QUANTITY);
     let paperQualityList = this.presenter.printableDataWithFilter(PAPER_QUALITY);
 
-    let fieldsLabel = this.getLabelForFields({ category, paper_quality, coat, quantity });
+    let fieldsLabel = this.getLabelForFields({ category, paper_quality, coat, quantity, template });
 
     return <Component
       coatList={coatList}
@@ -75,13 +76,14 @@ class VisitingCard extends React.Component {
 }
 
 const mapStateToProps = (orderApp, ownProps) => {
-  let { coat, paper_quality, quantity } = orderApp.selectionState;
+  let { coat, paper_quality, quantity, template } = orderApp.selectionState;
 
   return {
     categoryFromStore: orderApp.categoryState.category,
     coat,
     paper_quality,
-    quantity
+    quantity,
+    template
   }
 }
 

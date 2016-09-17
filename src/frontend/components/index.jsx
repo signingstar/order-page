@@ -9,11 +9,19 @@ import routes from "../routes";
 
 let preloadedState = window.__PRELOADED_STATE__;
 
-let sessionStoreStr = sessionStorage.getItem('orderApp');
-if((!preloadedState || Object.keys(preloadedState.selectionState).length < 3) && sessionStoreStr) {
-  let sessionStore = JSON.parse(sessionStoreStr);
-  preloadedState = preloadedState.categoryState.category? sessionStore : preloadedState;
+const restoreFromSessionStorage = () => {
+  let sessionStoreStr = sessionStorage.getItem('orderApp');
+  if((!preloadedState || Object.keys(preloadedState.selectionState).length < 3) && sessionStoreStr) {
+    const sessionStore = JSON.parse(sessionStoreStr);
+    const { category } = preloadedState.categoryState;
+    const sessionCategory = sessionStore.categoryState.category;
+    const shouldRestoreSessionStore = category ? category === sessionCategory : false;
+
+    preloadedState =  shouldRestoreSessionStore ? sessionStore : preloadedState;
+  }
 }
+
+restoreFromSessionStorage();
 
 const rootElem = document.getElementById('main-contents');
 const store = configureStore(browserHistory, preloadedState);
