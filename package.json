@@ -6,7 +6,7 @@
   "scripts": {
     "test": "karma start",
     "build": "rm -rf ./lib && babel -d ./lib ./src",
-    "build-watch": "babel -d ./lib --watch ./src"
+    "build-debug": "babel -d ./lib --watch ./src"
   },
   "license": "MIT",
   "author": "Anil Keshari",

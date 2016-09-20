@@ -2,7 +2,7 @@ import { createMemoryHistory, match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import path from "path";
 
-import headerPresenter from "tisko-layout";
+import layoutPresenter from "tisko-layout";
 
 import ReactComponent from "./react_server";
 import configureStore from "./frontend/store";
@@ -13,13 +13,14 @@ let debug = require("debug")('Modules:Order:Controller');
 const controller = ({modules}) => {
   const {pugCompiler, logger, jsAsset, cssAsset} = modules;
   const srcPath = path.join(__dirname, '../', 'main');
-  const renderPage = pugCompiler(srcPath);
+  const renderHTML = pugCompiler(srcPath);
   const title = 'Tisko - Place an Order';
 
   return {
     main: ({attributes, responders, page}) => {
       const {req, res} = attributes;
-      const {cookies, url:location} = req;
+      const {session, url: location} = req;
+
       const memoryHistory = createMemoryHistory(location);
       const store = configureStore(memoryHistory);
       const history = syncHistoryWithStore(memoryHistory, store);
@@ -28,7 +29,7 @@ const controller = ({modules}) => {
         if(renderProps) {
           const {reactHTML, preloadedState} = ReactComponent(renderProps, history);
 
-          headerPresenter({cookies, topNav:true}, page, {jsAsset});
+          layoutPresenter({session, topNav:true}, page, {jsAsset});
           page.set( {
             javascript: jsAsset('orderjs'),
             stylesheet: cssAsset('ordercss'),
@@ -38,9 +39,7 @@ const controller = ({modules}) => {
             preloadedState
           });
 
-          const html = renderPage(page);
-
-          responders.html(html);
+          responders.html(renderHTML(page));
         } else if (redirectLocation) {
           let redirectionPath = redirectLocation.pathname + redirectLocation.search;
           logger.info(`Redirecting to: ${redirectionPath}`);
