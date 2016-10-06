@@ -1,56 +1,145 @@
-import { createMemoryHistory, match } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
-import path from "path";
+import async from "async"
+import path from "path"
 
-import layoutPresenter from "tisko-layout";
+import layoutPresenter from "tisko-layout"
+import ReactComponent from "./react_server"
+import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
 
-import ReactComponent from "./react_server";
-import configureStore from "./frontend/store";
-import routes from "./frontend/routes";
-
-let debug = require("debug")('Modules:Order:Controller');
+let debug = require("debug")('Modules:Order:Controller')
 
 const controller = ({modules}) => {
-  const {pugCompiler, logger, jsAsset, cssAsset} = modules;
-  const srcPath = path.join(__dirname, '../', 'main');
-  const renderHTML = pugCompiler(srcPath);
-  const title = 'Tisko - Place an Order';
+  const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
+  const srcPath = path.join(__dirname, '../', 'main')
+  const renderHTML = pugCompiler(srcPath)
+  const title = 'Tisko - Place an Order'
+  const localModule = { logger, queryDb }
+  const isSecured = true
 
   return {
     main: ({attributes, responders, page}) => {
       const {req, res} = attributes;
       const {session, url: location} = req;
 
-      const memoryHistory = createMemoryHistory(location);
-      const store = configureStore(memoryHistory);
-      const history = syncHistoryWithStore(memoryHistory, store);
+      const {isLogged = false} = layoutPresenter({session, topNav: false}, page, {jsAsset})
 
-      match({routes, location, history}, (error, redirectLocation, renderProps) => {
-        if(renderProps) {
-          const {reactHTML, preloadedState} = ReactComponent(renderProps, history);
+      if(isSecured && !isLogged) {
+        responders.redirectForAuthentication(location, "authenticate", logger)
+        return
+      }
 
-          layoutPresenter({session, topNav:true}, page, {jsAsset});
-          page.set( {
-            javascript: jsAsset('orderjs'),
-            stylesheet: cssAsset('ordercss'),
-            body_class: 'order',
-            title,
-            reactHTML,
-            preloadedState
-          });
+      const userid = session.user.id
 
-          responders.html(renderHTML(page));
-        } else if (redirectLocation) {
-          let redirectionPath = redirectLocation.pathname + redirectLocation.search;
-          logger.info(`Redirecting to: ${redirectionPath}`);
-          res.redirect(302, redirectionPath);
-        } else {
-          logger.info(`renderProps is not passed`);
-          responders.error();
+      ReactComponent({location,userid}, localModule, (err, reactHTML, preloadedState) => {
+        if(err) {
+          if(err.reason === 'redirect') {
+            res.writeHead(302, {
+              Location: err.location
+            })
+
+            return res.end()
+          } else if(err.reason === 'missed') {
+            res.status(404)
+          }
         }
-      });
-    }
+
+        page.set( {
+          javascript: jsAsset('orderjs'),
+          stylesheet: cssAsset('ordercss'),
+          body_class: 'order',
+          title,
+          reactHTML,
+          preloadedState
+        })
+
+        responders.html(renderHTML(page))
+      })
+    },
+
+    create: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+      const formData = Object.assign({}, body)
+
+      createOrder({formData, session}, {logger, queryDb }, ({err, orderData, result}) => {
+        if(err) {
+          return responders.json(null, err, err.statusCode || 500)
+        }
+        const {order_id} = result
+
+        responders.json(result)
+        redisClient.hmset(`order_id_${order_id}`, orderData)
+        redisClient.hmset(`order_id_${order_id}`, ['id', order_id])
+      })
+    },
+
+    process: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+
+      processOrder({params, body, session, location}, {logger, queryDb }, ({err, orderData, result}) => {
+        if(err) {
+          return responders.json(null, err, err.statusCode || 500)
+        }
+
+        // redisClient.hgetall(`order_id_${orderData.order_id}`, (err, obj) => {
+        //   console.dir(obj)
+        // })
+
+        responders.json(result)
+        redisClient.hset(`order_id_${orderData.order_id}`, ['status', 'in_process'])
+      })
+    },
+
+    confirm: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+      async.waterfall(
+        [
+          (done) => {
+            confirmOrder({params, body, session, location}, {logger, queryDb }, ({err, orderData, result}) => {
+              done(err, {orderId: orderData.order_id})
+            })
+          },
+          (order, done) => {
+            const {orderId} = order
+            redisClient.hset(`order_id_${orderId}`, ['status', 'confirmed'])
+            redisClient.hgetall(`order_id_${orderId}`, (err, orderData) => {
+              done(null, orderData, session.user)
+            })
+          },
+          (orderData, userData, done) => {
+            const mailOptions = {
+              to: orderData.email,
+              cc: userData.email,
+              from: 'verify@tisko.com',
+              subject: 'Tisko Order Creation',
+              text: 'You are receiving this because Anil has created request on behalf of you.\n\n' +
+                        'Please click on the following link, or paste this into your browser to view the details:\n\n' +
+                        `http://${req.headers.host}/order/random_string/${orderData.id}` + '\n\n' +
+                        'If you did not request this, please ignore this email and chill out :D.\n'
+            }
+
+            Mailer(mailOptions)((err, info) => {
+              if(err) {
+                req.flash('An error occured whie sending the reset email')
+              } else {
+                req.flash('info', 'An e-mail has been sent to ' + 'me' + ' with further instructions.')
+              }
+              res.status(200).end()
+            })
+          }
+        ],
+        (err) => {
+          res.status(500).end()
+        }
+      )
+    },
+
+    viewOwner: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const orderId = req.params.orderid
+    },
   }
 }
 
-export default controller;
+export default controller

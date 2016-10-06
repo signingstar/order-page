@@ -1,14 +1,15 @@
-import "core-js/shim";
-import { combineReducers } from "redux";
-import { routerReducer } from 'react-router-redux'
+import { combineReducers } from "redux"
 
-import selectionState from "./selection_state";
-import categoryState from "./category_state";
+import product from "./product"
+import customer from "./customer"
+import order from "./order"
+import error from "./error"
 
 const orderApp = combineReducers({
-  categoryState,
-  selectionState,
-  routing: routerReducer
+  product,
+  customer,
+  order,
+  error
 })
 
 export default orderApp

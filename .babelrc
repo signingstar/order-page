@@ -1,4 +1,10 @@
 {
-  "presets": ["es2015", "react"],
-  "plugins": ["transform-react-jsx"]
+  "presets": [
+    "es2015-loose",
+    "stage-1",
+    "react"
+  ],
+  "plugins": [
+    "babel-plugin-dev-expression"
+  ]
 }

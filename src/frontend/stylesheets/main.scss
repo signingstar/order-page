@@ -20,11 +20,11 @@
         }
       }
     }
-
-    .main-section-body {
-      display: flex;
-      justify-content: space-between;
-    }
+    //
+    // .main-section-body {
+    //   display: flex;
+    //   justify-content: space-between;
+    // }
   }
 }
 
@@ -72,3 +72,4 @@
 
 @import './left_panel';
 @import './right_panel';
+@import './select';

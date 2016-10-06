@@ -52,58 +52,62 @@ figure.single-row {
   }
 }
 
-figure.multi-row {
-  display: inline-block;
-  margin: 15px 15px 15px 0;
+.products {
+  display: flex;
 
-  .item-tile {
-    align-items: center;
-    width: 280px;
+  figure.multi-row {
+    display: inline-block;
+    margin: 15px 30px;
 
-    h2 {
-      font-size: 18px;
-      font-weight: 400;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
+    .item-tile {
+      align-items: center;
+      width: 200px;
 
-    p {
-      margin-top: 5px;
-    }
+      h2 {
+        font-size: 18px;
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
 
-    .item-image img{
-      height: 240px;
-      width: 280px;
-    }
+      p {
+        margin-top: 5px;
+      }
 
-    .item-description {
-      background-color: $lightest-gray;
-      padding: 8px;
+      .item-image img{
+        height: 200px;
+        width: 200px;
+      }
 
-      .item-text {
-        height:100px;
+      .item-description {
+        background-color: $lightest-gray;
+        padding: 8px;
+
+        .item-text {
+          height:100px;
+        }
       }
     }
-  }
 
-  .item-action {
-    margin-top: 10px;
-    text-align: center;
+    .item-action {
+      margin-top: 10px;
+      text-align: center;
 
-    .button-style {
-      display: inline-block;
+      .button-style {
+        display: inline-block;
 
-      a {
-        background-color: $link-color-normal;
-        color: $link-color-bg;
-        display: block;
-        font-size: 16px;
-        line-height: 35px;
-        text-align: center;
-        width: 125px;
+        a {
+          background-color: $link-color-normal;
+          color: $link-color-bg;
+          display: block;
+          font-size: 16px;
+          line-height: 35px;
+          text-align: center;
+          width: 125px;
 
-        &:hover {
-          background-color: $link-color-hover;
+          &:hover {
+            background-color: $link-color-hover;
+          }
         }
       }
     }

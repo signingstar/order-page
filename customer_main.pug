@@ -1,0 +1,16 @@
+extends tisko-layout/views/base
+
+block contents
+  section
+    .main-contents#main-contents
+      | !{reactHTML}
+
+block scripts
+  script.
+    window.__PRELOADED_STATE__= !{JSON.stringify(preloadedState)};
+  script(
+    src='/assets/react-with-addons.js'
+  )
+  script(
+    src='/assets/react-dom.js'
+  )
