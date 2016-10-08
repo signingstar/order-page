@@ -10,8 +10,13 @@ const attributes = {
   res: {}
 };
 
-const responders = {error: () => undefined};
+const responders = {
+  error: () => undefined,
+  redirectForAuthentication: () => true
+};
 
-const page = {};
+const page = {
+  set: () => true
+};
 
 export const params = {attributes, responders, page};

@@ -12,7 +12,7 @@ const controller = ({modules}) => {
   const srcPath = path.join(__dirname, '../', 'main')
   const renderHTML = pugCompiler(srcPath)
   const title = 'Tisko - Place an Order'
-  const localModule = { logger, queryDb }
+  const localModule = { logger, queryDb, redisClient }
   const isSecured = true
 
   return {

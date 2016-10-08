@@ -4,7 +4,7 @@ module.exports = function (config) {
   config.set({
     browsers: ['PhantomJS'],
     basePath: '',
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai', 'sinon', 'es6-shim'],
     files: [
       'tests/client/**/*.test.js',
       'tests/server/**/*.test.js',

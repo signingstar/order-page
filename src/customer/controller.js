@@ -9,11 +9,11 @@ import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_va
 let debug = require("debug")('Modules:Order:Controller')
 
 const controller = ({modules}) => {
-  const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer } = modules
+  const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
   const srcPath = path.join(__dirname, '../', '../', 'customer_main')
   const renderHTML = pugCompiler(srcPath)
   const title = 'Tisko - My Order'
-  const localModule = { logger, queryDb }
+  const localModule = { logger, queryDb, redisClient }
   const isSecured = true
 
   return {
@@ -36,17 +36,36 @@ const controller = ({modules}) => {
       }
 
       const userid = user.id
-      const orderData = [userid, formData.orderId]
+      const orderid = formData.orderId
+      const orderQueryData = [userid, orderid]
 
       async.waterfall(
         [
           (done) => {
-            viewCustomerOrder(orderData, {logger, queryDb}, (err, orderResult) => {
-              done(err, orderResult)
-            })
+            async.parallel(
+              {
+                orderResult: (cb) => {
+                  viewCustomerOrder(orderQueryData, localModule, (err, orderResult) => {
+                    orderResult.id = orderid
+
+                    cb(err, orderResult)
+                  })
+                },
+                images: (cb) => {
+                  redisClient.zrange(`order_id_${orderid}:files`, [0, -1], (err, res) => {
+                    cb(err, res)
+                  })
+                }
+              },
+              (err, results) => done(err, results)
+            )
           },
-          (orderResult, done) => {
-            ReactComponent({location, orderResult}, localModule, (err, reactHTML, preloadedState) => {
+          (results, done) => {
+            const {orderResult, images} = results
+            if(!orderResult.productid) {
+              return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
+            }
+            ReactComponent({location, orderResult, images}, localModule, (err, reactHTML, preloadedState) => {
               if(err) {
                 if(err.reason === 'redirect') {
                   res.writeHead(301, {
@@ -59,7 +78,7 @@ const controller = ({modules}) => {
               }
               page.set( {
                 javascript: jsAsset('customerjs'),
-                stylesheet: cssAsset('ordercss'),
+                stylesheet: cssAsset('customercss'),
                 body_class: 'customer-order',
                 title,
                 reactHTML,
@@ -70,7 +89,8 @@ const controller = ({modules}) => {
             })
           }
         ], (err) => {
-          logger.info('ERROR in viewOrderAsCustomer')
+          logger.error('ERROR in viewOrderAsCustomer' + err)
+          return res.status(500).end()
         }
       )
     }

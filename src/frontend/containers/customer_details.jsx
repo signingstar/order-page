@@ -39,8 +39,11 @@ class CustomerDetailsPage extends Component {
   }
 
   render() {
-    const { pathname, product: {key, value}, customer, message } = this.props
-    const optionNodes = [{value: 'Wedding', label: 'Wedding'}, {value: 'travel', label: 'Travel'}]
+    const { pathname, product: {key, value}, customer, message, categories } = this.props
+    const optionNodes = categories.map(category => {
+      return {value: category.name, label: category.description}
+    })
+
     return (
       <div>
         <ProductTitle pathname={pathname} label={value} />
@@ -61,7 +64,8 @@ class CustomerDetailsPage extends Component {
 const mapStateToProps = (store, ownProps) => {
   return {
     customer: store.customer,
-    message: store.error.message || {}
+    message: store.error.message || {},
+    categories: store.categories || []
   }
 }
 

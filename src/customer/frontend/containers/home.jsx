@@ -3,15 +3,18 @@ import { connect } from "react-redux"
 
 class Home extends Component {
   render() {
-    const { order } = this.props
+    const { order, images } = this.props
+
+    const imageNodes = images.map(image => <img className='thumbnail' key={image.id} src={`/${image.path}`} />)
 
     return (
       <div>
         <h1>Yahooooooo</h1>
-        <div>Product name: {order.product}</div>
+        <div>Product name: {order.productLabel}</div>
         <div>Category: {order.category}</div>
         <div>Photographer: {order.photographer}</div>
         <div>Status: {order.orderstatus}</div>
+        <div>{imageNodes}</div>
       </div>
     )
   }
@@ -19,7 +22,8 @@ class Home extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   return {
-    order: store.order
+    order: store.order,
+    images: store.images
   }
 }
 

@@ -5,7 +5,7 @@ export const RESET_PRODUCT = 'RESET_PRODUCT'
 export const UPDATE_CUSTOMER_DETAILS = 'UPDATE_CUSTOMER_DETAILS'
 export const UPDATE_CUSTOMER_STATUS = 'UPDATE_CUSTOMER_STATUS'
 export const UPDATE_ORDER = 'UPDATE_ORDER'
-export const SET_FILES = 'SET_FILES'
+export const SET_IMAGES = 'SET_IMAGES'
 
 //Error related
 export const CLEAR_ALL_ERRORS = 'CLEAR_ALL_ERRORS'
@@ -48,10 +48,10 @@ export const updateOrder = (key, value) => {
   }
 }
 
-export const setFiles = (files) => {
+export const setImages = (images) => {
   return {
-    type: SET_FILES,
-    value: files
+    type: SET_IMAGES,
+    params: images
   };
 }
 
@@ -97,7 +97,7 @@ export const createOrder = (data, cb) => {
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
 
-export const processOrder = (data, cb) => {
+export const processOrder1 = (data, cb) => {
   ajax({
     method: 'POST',
     url: '/order/process',
@@ -114,6 +114,18 @@ export const confirmOrder = (data, cb) => {
     url: '/order/confirm',
     data,
     dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const processOrder = (data, cb) => {
+  ajax({
+    url: '/order/upload',
+    method: 'POST',
+    processData: false,
+    contentType: false,
+    data
   })
   .done((res, textStatus) => cb({res}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))

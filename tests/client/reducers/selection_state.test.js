@@ -1,5 +1,5 @@
-import selectionState from '../../../src/frontend/reducers/selection_state';
-import TypeState from '../../../src/frontend/reducers/category_state';
+import selectionState from '../../../src1/frontend/reducers/selection_state';
+import TypeState from '../../../src1/frontend/reducers/category_state';
 import { expect } from 'chai';
 
 const defaultState = {

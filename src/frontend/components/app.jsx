@@ -2,7 +2,7 @@ import React from "react"
 import Match from 'react-router/Match'
 import Miss from 'react-router/Miss'
 
-import Products from "../components/product"
+import Products from "../containers/product_list"
 import InitiateOrder from "../containers/initiate_order"
 import CreateOrder from "../containers/create_order"
 import ProcessOrder from "../containers/process_order"

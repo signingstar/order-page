@@ -67,7 +67,7 @@ class CreateOrder extends Component {
     const { component: Component, ...rest } = this.props
     return <Match {...rest} render={props => {
       return this.state.fetching ?
-        <div>fetching</div>
+        <div className='busy-icon'><img src="/assets/spinning_clock.gif" /></div>
       : (this.state.err ?
         <Redirect to={{
           pathname: `/order`,

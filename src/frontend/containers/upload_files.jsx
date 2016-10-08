@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import DesignFiles from "../components/upload_files_contents";
-import { setFiles } from "../actions";
+import DesignFiles from "../components/upload_files";
+import { setImages } from "../actions";
 
 class UploadFiles extends React.Component {
   render() {
@@ -28,8 +28,8 @@ const mapStateToProps = (orderApp, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onDrop: (files) =>
-      dispatch(setFiles(files))
+    onDrop: (images) =>
+      dispatch(setImages(images))
   }
 }
 

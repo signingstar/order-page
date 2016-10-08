@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Redirect from "react-router/Redirect"
 
 import ProcessOrder from "../components/process_order"
-import { processOrder } from "../actions"
+import { processOrder, setImages } from "../actions"
 
 class ProcessOrderPage extends Component {
   constructor() {
@@ -17,8 +17,16 @@ class ProcessOrderPage extends Component {
   }
 
   handleClick() {
-    const { order } = this.props
-    processOrder({order_id: order.id}, () => this.setState({formSubmit: true}))
+    const { images, order } = this.props
+    const formData = new FormData()
+
+    formData.append('order_id', order && order.id ? order.id : 64)
+
+    images.map(image => {
+      formData.append('images', image)
+    })
+
+    processOrder(formData, () => this.setState({formSubmit: true}))
   }
 
   render() {
@@ -38,7 +46,13 @@ class ProcessOrderPage extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   return {
-    order: store.order
+    order: store.order,
+    images: store.images
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
   }
 }
 
