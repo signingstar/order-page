@@ -1,11 +1,11 @@
 import React, {Component} from "react"
 import { connect } from "react-redux"
 
+import ImageTiles from "./image_arrangement"
+
 class Home extends Component {
   render() {
-    const { order, images } = this.props
-
-    const imageNodes = images.map(image => <img className='thumbnail' key={image.id} src={`/${image.path}`} />)
+    const { order, images, pathname } = this.props
 
     return (
       <div>
@@ -14,7 +14,7 @@ class Home extends Component {
         <div>Category: {order.category}</div>
         <div>Photographer: {order.photographer}</div>
         <div>Status: {order.orderstatus}</div>
-        <div>{imageNodes}</div>
+        <ImageTiles pathname={pathname}/>
       </div>
     )
   }
@@ -22,8 +22,7 @@ class Home extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   return {
-    order: store.order,
-    images: store.images
+    order: store.order
   }
 }
 

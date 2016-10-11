@@ -5,6 +5,7 @@ import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
 import viewCustomerOrder from "../database/api/view_customer_order"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
+import { LIKES, LIKED } from "./frontend/actions"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -93,8 +94,103 @@ const controller = ({modules}) => {
           return res.status(500).end()
         }
       )
+    },
+
+    customerFeedback: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, body, url: location} = req
+      const {user} = session
+
+      if(!user || !user.id) {
+        return res.status(401).end()
+      }
+
+      const { reaction_type, image_uuid, order_id, index } = body
+
+      const fileToUserMap = {
+        user_name: user.first_name,
+        reaction: reaction_type
+      }
+
+      redisClient.hset(`order_id_${order_id}:files:${image_uuid}`, [user.id, JSON.stringify(fileToUserMap)])
+
+      const userToFileMap = {
+        image_id: image_uuid,
+        reaction: reaction_type
+      }
+
+      redisClient.zadd([`order_id_${order_id}:users:${user.id}`, +(new Date()), JSON.stringify(userToFileMap)])
+      res.status(200).end()
+    },
+
+    getReaction: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, query } = req
+      const {user} = session
+      const { order_id } = query
+
+      if(!user || !user.id) {
+        return res.status(401).end()
+      }
+
+      async.waterfall(
+        [
+          (done) => {
+            redisClient.zrange(`order_id_${order_id}:files`, [0, 10], (err, res) => {
+              done(err, res)
+            })
+          },
+          (files, done) => {
+            let filesReactionMap = {}
+
+            files.forEach((file, index) => {
+              const fileObj = JSON.parse(file)
+              redisClient.hgetall(`order_id_${order_id}:files:${fileObj.id}`, (err, res) => {
+                if(!err) {
+                  if(res && res !== null) {
+                    filesReactionMap[index] = parseReactions(res, user.id)
+                  }
+
+                  if(index === files.length -1 ) {
+                    return done(null, filesReactionMap)
+                  }
+                } else {
+                  return done(err)
+                }
+              })
+            })
+          },
+          (filesMap, done) => {
+            responders.json(filesMap)
+          }
+        ],
+        (err) => {
+          logger.error('Error while fetching data')
+          res.status(500).end()
+        }
+      )
     }
   }
+}
+
+const parseReactions = (obj, userId) => {
+  if(!obj) {
+    return
+  }
+
+  let reactionObj = {likes: false, liked: []}
+
+  for(let index in obj) {
+    const jsonObj = JSON.parse(obj[index])
+
+    if(index === userId) {
+      reactionObj[LIKES] = +jsonObj.reaction
+    } else {
+      reactionObj[LIKED].push({name: jsonObj.user_name, reaction_type: jsonObj.reaction})
+    }
+  }
+
+  return reactionObj
 }
 
 export default controller

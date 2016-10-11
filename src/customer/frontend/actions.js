@@ -1,52 +1,64 @@
 import {ajax} from "jquery"
 
-export const SET_PRODUCT = 'SET_PRODUCT'
-export const RESET_PRODUCT = 'RESET_PRODUCT'
-export const UPDATE_CUSTOMER_DETAILS = 'UPDATE_CUSTOMER_DETAILS'
-export const UPDATE_ORDER = 'UPDATE_ORDER'
-export const SET_FILES = 'SET_FILES'
+export const LIKES = 'likes'
+export const LIKED = 'liked'
 
-export const setProduct = (id, value) => {
+export const DISLIKE = 0
+export const LIKE = 1
+export const LOVE = 2
+export const DEFAULT_REACTION = -1
+
+// ------------------- Customer Portal Actions --------------------------
+export const UPDATE_REACTION = 'UPDATE_REACTION'
+export const COMMENT_ON_IMAGE = 'COMMENT_ON_IMAGE'
+export const MERGE_REACTIONS = 'MERGE_REACTIONS'
+
+export const updateReaction = (image, value) => {
+  const {id, index} = image
+
   return {
-    type: SET_PRODUCT,
-    params: [id, value]
+    type: UPDATE_REACTION,
+    params: {id, index, value}
   }
 }
 
-export const resetProduct = () => {
+export const commentOnImage = (image, value) => {
+  const {id, index} = image
+
   return {
-    type: RESET_PRODUCT
+    type: COMMENT_ON_IMAGE,
+    params: {id, index, value}
   }
 }
 
-export const updateCustomerDetails = (key, value) => {
+export const mergeReactions = (obj) => {
   return {
-    type: UPDATE_CUSTOMER_DETAILS,
-    params: {[key]: value}
+    type: MERGE_REACTIONS,
+    params: obj
   }
 }
 
-export const updateOrder = (key, value) => {
-  return {
-    type: UPDATE_ORDER,
-    params: {[key]: value}
-  }
-}
 
-export const setFiles = (files) => {
-  return {
-    type: SET_FILES,
-    value: files
-  };
-}
+//------------------------------ AJAX calls -------------------------------
 
-export const createOrder = (data, cb) => {
+export const sendImageFeedback = (data, cb) => {
   ajax({
     method: 'POST',
-    url: '/order/create',
+    url: '/order/customer/notify',
     data,
     dataType: 'json'
   })
-  .done((res, textStatus) => cb({}))
+  .done((res, textStatus) => cb({textStatus}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const getImageFeedback = (data, cb) => {
+  ajax({
+    method: 'GET',
+    url: '/order/customer/feedback',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res, textStatus}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
