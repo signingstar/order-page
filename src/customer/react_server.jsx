@@ -8,7 +8,9 @@ import createStore from "./frontend/store";
 import App from "./frontend/components/app"
 import RequestBuilder from "../request_builder"
 
-const prepareInitialState = (orderData, staticData, imageList = []) => {
+import { LIKES, LIKED } from "./frontend/actions"
+
+const prepareInitialState = (orderData, staticData, imageList = [], imageReaction) => {
   const {products, categories} = staticData
   const product = products.find(product => product.id === orderData.productid)
   const order = Object.assign({}, orderData, {
@@ -16,11 +18,21 @@ const prepareInitialState = (orderData, staticData, imageList = []) => {
   })
 
   const images = imageList.map(image => JSON.parse(image))
+  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, images) : images
 
   return { order, images }
 }
 
-const ReactComponent = ({location, images, orderResult}, {logger, queryDb, redisClient}, cb) => {
+export const mergeReaction = (reaction, images) => {
+  const image_id = Object.keys(reaction)[0]
+  const image = images.find(image => image.id === image_id)
+
+  image[LIKES] = reaction[image_id].likes
+  image[LIKED] = reaction[image_id].liked
+}
+
+
+const ReactComponent = ({location, images, orderResult, imageReaction}, {logger, queryDb, redisClient}, cb) => {
   const context = createServerRenderContext()
   const requests = RequestBuilder({logger, queryDb, redisClient})
 
@@ -33,7 +45,7 @@ const ReactComponent = ({location, images, orderResult}, {logger, queryDb, redis
       },
       (results, done) => {
         let err = null
-        let initialPayload = prepareInitialState(orderResult, results, images)
+        let initialPayload = prepareInitialState(orderResult, results, images, imageReaction)
 
         const context = createServerRenderContext();
         // Create a new Redux store instance

@@ -20,7 +20,7 @@ const controller = ({modules}) => {
   return {
     viewCustomer: ({attributes, responders, page}) => {
       const { req, res } = attributes
-      const { session, params: {orderId}, url: location} = req
+      const { session, params: {orderId, image_id}, url: location} = req
 
       const {isLogged = false} = layoutPresenter({session, topNav: false}, page, {jsAsset})
       const {user} = session
@@ -56,17 +56,29 @@ const controller = ({modules}) => {
                   redisClient.zrange(`order_id_${orderid}:files`, [0, -1], (err, res) => {
                     cb(err, res)
                   })
+                },
+                imageReaction: (cb) => {
+                  if(!image_id) {
+                    return cb(err, undefined)
+                  }
+                  redisClient.hgetall(`order_id_${orderid}:files:${image_id}`, (err, res) => {
+                    if(!err && res !== null) {
+                      cb(null, {[image_id]: parseReactions(res, user.id)})
+                    } else {
+                      cb(err)
+                    }
+                  })
                 }
               },
               (err, results) => done(err, results)
             )
           },
           (results, done) => {
-            const {orderResult, images} = results
+            const {orderResult, images, imageReaction} = results
             if(!orderResult.productid) {
               return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
             }
-            ReactComponent({location, orderResult, images}, localModule, (err, reactHTML, preloadedState) => {
+            ReactComponent({location, orderResult, images, imageReaction}, localModule, (err, reactHTML, preloadedState) => {
               if(err) {
                 if(err.reason === 'redirect') {
                   res.writeHead(301, {

@@ -28,7 +28,6 @@ const mergeReactions = (obj, state) => {
   for(let i in obj) {
     const value = obj[i]
     const image = Object.assign({}, state[i])
-    console.log(`before: ${JSON.stringify(image)}`)
 
     image[LIKES] = value.likes
     image[LIKED] = value.liked

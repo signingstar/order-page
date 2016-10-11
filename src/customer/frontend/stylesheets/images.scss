@@ -1,65 +1,71 @@
-.thumbnail {
-  display: flex;
+.right-panel {
+  .thumbnail {
+    display: flex;
 
 
-  figure.multi-row {
-    display: inline-block;
-    margin: 15px 30px;
+    figure.multi-row {
+      display: inline-block;
+      margin: 15px 30px;
 
-    .item-tile {
-      align-items: center;
-      width: 200px;
+      .item-tile {
+        align-items: center;
+        width: 250px;
 
-      h2 {
-        font-size: 18px;
-        font-weight: 400;
-        margin-top: 5px;
-        margin-bottom: 10px;
-      }
+        h2 {
+          font-size: 18px;
+          font-weight: 400;
+          margin-top: 5px;
+          margin-bottom: 10px;
+        }
 
-      p {
-        margin-top: 5px;
-      }
+        p {
+          margin-top: 5px;
+        }
 
-      .item-image img{
-        height: 200px;
-        width: 200px;
-      }
+        .item-image {
+          background-color: $dark-gray;
+          text-align: center;
 
-      .item-description {
-        background-color: $lightest-gray;
-        padding: 8px;
-
-        .item-text {
-          height:100px;
+          img{
+            height: auto;
+            max-width: 250px;
+            max-height: 200px;
+            width: auto;
+          }
         }
       }
-    }
 
-    .item-label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+      figcaption {
+        background-color: $lightest-gray;
+        height: 100px;
 
-    .item-action {
-      margin-top: 10px;
-      text-align: center;
+        .item-label {
+          padding: 6px 10px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
-      .button-style {
-        display: inline-block;
-
-        a {
-          background-color: $link-color-normal;
-          color: $link-color-bg;
-          display: block;
-          font-size: 16px;
-          line-height: 35px;
+        .item-action {
+          margin-top: 10px;
           text-align: center;
-          width: 125px;
 
-          &:hover {
-            background-color: $link-color-hover;
+          .button-style {
+            display: inline-block;
+
+            a {
+              background-color: $link-color-normal;
+              color: $link-color-bg;
+              display: block;
+              font-size: 16px;
+              line-height: 35px;
+              text-align: center;
+              width: 125px;
+
+              &:hover {
+                background-color: $link-color-hover;
+              }
+            }
           }
         }
       }
@@ -72,12 +78,12 @@
 
   .screen-left {
     border-right: 1px dotted #aaa;
-    padding-right: 22px;
     position: relative;
 
     .image-nav {
       display: flex;
       justify-content: space-between;
+      left: 0;
       position: absolute;
       top: 50%;
       width: 100%;
@@ -87,7 +93,7 @@
   .screen-right {
     margin-top: 100px;
     text-align: center;
-    width: 200px;
+    width: 250px;
   }
 }
 
@@ -98,7 +104,7 @@
 
   input {
     border: none;
-    background-color: white;
+    background-color: transparent;
     cursor: pointer;
     font-size: 13px;
     font-weight: 400;

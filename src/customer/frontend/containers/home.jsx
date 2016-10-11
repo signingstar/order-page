@@ -8,13 +8,15 @@ class Home extends Component {
     const { order, images, pathname } = this.props
 
     return (
-      <div>
-        <h1>Yahooooooo</h1>
-        <div>Product name: {order.productLabel}</div>
-        <div>Category: {order.category}</div>
-        <div>Photographer: {order.photographer}</div>
-        <div>Status: {order.orderstatus}</div>
-        <ImageTiles pathname={pathname}/>
+      <div className='panels'>
+        <div className='left-panel'>
+          <div>{order.productLabel}</div>
+          <div>Photographer: {order.photographer}</div>
+          <div>Status: {order.orderstatus}</div>
+        </div>
+        <div className='right-panel'>
+          <ImageTiles pathname={pathname}/>
+        </div>
       </div>
     )
   }

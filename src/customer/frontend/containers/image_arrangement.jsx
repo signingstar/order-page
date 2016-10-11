@@ -10,7 +10,12 @@ class ImageConfiguration extends Component {
   }
 
   componentDidMount() {
-    const { onMergeReactions, order_id } = this.props
+    const { onMergeReactions, order_id, mergeStatus } = this.props
+
+    if(mergeStatus) {
+      return
+    }
+    
     getImageFeedback({order_id}, ({res, err}) => {
       if(!err) {
         return onMergeReactions(res)
@@ -34,7 +39,8 @@ class ImageConfiguration extends Component {
 const mapStateToProps = (store) => {
   return {
     images: store.images,
-    order_id: store.order.id
+    order_id: store.order.id,
+    mergeStatus: store.order.merged
   }
 }
 

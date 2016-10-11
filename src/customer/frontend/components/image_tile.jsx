@@ -11,7 +11,7 @@ const ImageTile = ({pathname, image}) => {
       <div className="item-tile">
         <div className="item-image">
           <Link to={{
-            pathname: `${pathname}/${filename}`,
+            pathname: `${pathname}/${id}`,
             state: { originalUrl: pathname, index: index }
           }}
           >
