@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import {connect} from "react-redux"
 
 import ImageFeedback from "../components/image_feedback"
+import ImageFeedbackModal from "../components/image_feedback_modal"
 import { updateReaction, commentOnImage, sendImageFeedback } from "../actions"
 import { DISLIKE, LIKE, LOVE, DEFAULT_REACTION } from "../actions"
 
@@ -10,6 +11,7 @@ class ImageFeedbackHandler extends Component {
     super()
 
     this.onReactionUpdate = this.onReactionUpdate.bind(this)
+    this.compileReactionList = this.compileReactionList.bind(this)
   }
 
   onReactionUpdate(reaction) {
@@ -34,25 +36,82 @@ class ImageFeedbackHandler extends Component {
 
   }
 
+  compileReactionList() {
+    const { likes, liked } = this.props
+    let defaultObj =  { count: 0, users: []}
+    const reactionList = {
+      [LIKE]: { count: 0, users: []},
+      [DISLIKE]: { count: 0, users: []},
+      [LOVE]: { count: 0, users: []}
+    }
+    let reaction
+
+    liked.forEach(like => {
+      const {reaction_type} = like
+
+      switch(+reaction_type) {
+        case LIKE:
+          reaction = reactionList[LIKE]
+          reaction.count = reaction.count + 1
+          reaction.users.push(like.name)
+          break
+        case DISLIKE:
+          reaction = reactionList[DISLIKE]
+          reaction.count = reaction.count + 1
+          reaction.users.push(like.name)
+          break
+        case LOVE:
+          reaction = reactionList[LOVE]
+          reaction.count = reaction.count + 1
+          reaction.users.push(like.name)
+          break
+      }
+    })
+
+    if(likes >= 0) {
+      reactionList[likes].count = reactionList[likes].count + 1
+      reactionList[likes].users.unshift('You')
+    }
+
+    return reactionList
+  }
+
   render() {
-    const { image: {likes} } = this.props
+    const { image: {likes}, modal } = this.props
+    const reactionList = this.compileReactionList()
 
     return (
+      modal ?
+      <ImageFeedbackModal
+        onLike={() => this.onReactionUpdate(LIKE)}
+        onDisike={() => this.onReactionUpdate(DISLIKE)}
+        onLove={() => this.onReactionUpdate(LOVE)}
+        onComment={this.onCommentImage}
+        likes={likes}
+        reactions={reactionList}
+      />
+      :
       <ImageFeedback
         onLike={() => this.onReactionUpdate(LIKE)}
         onDisike={() => this.onReactionUpdate(DISLIKE)}
         onLove={() => this.onReactionUpdate(LOVE)}
         onComment={this.onCommentImage}
         likes={likes}
+        reactions={reactionList}
       />
+
     )
   }
 }
 
 const mapStateToProps = (store, ownProps) => {
   const { order } = store
+  const { image: {likes, liked = []} } = ownProps
+
   return {
-    orderId: order.id
+    orderId: order.id,
+    likes,
+    liked
   }
 }
 

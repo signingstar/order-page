@@ -38,6 +38,13 @@ export const mergeReactions = (obj) => {
   }
 }
 
+export const addUserToStore = (email, role) => {
+  return {
+    type: 'ADD_USER',
+    params: {email, role}
+  }
+}
+
 
 //------------------------------ AJAX calls -------------------------------
 
@@ -56,6 +63,17 @@ export const getImageFeedback = (data, cb) => {
   ajax({
     method: 'GET',
     url: '/order/customer/feedback',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res, textStatus}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const addUser = (data, cb) => {
+  ajax({
+    method: 'POST',
+    url: '/order/customer/adduser',
     data,
     dataType: 'json'
   })

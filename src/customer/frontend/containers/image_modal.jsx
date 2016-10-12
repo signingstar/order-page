@@ -30,9 +30,9 @@ class ImageModal extends Component {
     const { usersHash, orderId, fileName } = params
     const originalUrl = state ? state.originalUrl : `/order/${usersHash}/${orderId}`
 
+    if(!state) return null
+
     return (
-      <div>
-        {
           isShowingModal ?
             <ImageFull
               onClick={this.handleClick}
@@ -44,8 +44,6 @@ class ImageModal extends Component {
           : <Redirect to={{
             pathname: originalUrl
           }} />
-        }
-      </div>
     )
   }
 }

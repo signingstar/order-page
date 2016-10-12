@@ -7,6 +7,19 @@ import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./
 
 let debug = require("debug")('Modules:Order:Controller')
 
+const getUserObject = (session, responders, ajax, logger) => {
+  const {user} = session
+
+  if(!user || !user.id) {
+    if(ajax) {
+      return res.status(401).end()
+    }
+    return responders.redirectForAuthentication(location, "authenticate", logger)
+  }
+
+  return user
+}
+
 const controller = ({modules}) => {
   const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
   const srcPath = path.join(__dirname, '../', 'main')
@@ -20,14 +33,11 @@ const controller = ({modules}) => {
       const {req, res} = attributes;
       const {session, url: location} = req;
 
-      const {isLogged = false} = layoutPresenter({session, topNav: false}, page, {jsAsset})
+      const user = getUserObject(session, responders, false, logger)
+      if (!user) return
 
-      if(isSecured && !isLogged) {
-        responders.redirectForAuthentication(location, "authenticate", logger)
-        return
-      }
-
-      const userid = session.user.id
+      layoutPresenter({user, topNav: false}, page, {jsAsset})
+      const userid = user.id
 
       ReactComponent({location,userid}, localModule, (err, reactHTML, preloadedState) => {
         if(err) {
@@ -57,8 +67,11 @@ const controller = ({modules}) => {
 
     create: ({attributes, responders, page}) => {
       const { req, res } = attributes
-      const { params, body, session, url: location } = req
+      const { body, session } = req
       const formData = Object.assign({}, body)
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
 
       createOrder({formData, session}, {logger, queryDb }, ({err, orderData, result}) => {
         if(err) {
@@ -75,6 +88,9 @@ const controller = ({modules}) => {
     process: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
 
       processOrder({params, body, session, location}, {logger, queryDb }, ({err, orderData, result}) => {
         if(err) {
@@ -93,6 +109,10 @@ const controller = ({modules}) => {
     confirm: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
       async.waterfall(
         [
           (done) => {
@@ -137,7 +157,12 @@ const controller = ({modules}) => {
 
     viewOwner: ({attributes, responders, page}) => {
       const { req, res } = attributes
+      const { session } = req
       const orderId = req.params.orderid
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
     },
   }
 }

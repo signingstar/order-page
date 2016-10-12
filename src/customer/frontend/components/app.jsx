@@ -7,7 +7,7 @@ import ImageModal from "../containers/image_modal"
 
 const App = ({pathname}) => (
   <div className='main-section-content'>
-    <Match exactly pattern="/order/:usersHash/:orderId" component={Home} />
+    <Match pattern="/order/:usersHash/:orderId" component={Home} />
     <Match pattern="/order/:usersHash/:orderId/:fileName" component={ImageModal} />
   </div>
 )

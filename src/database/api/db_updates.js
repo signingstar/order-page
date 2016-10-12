@@ -1,10 +1,10 @@
-import { updateOrderTable } from "../query/update"
+import { updateOrderTable, addAdditionalUser, updateAdditionalUser } from "../query/update"
 
-const updateDatabaseEntry = (params, modules, cb) => {
+const updateDatabaseEntry = (query, params, modules, cb) => {
   const { queryDb, logger } = modules
   const callback = cb;
 
-  queryDb(updateOrderTable, params, { logger}, (err, result) => {
+  queryDb(query, params, { logger}, (err, result) => {
     if(err || result.rowCount === 0) {
       logger.error(`[DATABASE] error while updating Record`)
       callback(err, result)
@@ -16,4 +16,8 @@ const updateDatabaseEntry = (params, modules, cb) => {
   })
 }
 
-export const updateOrder = (...args) => updateDatabaseEntry(...args)
+export const updateOrder = (...args) => updateDatabaseEntry(updateOrderTable, ...args)
+
+export const addUser = (...args) => updateDatabaseEntry(addAdditionalUser, ...args)
+
+export const updateUser = (...args) => updateDatabaseEntry(updateAdditionalUser, ...args)

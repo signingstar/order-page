@@ -2,11 +2,12 @@ export const modules = {
   pugCompiler: () => () => '',
   logger: {info:() => undefined},
   jsAsset: () => undefined,
-  cssAsset: () => undefined
+  cssAsset: () => undefined,
+  redisClient: {zrangebyscore: () => undefined}
 };
 
 const attributes = {
-  req: {},
+  req: {session: {}},
   res: {}
 };
 

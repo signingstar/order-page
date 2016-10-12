@@ -4,10 +4,24 @@ import path from "path"
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
 import viewCustomerOrder from "../database/api/view_customer_order"
+import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
 import { LIKES, LIKED } from "./frontend/actions"
 
 let debug = require("debug")('Modules:Order:Controller')
+
+const getUserObject = (session, responders, ajax, logger) => {
+  const {user} = session
+
+  if(!user || !user.id) {
+    if(ajax) {
+      return res.status(401).end()
+    }
+    return responders.redirectForAuthentication(location, "authenticate", logger)
+  }
+
+  return user
+}
 
 const controller = ({modules}) => {
   const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
@@ -22,13 +36,10 @@ const controller = ({modules}) => {
       const { req, res } = attributes
       const { session, params: {orderId, image_id}, url: location} = req
 
-      const {isLogged = false} = layoutPresenter({session, topNav: false}, page, {jsAsset})
-      const {user} = session
+      const user = getUserObject(session, responders, false, logger)
+      if (!user) return
 
-      if(!user || !user.id) {
-        responders.redirectForAuthentication(location, "authenticate", logger)
-        return
-      }
+      layoutPresenter({user, topNav: false}, page, {jsAsset})
 
       const { err, formData } = validateCustomerLinkData({orderId})
       if(err) {
@@ -38,7 +49,7 @@ const controller = ({modules}) => {
 
       const userid = user.id
       const orderid = formData.orderId
-      const orderQueryData = [userid, orderid]
+      const orderQueryData = [userid, orderid, user.email]
 
       async.waterfall(
         [
@@ -78,7 +89,7 @@ const controller = ({modules}) => {
             if(!orderResult.productid) {
               return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
             }
-            ReactComponent({location, orderResult, images, imageReaction}, localModule, (err, reactHTML, preloadedState) => {
+            ReactComponent(location, results, localModule, (err, reactHTML, preloadedState) => {
               if(err) {
                 if(err.reason === 'redirect') {
                   res.writeHead(301, {
@@ -110,12 +121,10 @@ const controller = ({modules}) => {
 
     customerFeedback: ({attributes, responders, page}) => {
       const { req, res } = attributes
-      const { session, body, url: location} = req
-      const {user} = session
+      const { session, body } = req
 
-      if(!user || !user.id) {
-        return res.status(401).end()
-      }
+      const user = getUserObject(session, responders, true)
+      if (!user) return
 
       const { reaction_type, image_uuid, order_id, index } = body
 
@@ -138,12 +147,10 @@ const controller = ({modules}) => {
     getReaction: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session, query } = req
-      const {user} = session
       const { order_id } = query
 
-      if(!user || !user.id) {
-        return res.status(401).end()
-      }
+      const user = getUserObject(session, responders, true)
+      if (!user) return
 
       async.waterfall(
         [
@@ -181,6 +188,21 @@ const controller = ({modules}) => {
           res.status(500).end()
         }
       )
+    },
+
+    addUser: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, body } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { emailid, role, order_id } = body
+
+      addUser([`{${emailid}}`, `{"active": true, "role": ${role}}`, order_id, user.id], {queryDb, logger}, (err, result) => {
+        if(err) return res.status(500).end()
+        res.status(200).end()
+      })
     }
   }
 }

@@ -1,4 +1,7 @@
 .right-panel {
+  min-width: 800px;
+  padding: 0 20px;
+
   .thumbnail {
     display: flex;
 
@@ -98,7 +101,6 @@
 }
 
 .item-action {
-  color: $lighter-gray;
   display: flex;
   justify-content: space-around;
 
@@ -107,8 +109,53 @@
     background-color: transparent;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 500;
     outline: 0;
+  }
+
+  .like .selected {
+    color: green;
+  }
+
+  .dislike .selected {
+    color: red;
+  }
+
+  .love .selected {
+    color: blue;
+  }
+}
+
+
+.item-action-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .reactors {
+    min-height: 40px;
+
+    li {
+      padding: 5px 0;
+    }
+  }
+
+  input {
+    border: none;
+    border-bottom: 1px dotted $lighter-gray;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    outline: 0;
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .like, .dislike, .love {
+    border-bottom: 1px solid $gray;
+    margin: 10px 0;
+    width: 100%;
   }
 
   .like .selected {

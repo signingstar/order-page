@@ -38,7 +38,7 @@ const ImageModalTile = ({ onClose, isShowing, label, showNext, showPrevious, ima
           </div>
         </div>
         <div className='screen-right'>
-          <ImageFeedback image={image} />
+          <ImageFeedback image={image} modal={true} />
         </div>
       </div>
     </Modal>

@@ -22,7 +22,7 @@ const ImageTile = ({pathname, image}) => {
           <div className="item-label">
             {originalname}
           </div>
-          <ImageFeedback image={image} />
+          <ImageFeedback image={image} modal={false} />
         </figcaption>
       </div>
     </figure>

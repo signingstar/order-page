@@ -1,5 +1,63 @@
 @import './images';
+@import './select';
 
 .panels {
   display: flex;
+}
+
+.left-panel {
+  width: 280px;
+}
+
+.fields {
+  display: flex;
+  justify-content: space-between;
+
+  .field {
+    input {
+      font-size: 14px;
+      height: 36px;
+      // outline: 0;
+      width: 300px;
+
+      &.error {
+        border-color: #c64747;;
+      }
+    }
+  }
+
+  .submit-button {
+    text-align: center;
+
+    button, a {
+      background-color: $button-orig-color;
+      border: 0;
+      color: $link-color-bg;
+      cursor: pointer;
+      font-size: 14px;
+      height: 36px;
+      outline: 0;
+      width: 130px;
+
+      &:hover {
+        background-color: $button-hover-color;
+      }
+    }
+
+    a{
+      display: block;
+      font-size: 18px;
+      line-height: 36px;
+    }
+  }
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  height: 40px;
+
+  .email {
+    width: 300px;
+  }
 }

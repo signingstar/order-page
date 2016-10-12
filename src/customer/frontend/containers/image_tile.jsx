@@ -2,7 +2,6 @@ import React, {Component} from "react"
 import {connect} from "react-redux"
 
 import ImageTile from "../components/image_tile"
-import { likeImage, dislikeImage, loveImage, commentOnImage } from "../actions"
 
 class ImageTileConfiguration extends Component {
   constructor() {
