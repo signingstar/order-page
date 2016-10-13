@@ -1,10 +1,15 @@
 import React from "react"
 
-const User = ({ email, role }) => (
+import { USER_ROLES } from "../actions"
+
+const User = ({ email, role, onDelete }) => (
   <div className='user-info'>
     <div className='email'>{email}</div>
     <div className='role'>
-      {role}
+      {USER_ROLES[role].shortDescription}
+    </div>
+    <div className='submit-button'>
+      <input type='button' value='Remove' onClick={onDelete} />
     </div>
   </div>
 )

@@ -199,11 +199,27 @@ const controller = ({modules}) => {
 
       const { emailid, role, order_id } = body
 
-      addUser([`{${emailid}}`, `{"active": true, "role": ${role}}`, order_id, user.id], {queryDb, logger}, (err, result) => {
+      addUser([emailid, `{"active": true, "role": ${role}}`, order_id, user.id], {queryDb, logger}, (err, result) => {
+        if(err) return res.status(500).end()
+        res.status(200).end()
+      })
+    },
+
+    deactivateUser: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, body } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { emailid, order_id } = body
+
+      addUser([emailid, `{"active": false, "role": 1}`, order_id, user.id], {queryDb, logger}, (err, result) => {
         if(err) return res.status(500).end()
         res.status(200).end()
       })
     }
+
   }
 }
 

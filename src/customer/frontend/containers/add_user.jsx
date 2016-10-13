@@ -3,7 +3,7 @@ import {connect} from "react-redux"
 
 import AddUser from "../components/add_user"
 import UserList from "./user_list"
-import { addUser, addUserToStore } from "../actions"
+import { addUser, addUserToStore, USER_ROLES } from "../actions"
 
 class AddUserHandler extends Component {
   constructor() {
@@ -20,7 +20,7 @@ class AddUserHandler extends Component {
   }
 
   onSubmit(e, input) {
-    const { addUserToStore, order_id } = this.props
+    const { onAdd, order_id } = this.props
     const role = this.state.role || 3
 
     e.preventDefault()
@@ -32,20 +32,21 @@ class AddUserHandler extends Component {
 
     emailid = emailid.trim()
 
-    addUser({emailid, role, order_id}, ()=> addUserToStore(emailid, role))
+    addUser({emailid, role, order_id}, ()=> onAdd(emailid, role))
     input.value = ''
   }
 
   render() {
-    const { image, pathname, params } = this.props
+    const { image, pathname, params, role } = this.props
 
-    const roleNodes = [
-      {value: 5, label: 'Admin - Full Access'},
-      {value: 3, label: 'Contributor - Limited Access'},
-      {value: 1, label: 'Visitor - View Access'}
-    ];
+    const roleNodes = []
+
+    for(let i in USER_ROLES) {
+      roleNodes.push({value: +i, label: USER_ROLES[i].description})
+    }
 
     return (
+      role === 5 ?
       <div>
         <AddUser
           image={image}
@@ -57,6 +58,7 @@ class AddUserHandler extends Component {
         />
         <UserList />
       </div>
+      : null
     )
   }
 }
@@ -68,13 +70,14 @@ const mapStateToProps = (store, ownProps) => {
 
   return {
     image,
-    order_id: store.order.id
+    order_id: store.order.id,
+    role: store.order.role
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addUserToStore: (email, role) => {
+    onAdd: (email, role) => {
       dispatch(addUserToStore(email, role))
     }
   }

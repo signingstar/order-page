@@ -18,19 +18,23 @@ const prepareInitialState = (order, staticData, imageList = [], imageReaction) =
   order.productLabel = product.description
   let userList = []
 
-  if(users) {
+  if(users && order.role === 5) {
     const userIds = Object.keys(users)
 
     for(let userId in users) {
-      userList.push({email: userId, ...users[userId]})
+      const user = users[userId]
+
+      if(user.active) {
+        userList.push({email: userId, ...users[userId]})
+      }
     }
   }
 
-  order.users = userList
+  delete order.users
   const images = imageList.map(image => JSON.parse(image))
   const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, images) : images
 
-  return { order, images }
+  return { order, images, users: userList }
 }
 
 export const mergeReaction = (reaction, images) => {
@@ -40,7 +44,6 @@ export const mergeReaction = (reaction, images) => {
   image[LIKES] = reaction[image_id].likes
   image[LIKED] = reaction[image_id].liked
 }
-
 
 const ReactComponent = (location, {images, orderResult, imageReaction}, {logger, queryDb, redisClient}, cb) => {
   const context = createServerRenderContext()

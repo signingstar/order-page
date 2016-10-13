@@ -13,6 +13,16 @@ export const UPDATE_REACTION = 'UPDATE_REACTION'
 export const COMMENT_ON_IMAGE = 'COMMENT_ON_IMAGE'
 export const MERGE_REACTIONS = 'MERGE_REACTIONS'
 
+export const ADMIN = 5
+export const CONTRIBUTOR = 3
+export const VISITOR = 1
+
+export const USER_ROLES = {
+  [ADMIN]: {shortDescription: 'Admin', description: 'Admin - Full Access'},
+  [CONTRIBUTOR]: {shortDescription: 'Contributor', description: 'Contributor - Limited Access'},
+  [VISITOR]: {shortDescription: 'Visitor', description: 'Visitor - View Access'}
+}
+
 export const updateReaction = (image, value) => {
   const {id, index} = image
 
@@ -45,6 +55,13 @@ export const addUserToStore = (email, role) => {
   }
 }
 
+export const deleteUserFromStore = (email) => {
+  return {
+    type: 'DELETE_USER',
+    params: {email}
+  }
+}
+
 
 //------------------------------ AJAX calls -------------------------------
 
@@ -74,6 +91,17 @@ export const addUser = (data, cb) => {
   ajax({
     method: 'POST',
     url: '/order/customer/adduser',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res, textStatus}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const deleteUser = (data, cb) => {
+  ajax({
+    method: 'POST',
+    url: '/order/customer/deleteuser',
     data,
     dataType: 'json'
   })

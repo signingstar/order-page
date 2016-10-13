@@ -1,6 +1,9 @@
 export const modules = {
   pugCompiler: () => () => '',
-  logger: {info:() => undefined},
+  logger: {
+    info:() => undefined,
+    warn:() => undefined
+  },
   jsAsset: () => undefined,
   cssAsset: () => undefined,
   redisClient: {zrangebyscore: () => undefined}

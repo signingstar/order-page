@@ -12,8 +12,8 @@ const AddUser = ({onSubmit, onSelect, role, roleNodes}) => {
             className='medium-field'
             placeholder='Email Id'
             ref={node => {
-            emailid = node
-          }} />
+              emailid = node
+            }} />
         </div>
         <Select
           name='category'
