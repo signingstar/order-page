@@ -7,12 +7,12 @@ import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./
 
 let debug = require("debug")('Modules:Order:Controller')
 
-const getUserObject = (session, responders, ajax, logger) => {
+const getUserObject = (session, responders, ajax, logger, location) => {
   const {user} = session
 
   if(!user || !user.id) {
     if(ajax) {
-      return res.status(401).end()
+      return responders.json(null, {message: 'Sesstion Timed out'}, 401 )
     }
     return responders.redirectForAuthentication(location, "authenticate", logger)
   }
@@ -33,7 +33,7 @@ const controller = ({modules}) => {
       const {req, res} = attributes;
       const {session, url: location} = req;
 
-      const user = getUserObject(session, responders, false, logger)
+      const user = getUserObject(session, responders, false, logger, location)
       if (!user) return
 
       layoutPresenter({user, topNav: false}, page, {jsAsset})

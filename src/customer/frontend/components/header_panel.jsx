@@ -3,8 +3,8 @@ import React from "react"
 const HeaderPanel = ({order}) => (
   <div className='top-panel'>
     <h1>{order.productLabel}</h1>
-    <div>Photographer: {order.photographer}</div>
-    <div>Status: {order.orderstatus}</div>
+    <div className='credit'>By {order.photographer}</div>
+    <div className='status'>({order.orderstatus})</div>
   </div>
 )
 

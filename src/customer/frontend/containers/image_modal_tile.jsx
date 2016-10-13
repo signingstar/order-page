@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
+import Link from "react-router/Link"
 
 import ImageModalTile from "../components/image_modal_tile"
 
@@ -14,7 +15,11 @@ class ImageModalTileConfiguration extends Component {
   }
 
   componentWillMount() {
-    const { state, images, params: {fileName} } = this.props
+    this.updateLocalState(this.props)
+  }
+
+  updateLocalState(props) {
+    const { state, images, params: {fileName} } = props
 
     if(state) {
       this.setState({index: state.index})
@@ -22,6 +27,11 @@ class ImageModalTileConfiguration extends Component {
       const elemIndex = images.findIndex(entry => entry.filename === fileName)
       this.setState({index: elemIndex})
     }
+
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.updateLocalState(nextProps)
   }
 
   increment() {
@@ -39,10 +49,43 @@ class ImageModalTileConfiguration extends Component {
     }
   }
 
+  getNextLink(index, originalUrl) {
+    const { images } = this.props
+    const image = images[index + 1]
+
+    return (
+      <Link to={{
+        pathname: `${originalUrl}/${image.id}`,
+        state: { originalUrl, fromModal: true, index: index + 1 }
+      }}
+      >
+        Next
+      </Link>
+    )
+  }
+
+  getPreviousLink(index, originalUrl) {
+    const { images } = this.props
+    const image = images[index - 1]
+
+    return (
+      <Link to={{
+        pathname: `${originalUrl}/${image.id}`,
+        state: { originalUrl, fromModal: true, index: index - 1 }
+      }}
+      >
+        Previous
+      </Link>
+    )
+  }
+
   render() {
-    const { onClose, isShowing, images, pathname, params, state, des } = this.props
+    const { onClose, isShowing, images, pathname, params, state, originalUrl } = this.props
     const { index } = this.state
     const image = Object.assign({}, images[index], {index})
+
+    const previousLink = index > 0 ? this.getPreviousLink(index, originalUrl) : undefined
+    const nextLink = index < images.length - 1 ? this.getNextLink(index, originalUrl) : undefined
 
     return (
       <ImageModalTile
@@ -51,6 +94,8 @@ class ImageModalTileConfiguration extends Component {
         onClose={onClose}
         isShowing={isShowing}
         image={image}
+        previousLink={previousLink}
+        nextLink={nextLink}
       />
     )
   }

@@ -15,10 +15,17 @@ const customStyles = {
     padding      : '0',
     maxHeight    : '100%'
   },
-  overlay: {}
+  overlay: {
+    position          : 'fixed',
+   top               : 0,
+   left              : 0,
+   right             : 0,
+   bottom            : 0,
+   backgroundColor   : 'rgba(0, 0, 0, 0.9)'
+  }
 };
 
-const ImageModalTile = ({ onClose, isShowing, label, showNext, showPrevious, image }) => {
+const ImageModalTile = ({ onClose, isShowing, label, showNext, showPrevious, image, nextLink, previousLink }) => {
   const {destination, filename} = image
   const fileSrc = `/${destination}/${filename}`
 
@@ -33,12 +40,16 @@ const ImageModalTile = ({ onClose, isShowing, label, showNext, showPrevious, ima
             <img src={fileSrc} />
           </div>
           <div className='image-nav'>
-            <div><input type='button' value='Previous' onClick={showPrevious} /></div>
-            <div><input type='button' value='Next' onClick={showNext} /></div>
+            <div className={previousLink ? 'slide' : 'slide invisible'}>
+              {previousLink}
+            </div>
+            <div className={nextLink ? 'slide' : 'slide invisible'}>
+              {nextLink}
+            </div>
           </div>
         </div>
         <div className='screen-right'>
-          <ImageFeedback image={image} modal={true} />
+          <ImageFeedback image={image} modal={true} onClose={onClose} />
         </div>
       </div>
     </Modal>

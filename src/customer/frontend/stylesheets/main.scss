@@ -1,11 +1,60 @@
 @import './images';
 @import './select';
 
+.customer-order .main-contents {
+  max-width: 1500px;
+}
+
+.top-panel {
+  h1, .credit, .status {
+    display: inline-block;
+    margin: auto 10px;
+  }
+}
+
 .main-panel {
   display: flex;
+  margin-top: 30px;
 
   .left-panel {
-    width: 280px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 240px;
+
+    ul {
+      margin: 0 10px;
+
+      .nav-left {
+        margin: 5px 0;
+
+        a {
+          display: block;
+          height: 42px;
+          line-height: 36px;
+          min-width: 200px;
+          outline: none;
+          padding: 2px 15px;
+
+          &.active {
+            background-color: #76c4ae;
+            border: 1px solid #76c4ae;
+            border-radius: 15px;
+            color: $white;
+          }
+
+          &:hover {
+            background-color: #9fc2ba;
+            border: 1px solid #9fc2ba;
+            border-radius: 15px;
+            color: $white;
+          }
+      }
+
+
+
+      }
+    }
   }
 
   .fields {

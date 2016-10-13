@@ -1,14 +1,14 @@
 .right-panel {
   min-width: 800px;
-  padding: 0 20px;
+  padding: 0 20px 0 40px;
 
   .thumbnail {
     display: flex;
-
+    flex-wrap: wrap;
 
     figure.multi-row {
       display: inline-block;
-      margin: 15px 30px;
+      margin: 15px 20px;
 
       .item-tile {
         align-items: center;
@@ -26,14 +26,19 @@
         }
 
         .item-image {
+          align-items: center;
           background-color: $dark-gray;
+          display: flex;
+          height: 170px;
+          justify-content: center;
           text-align: center;
 
           img{
             height: auto;
             max-width: 250px;
-            max-height: 200px;
+            max-height: 170px;
             width: auto;
+            vertical-align: middle;
           }
         }
       }
@@ -83,6 +88,12 @@
     border-right: 1px dotted #aaa;
     position: relative;
 
+    img {
+      max-width: 1000px;
+      max-height: 600px;
+      vertical-align: middle;
+    }
+
     .image-nav {
       display: flex;
       justify-content: space-between;
@@ -90,6 +101,16 @@
       position: absolute;
       top: 50%;
       width: 100%;
+
+      .slide {
+        &.invisible {
+          visibility: hidden;
+        }
+
+        input {
+          cursor: pointer;
+        }
+      }
     }
   }
 
@@ -97,6 +118,15 @@
     margin-top: 100px;
     text-align: center;
     width: 250px;
+
+    .close-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      color: $link-color-normal;
+    }
+
   }
 }
 

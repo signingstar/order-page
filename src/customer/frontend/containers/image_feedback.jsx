@@ -1,8 +1,8 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 
-import ImageFeedback from "../components/image_feedback"
-import ImageFeedbackModal from "../components/image_feedback_modal"
+import FeedbackPanel from "../components/feedback_panel"
+import FeedbackPanelInModel from "../components/feedback_panel_modal"
 import { updateReaction, commentOnImage, sendImageFeedback } from "../actions"
 import { DISLIKE, LIKE, LOVE, DEFAULT_REACTION } from "../actions"
 
@@ -68,7 +68,7 @@ class ImageFeedbackHandler extends Component {
       }
     })
 
-    if(likes >= 0) {
+    if(likes >= 0 && likes !== false) {
       reactionList[likes].count = reactionList[likes].count + 1
       reactionList[likes].users.unshift('You')
     }
@@ -77,21 +77,22 @@ class ImageFeedbackHandler extends Component {
   }
 
   render() {
-    const { image: {likes}, modal } = this.props
+    const { onClose, image: {likes}, modal } = this.props
     const reactionList = this.compileReactionList()
 
     return (
       modal ?
-      <ImageFeedbackModal
+      <FeedbackPanelInModel
         onLike={() => this.onReactionUpdate(LIKE)}
         onDisike={() => this.onReactionUpdate(DISLIKE)}
         onLove={() => this.onReactionUpdate(LOVE)}
         onComment={this.onCommentImage}
         likes={likes}
         reactions={reactionList}
+        onClose={onClose}
       />
       :
-      <ImageFeedback
+      <FeedbackPanel
         onLike={() => this.onReactionUpdate(LIKE)}
         onDisike={() => this.onReactionUpdate(DISLIKE)}
         onLove={() => this.onReactionUpdate(LOVE)}
