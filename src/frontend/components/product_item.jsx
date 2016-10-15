@@ -1,20 +1,24 @@
-import React from "react";
+import React from "react"
+import Link from "react-router/Link"
 
-const CategoryItem = ({label, imgSrc, categoryClass}) => (
-  <div className={categoryClass}>
-    <figure className="multi-row">
-      <div className="item-tile">
-        <div className="item-image">
-          <img src={imgSrc}/>
-        </div>
-        <figcaption>
-          <div className="item-action">
-            {label}
-          </div>
-        </figcaption>
-      </div>
-    </figure>
+import ProductItemTile from "./product_item_tile"
+
+const ProductItem = ({item, imgSrc}) => (
+  <div>
+    <Link
+      to={{
+        pathname: '/order',
+        state: {type: {key: item.id, value: item.description}}
+      }}
+      className='item-box'
+    >
+      <ProductItemTile
+        label={item.description}
+        imgSrc={imgSrc}
+        categoryClass='category'
+      />
+    </Link>
   </div>
 )
 
-export default CategoryItem;
+export default ProductItem

@@ -4,32 +4,37 @@ import Link from "react-router/Link"
 import ProductItem from "./product_item"
 
 const Products = ({pathname, items}) => {
-  const linkNodes = items.map(item => (
-    <div key={item.id}>
-      <Link
-        to={{
-          pathname: '/order',
-          state: {type: {key: item.id, value: item.description}}
-        }}
-        className='item-box'
-      >
-        <ProductItem
-          label={item.description}
-          imgSrc='/assets/round3.png'
-          categoryClass='category'
-        />
-      </Link>
-    </div>
+  const linkNodes = items.map(item => {
+    let imgSrc = '/assets/round3.png'
+    switch(item.name) {
+      case 'wedding_album':
+        imgSrc = '/assets/wedding.jpg'
+        break
+      case 'post_processing':
+        imgSrc = '/assets/post_processing.png'
+        break
+      case 'retouching':
+        imgSrc = '/assets/retouching.png'
+        break
+      case 'portrait_album':
+        imgSrc = '/assets/portrait.png'
+        break
+    }
 
-  ))
-  let retouching = items[0].description
-  let printing = 'Album Printing'
+    return (
+      <ProductItem
+        key={item.id}
+        item={item}
+        imgSrc={imgSrc}
+      />
+    )
+  })
 
   return (
     <div className='main-section-body products'>
       {linkNodes}
     </div>
-      )
+  )
 }
 
 export default Products

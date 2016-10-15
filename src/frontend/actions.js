@@ -41,10 +41,10 @@ export const updateCustomerFormStatus = (flag) => {
   }
 }
 
-export const updateOrder = (key, value) => {
+export const updateOrder = (orderData) => {
   return {
     type: UPDATE_ORDER,
-    params: {[key]: value}
+    params: orderData
   }
 }
 
@@ -54,6 +54,20 @@ export const setImages = (images) => {
     params: images
   };
 }
+
+export const removeImage = (image) => {
+  return {
+    type: 'REMOVE_IMAGE',
+    params: image
+  }
+}
+
+export const setImageUploaded = () => {
+  return {
+    type: 'SET_IMAGE_UPLOADED'
+  }
+}
+
 
 //------------------------- Error Related ---------------------------
 
@@ -97,7 +111,7 @@ export const createOrder = (data, cb) => {
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
 
-export const processOrder1 = (data, cb) => {
+export const processOrder = (data, cb) => {
   ajax({
     method: 'POST',
     url: '/order/process',
@@ -119,7 +133,7 @@ export const confirmOrder = (data, cb) => {
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
 
-export const processOrder = (data, cb) => {
+export const uploadImages = (data, cb) => {
   ajax({
     url: '/order/upload',
     method: 'POST',

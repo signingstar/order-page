@@ -2,8 +2,9 @@ import React, {Component} from "react"
 import { connect } from "react-redux"
 import Redirect from "react-router/Redirect"
 
+import ProductTitle from "../components/product_title"
 import ProcessOrder from "../components/process_order"
-import { processOrder, setImages } from "../actions"
+import { processOrder } from "../actions"
 
 class ProcessOrderPage extends Component {
   constructor() {
@@ -18,19 +19,14 @@ class ProcessOrderPage extends Component {
 
   handleClick() {
     const { images, order } = this.props
-    const formData = new FormData()
-
-    formData.append('order_id', order && order.id ? order.id : 64)
-
-    images.map(image => {
-      formData.append('images', image)
-    })
 
     processOrder(formData, () => this.setState({formSubmit: true}))
   }
 
   render() {
-    const {pathname} = this.props
+    const {pathname, product} = this.props
+
+    const { value } = product
     if(this.state.formSubmit) {
       return <Redirect to={{
         pathname: `/order/confirm`,
@@ -39,7 +35,10 @@ class ProcessOrderPage extends Component {
     }
 
     return (
-      <ProcessOrder pathname={pathname} onClick={this.handleClick} />
+      <div className='main-section-body'>
+        <ProductTitle pathname={pathname} label={value} />
+        <ProcessOrder pathname={pathname} onClick={this.handleClick} />
+      </div>
     )
   }
 }
@@ -47,7 +46,8 @@ class ProcessOrderPage extends Component {
 const mapStateToProps = (store, ownProps) => {
   return {
     order: store.order,
-    images: store.images
+    images: store.image.files,
+    product: store.product
   }
 }
 

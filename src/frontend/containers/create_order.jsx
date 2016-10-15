@@ -13,7 +13,7 @@ class CreateOrder extends Component {
     this.state = {err: undefined, fetching: false}
   }
   componentWillMount() {
-    const { customer, isDirty, orderid, product, updateOrderToStore, clearErrors } = this.props
+    const { customer, orderid, product, updateOrderToStore, clearErrors } = this.props
     const orderData = this.prepareOrderData(customer, product)
 
     if(orderid && customer.dirty) {

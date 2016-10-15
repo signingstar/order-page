@@ -3,7 +3,7 @@ import { SET_FILES, UPDATE_ORDER } from "../actions"
 const order = (state = {}, {type, params}) => {
   switch (type) {
     case UPDATE_ORDER:
-      return Object.assign({}, state, params)
+      return Object.assign({}, state, params.orderData)
     case SET_FILES:
       newState =  Object.assign({}, state, {
         files: params,

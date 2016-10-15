@@ -13,7 +13,8 @@ const AddUser = ({onSubmit, onSelect, role, roleNodes}) => {
             placeholder='Email Id'
             ref={node => {
               emailid = node
-            }} />
+            }}
+          />
         </div>
         <Select
           name='category'

@@ -54,14 +54,14 @@ figure.single-row {
 
 .products {
   display: flex;
+  flex-wrap: wrap;
 
   figure.multi-row {
     display: inline-block;
-    margin: 15px 30px;
+    margin: 25px 30px;
 
     .item-tile {
-      align-items: center;
-      width: 200px;
+      text-align: center;
 
       h2 {
         font-size: 18px;
@@ -75,8 +75,10 @@ figure.single-row {
       }
 
       .item-image img{
-        height: 200px;
-        width: 200px;
+        height: auto;
+        max-height: 200px;
+        max-width: 280px;
+        width: auto;
       }
 
       .item-description {
@@ -90,7 +92,8 @@ figure.single-row {
     }
 
     .item-action {
-      margin-top: 10px;
+      font-size: 18px;
+      margin-top: 15px;
       text-align: center;
 
       .button-style {

@@ -1,92 +1,135 @@
 @import './item_tile';
 
-.inner-section {
-  label {
-    display: inline-block;
-    font-size: 17px;
-    font-weight: 500;
-    width: 200px;
-  }
-
-  .text-input {
-    border: solid 1px $button-orig-color;
-    color: $light-black;
-    font-size: 16px;
-    outline: 0;
-    padding-left: 9px;
-    width: 300px;
-    height: 36px;
-  }
-
-  .checkbox-input {
-    height: 30px;
-    width: 30px;
-    vertical-align: middle;
-  }
+.image-section {
+  margin-top: 35px;
 
   h2 {
-    display: inline-block;
-    font-size: 18px;
-    margin: 5px 0 10px 0;
-    padding-bottom: 4px;
-
+    max-width: 1000px;
+    margin: 15px auto;
   }
 
-  .select-elem {
-    display: inline-block;
-    font-size: 14px;
-    text-align: center;
-  }
+  .file-upload-area {
+    margin: 0 auto;
+    max-width: 1000px;
+    min-width: 500px;
 
-  &.file-upload-preview {
-    // display: flex;
-    // justify-content: flex-start;
-    // align-items: center;
+    h2 {
+      display: inline-block;
+      font-size: 18px;
+      margin: 5px 0 10px 0;
+      padding-bottom: 4px;
 
-    .file-preview {
-      margin-left: 20px;
+    }
 
-      button {
-        background-color: $select-options;
-        border: 1px solid $select-options;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-        height: 40px;
-        outline: 0;
-        width: 100%;
+    .select-elem {
+      display: inline-block;
+      font-size: 14px;
+      text-align: center;
+    }
 
-        &:hover {
-          background-color: $button-hover-color;
+
+    .album-name.large-field {
+      margin-left: 10px;
+      margin-bottom: 12px;
+
+      label {
+        width: 130px;
+      }
+    }
+
+    .upload-box {
+      border: 2px dashed $dark-gray;
+      border-radius: 5px;
+      cursor: pointer;
+      height: 300px;
+      margin: 0 auto;
+      width: auto;
+
+      &.active {
+        border: 2px solid green;
+      }
+
+      &.reject {
+        border: 2px solid red;
+      }
+
+      .upload-content {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 18px;
+        height: 100%;
+        overflow: auto;
+
+        .placeholder {
+          width: 100%;
+          text-align: center;
+        }
+
+        .image-list {
+          height: 100%;
+
+          .image-list-item {
+            border: 1px solid $light-gray;
+            display: inline-block;
+            font-size: 14px;
+            margin: 3px 6px;
+            padding: 2px;
+            position: relative;
+
+            .image-name {
+              padding: 3px 15px 3px 5px;
+            }
+
+            .image-action {
+              position: absolute;
+              top: 0;
+              right: 2px;
+            }
+          }
         }
       }
     }
-  }
-  .upload-box {
-    border: 2px dashed #666;
-    display: inline-block;
-    vertical-align: middle;
-    width: 600px;
-    height: 250px;
-    border-radius: 5px;
 
-    &.active {
-      border: 2px solid green;
-    }
-
-    &.reject {
-      border: 2px solid red;
-    }
-
-    .upload-content {
+    .upload-footer {
       display: flex;
-      justify-content: center;
-      flex-direction: column;
-      height: 100%;
-      text-align: center;
+      justify-content: space-between;
+      margin: 10px auto;
+      width: auto;
 
-      div {
-        padding: 10px;
+      .action {
+        display: flex;
+
+        .upload-action {
+          border: 1px solid $button-orig-color;
+          height: 36px;
+          text-align: center;
+          margin-right: 15px;
+
+          input {
+            background-color: $link-color-bg;
+            border: 0;
+            color: $button-orig-color;
+            cursor: pointer;
+            font-size: 15px;
+            height: 100%;
+            outline: 0;
+            width: 180px;
+
+            &:hover {
+              background-color: $button-orig-color;
+              color: $link-color-bg;
+            }
+          }
+        }
+      }
+
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        line-height: 38px;
+        width: 320px;
       }
     }
   }

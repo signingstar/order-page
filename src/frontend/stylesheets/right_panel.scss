@@ -1,4 +1,12 @@
 .main-section-body {
+
+  .customer-section {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 40px;
+  }
+
+
   margin: 0 20px 0 40px;
 
   h3, h2 {
@@ -27,7 +35,7 @@
   .fields {
     label {
       display: inline-block;
-      width: 140px;
+      width: 190px;
     }
 
     .field {
@@ -35,6 +43,7 @@
       input {
         font-size: 14px;
         height: 36px;
+        padding: 0 10px;
         // outline: 0;
         width: 180px;
 
@@ -42,6 +51,11 @@
           border-color: #c64747;;
         }
       }
+    }
+
+    .required label:after {
+      color: #d3401b;
+      content:" *";
     }
 
     .large-field {
@@ -68,11 +82,44 @@
       }
     }
 
+    .action-section {
+      display: flex;
+      justify-content: center;
+      margin: 40px auto;
+      text-align: center;
+
+      .button {
+        margin: 0 20px;
+
+        a, input {
+          background-color: $button-orig-color;
+          border: 0;
+          color: $link-color-bg;
+          cursor: pointer;
+          font-size: 14px;
+          height: 36px;
+          outline: 0;
+          width: 160px;
+
+          &:hover {
+            background-color: $button-hover-color;
+          }
+        }
+
+        a{
+          display: block;
+          font-size: 18px;
+          line-height: 36px;
+          margin: 0;
+        }
+      }
+    }
+
     .submit-button {
       margin: 40px auto;
       text-align: center;
 
-      input, a {
+      input, a, button {
         background-color: $button-orig-color;
         color: $link-color-bg;
         cursor: pointer;

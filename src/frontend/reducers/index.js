@@ -6,7 +6,7 @@ import order from "./order"
 import error from "./error"
 import products from "./products"
 import categories from "./categories"
-import images from "./images"
+import image from "./image"
 
 const orderApp = combineReducers({
   products,
@@ -14,7 +14,7 @@ const orderApp = combineReducers({
   product,
   customer,
   order,
-  images,
+  image,
   error
 })
 
