@@ -23,12 +23,12 @@ export const USER_ROLES = {
   [VISITOR]: {shortDescription: 'Visitor', description: 'Visitor - View Access'}
 }
 
-export const updateReaction = (image, value) => {
+export const updateReaction = (image, value, albumId) => {
   const {id, index} = image
 
   return {
     type: UPDATE_REACTION,
-    params: {id, index, value}
+    params: {id, index, value, albumId}
   }
 }
 

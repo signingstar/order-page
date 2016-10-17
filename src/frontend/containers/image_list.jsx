@@ -4,11 +4,11 @@ import { connect } from "react-redux"
 import ImageList from "../components/image_list"
 import {removeImage} from "../actions"
 
-const mapStateToProps = (store) => {
+const mapStateToProps = (store, ownProps) => {
   const placeholder = 'Drop your image files here...'
-
+  const { index } = ownProps
   return {
-    images: store.image.files || [],
+    images: store.image[index].files || [],
     placeholder
   }
 }

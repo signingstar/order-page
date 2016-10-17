@@ -11,39 +11,59 @@ const updateFeedback = (index, {key, value}, state) => {
   return newState
 }
 
-const updateReaction = (index, value, state) => {
-  const image = Object.assign({}, state[index])
+const updateReaction = (index, value, state, albumId) => {
+  const newState = Object.assign({}, state)
+
+  let album, image
+
+  if(albumId) {
+    album = Object.assign({}, newState[albumId])
+    album.files = album.files.slice()
+    image = album.files[index]
+  } else {
+    let currentIndex = 0
+    for(let album in newState) {
+      const currentAlbumLength = newState[album].files.length
+      if(index >= currentIndex + currentAlbumLength) {
+        currentIndex += currentAlbumLength
+      } else {
+        album = Object.assign({}, newState[album])
+        album.files = album.files.slice()
+        image = album.files[index - currentIndex]
+        break
+      }
+    }
+  }
 
   image[LIKES] = value
-
-  const newState = state.slice()
-  newState[index] = image
 
   return newState
 }
 
 const mergeReactions = (obj, state) => {
-  const newState = state.slice()
+  const newState = Object.assign({}, state)
 
-  for(let i in obj) {
-    const value = obj[i]
-    const image = Object.assign({}, state[i])
+  let currentIndex = 0
+  for(let uuid in obj) {
+    const value = obj[uuid]
+    const album = Object.assign({}, state[value.albumId])
+    const files = album.files = album.files.slice()
+    const image = files.find(file => file.id === uuid)
 
     image[LIKES] = value.likes
     image[LIKED] = value.liked
-    newState[i] = image
   }
 
   return newState
 }
 
 const images = (state = [], {type, params = {}}) => {
-  const { id, index, value } = params
+  const { id, index, value, albumId } = params
   let newState, image
 
   switch (type) {
     case UPDATE_REACTION:
-      return updateReaction(index, value, state)
+      return updateReaction(index, value, state, albumId)
 
     case MERGE_REACTIONS:
       return mergeReactions(params, state)

@@ -3,8 +3,8 @@ import Link from "react-router/Link"
 
 import ImageFeedback from "../containers/image_feedback"
 
-const ImageTile = ({pathname, image}) => {
-  const { id, filename, destination, index, originalname} = image
+const ImageTile = ({pathname, albumId, image}) => {
+  const { id, filename, destination, index, originalname } = image
 
   return (
     <figure className="multi-row">
@@ -12,7 +12,7 @@ const ImageTile = ({pathname, image}) => {
         <div className="item-image">
           <Link to={{
             pathname: `${pathname}/${id}`,
-            state: { originalUrl: pathname, index: index }
+            state: { originalUrl: pathname, index: index, albumId }
           }}
           >
             <img id={id} src={`/${destination}/${filename}`} title={originalname} alt='' />
@@ -22,7 +22,7 @@ const ImageTile = ({pathname, image}) => {
           <div className="item-label">
             {originalname}
           </div>
-          <ImageFeedback image={image} modal={false} />
+          <ImageFeedback image={image} modal={false} albumId={albumId} />
         </figcaption>
       </div>
     </figure>

@@ -15,12 +15,12 @@ class ImageFeedbackHandler extends Component {
   }
 
   onReactionUpdate(reaction) {
-    const { image, onReaction, orderId } = this.props
+    const { image, onReaction, orderId, albumId } = this.props
     const { likes: oldReaction } = image
 
     const newReaction = oldReaction === reaction ? DEFAULT_REACTION : reaction
 
-    onReaction(image, newReaction)
+    onReaction(image, newReaction, albumId)
 
     const postData = {
       reaction_type: newReaction,
@@ -77,7 +77,7 @@ class ImageFeedbackHandler extends Component {
   }
 
   render() {
-    const { onClose, image: {likes}, modal } = this.props
+    const { onClose, image: {likes}, modal, albumId } = this.props
     const reactionList = this.compileReactionList()
 
     return (
@@ -118,8 +118,8 @@ const mapStateToProps = (store, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onReaction: (image, value) => {
-      dispatch(updateReaction(image, value))
+    onReaction: (image, value, albumId) => {
+      dispatch(updateReaction(image, value, albumId))
     },
 
     onComment: (image, comment) => {

@@ -4,6 +4,7 @@ import path from "path"
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
+import { addAlbum } from "./request_builders/add_album"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -78,10 +79,15 @@ const controller = ({modules}) => {
           return responders.json(null, err, err.statusCode || 500)
         }
         const {order_id} = result
+        orderData.id = order_id
 
-        responders.json(result)
-        redisClient.hmset(`order_id_${order_id}`, orderData)
-        redisClient.hmset(`order_id_${order_id}`, ['id', order_id])
+        addAlbum({order_id}, {redisClient}, (err, result) => {
+          if(err) return res.status(500).end()
+          const { album_id: id, album_name: name, priority } = result
+          // Send response first. Redis update can happen thereafter
+          responders.json({order_id, id, name, priority})
+          redisClient.hmset(`order_id_${order_id}`, orderData)
+        })
       })
     },
 
@@ -97,12 +103,19 @@ const controller = ({modules}) => {
           return responders.json(null, err, err.statusCode || 500)
         }
 
-        // redisClient.hgetall(`order_id_${orderData.order_id}`, (err, obj) => {
-        //   console.dir(obj)
-        // })
+        const { order_id } = orderData
+
+        redisClient.hget(`order_id_${order_id}`, 'albums', (err, res) => {
+          if(err) return responder.json(err)
+          const albums = JSON.parse(res)
+          albums.forEach(album => {
+            if(body[album.album_id]) album.album_name = body[album.album_id]
+          })
+
+          redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums), 'status', 'in_process'])
+        })
 
         responders.json(result)
-        redisClient.hset(`order_id_${orderData.order_id}`, ['status', 'in_process'])
       })
     },
 
@@ -153,6 +166,20 @@ const controller = ({modules}) => {
           res.status(500).end()
         }
       )
+    },
+
+    addAlbum: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { order_id } = body
+      addAlbum({order_id}, {redisClient}, (err, result) => {
+        if(err) return res.status(500).end()
+        responders.json(result)
+      })
     },
 
     viewOwner: ({attributes, responders, page}) => {

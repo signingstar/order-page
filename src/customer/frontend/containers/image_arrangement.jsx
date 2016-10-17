@@ -15,7 +15,7 @@ class ImageConfiguration extends Component {
     if(mergeStatus) {
       return
     }
-    
+
     getImageFeedback({order_id}, ({res, err}) => {
       if(!err) {
         return onMergeReactions(res)
@@ -26,21 +26,35 @@ class ImageConfiguration extends Component {
   }
 
   render() {
-    const { images, pathname } = this.props
+    const { images, pathname, location: {query} } = this.props
+    const album_id = query && query.album ? query.album : undefined
+    let imageList = []
+
+    if(album_id) {
+      imageList = images[album_id].files
+    } else {
+      for(let album in images) {
+        imageList = imageList.concat(images[album].files)
+      }
+    }
+
     return (
       <ImageTiles
-        images={images}
+        images={imageList}
         pathname={pathname}
+        albumId={album_id}
       />
     )
   }
 }
 
 const mapStateToProps = (store) => {
+  const { images, order } = store
+
   return {
-    images: store.images,
-    order_id: store.order.id,
-    mergeStatus: store.order.merged
+    images,
+    order_id: order.id,
+    mergeStatus: order.merged
   }
 }
 

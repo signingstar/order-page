@@ -6,7 +6,7 @@ import Redirect from 'react-router/Redirect'
 import ProductTitle from "../components/product_title"
 import CustomerDetails from "../components/customer_details"
 
-import { setProduct, updateCustomerDetails, updateCustomerFormStatus } from "../actions"
+import { updateCustomerDetails, updateCustomerFormStatus } from "../actions"
 import { updateOrder, createOrder, clearAllErrors, setError, setSuccess } from "../actions"
 
 class CustomerDetailsPage extends Component {
@@ -87,7 +87,6 @@ class CustomerDetailsPage extends Component {
         this.setState({navigate: true})
       }
     }
-
   }
 
   render() {
@@ -138,7 +137,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateCustomerFormStatus(true))
     },
     addOrderToStore: (res) => {
-      dispatch(updateOrder({orderData: {id: res.order_id}, dirty: false}))
+      dispatch(updateOrder(
+        {
+          orderData: {id: res.order_id},
+          albumData: {id: res.id, name: res.name, priority: res.priority},
+          dirty: false
+        }
+      ))
       // dispatch(updateCustomerFormStatus(false))
     },
 

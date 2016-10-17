@@ -10,7 +10,26 @@ import RequestBuilder from "../request_builder"
 
 import { LIKES, LIKED } from "./frontend/actions"
 
-const prepareInitialState = (order, staticData, imageList = [], imageReaction) => {
+const albumifyImages = (imageList, albums) => {
+  let images = {}
+
+  imageList.forEach((image) => {
+    const {album_id, album_name} = image
+    if(!images[album_id]) {
+      const album = albums.find(entry => entry.album_id === +album_id )
+      images[album_id] = {
+        album_name: album.album_name,
+        files: []
+      }
+    }
+
+    images[album_id].files.push(image)
+  })
+
+  return images
+}
+
+const prepareInitialState = (order, staticData, imageList = [], imageReaction, albums) => {
   const {products, categories} = staticData
   const product = products.find(product => product.id === order.productid)
   const { users } = order
@@ -31,21 +50,21 @@ const prepareInitialState = (order, staticData, imageList = [], imageReaction) =
   }
 
   delete order.users
-  const images = imageList.map(image => JSON.parse(image))
-  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, images) : images
+  const images = albumifyImages(imageList, albums)
+  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, imageList) : images
 
   return { order, images, users: userList }
 }
 
 export const mergeReaction = (reaction, images) => {
   const image_id = Object.keys(reaction)[0]
-  const image = images.find(image => image.id === image_id)
+  const image = images.find(image => image_id === image.id)
 
   image[LIKES] = reaction[image_id].likes
   image[LIKED] = reaction[image_id].liked
 }
 
-const ReactComponent = (location, {images, orderResult, imageReaction}, {logger, queryDb, redisClient}, cb) => {
+const ReactComponent = (location, {images, orderResult, albums, imageReaction}, {logger, queryDb, redisClient}, cb) => {
   const context = createServerRenderContext()
   const requests = RequestBuilder({logger, queryDb, redisClient})
 
@@ -58,7 +77,7 @@ const ReactComponent = (location, {images, orderResult, imageReaction}, {logger,
       },
       (results, done) => {
         let err = null
-        let initialPayload = prepareInitialState(orderResult, results, images, imageReaction)
+        let initialPayload = prepareInitialState(orderResult, results, images, imageReaction, albums)
 
         const context = createServerRenderContext();
         // Create a new Redux store instance

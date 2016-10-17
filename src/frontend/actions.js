@@ -48,26 +48,40 @@ export const updateOrder = (orderData) => {
   }
 }
 
-export const setImages = (images) => {
+export const setImages = (images, albumId) => {
   return {
     type: SET_IMAGES,
-    params: images
+    params: {images, albumId}
   };
 }
 
-export const removeImage = (image) => {
+export const removeImage = (image, albumId) => {
   return {
     type: 'REMOVE_IMAGE',
-    params: image
+    params: {image, albumId}
   }
 }
 
-export const setImageUploaded = () => {
+export const setImageUploaded = (albumId) => {
   return {
-    type: 'SET_IMAGE_UPLOADED'
+    type: 'SET_IMAGE_UPLOADED',
+    params: albumId
   }
 }
 
+export const addAlbumToImage = (id, name, priority) => {
+  return {
+    type: 'ADD_ALBUM',
+    params: {id, name, priority}
+  }
+}
+
+export const removeAlbum = (albumId) => {
+  return {
+    type: 'REMOVE_ALBUM',
+    params: albumId
+  }
+}
 
 //------------------------- Error Related ---------------------------
 
@@ -143,4 +157,15 @@ export const uploadImages = (data, cb) => {
   })
   .done((res, textStatus) => cb({res}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const addAlbum = (data, cb) => {
+  ajax({
+    url: '/order/album/add',
+    method: 'POST',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, staus: xhr.status}))
 }

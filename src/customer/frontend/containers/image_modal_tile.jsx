@@ -49,14 +49,14 @@ class ImageModalTileConfiguration extends Component {
     }
   }
 
-  getNextLink(index, originalUrl) {
+  getNextLink(index, originalUrl, albumId) {
     const { images } = this.props
     const image = images[index + 1]
 
     return (
       <Link to={{
         pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index + 1 }
+        state: { originalUrl, fromModal: true, index: index + 1, albumId }
       }}
       >
         Next
@@ -64,14 +64,14 @@ class ImageModalTileConfiguration extends Component {
     )
   }
 
-  getPreviousLink(index, originalUrl) {
+  getPreviousLink(index, originalUrl, albumId) {
     const { images } = this.props
     const image = images[index - 1]
 
     return (
       <Link to={{
         pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index - 1 }
+        state: { originalUrl, fromModal: true, index: index - 1, albumId }
       }}
       >
         Previous
@@ -80,12 +80,12 @@ class ImageModalTileConfiguration extends Component {
   }
 
   render() {
-    const { onClose, isShowing, images, pathname, params, state, originalUrl } = this.props
+    const { onClose, isShowing, images, pathname, params, state, originalUrl, albumId } = this.props
     const { index } = this.state
     const image = Object.assign({}, images[index], {index})
 
-    const previousLink = index > 0 ? this.getPreviousLink(index, originalUrl) : undefined
-    const nextLink = index < images.length - 1 ? this.getNextLink(index, originalUrl) : undefined
+    const previousLink = index > 0 ? this.getPreviousLink(index, originalUrl, albumId) : undefined
+    const nextLink = index < images.length - 1 ? this.getNextLink(index, originalUrl, albumId) : undefined
 
     return (
       <ImageModalTile
@@ -103,9 +103,19 @@ class ImageModalTileConfiguration extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   const { images } = store
+  const { albumId } = ownProps
+
+  let imageList = []
+  if(albumId) {
+    imageList = images[albumId].files
+  } else {
+    for(let album in images) {
+      imageList = imageList.concat(images[album].files)
+    }
+  }
 
   return {
-    images
+    images: imageList
   }
 }
 

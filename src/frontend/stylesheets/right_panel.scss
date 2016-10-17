@@ -84,12 +84,31 @@
 
     .action-section {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       margin: 40px auto;
+      max-width: 1000px;
       text-align: center;
 
+      .nav-page {
+        display: flex;
+        justify-content: center;
+      }
+
+      .add-album {
+        text-align: left;
+
+        input {
+          border: 0;
+          background: none;
+          color: $button-orig-color;
+          cursor: pointer;
+          font-size: 15px;
+          outline: 0;
+        }
+      }
+
       .button {
-        margin: 0 20px;
+        margin: 40px 20px;
 
         a, input {
           background-color: $button-orig-color;

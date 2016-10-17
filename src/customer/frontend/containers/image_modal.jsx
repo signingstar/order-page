@@ -25,10 +25,11 @@ class ImageModal extends Component {
   }
 
   render() {
-    const { images, params, pathname, location: {state} } = this.props
+    const { params, pathname, location: {state} } = this.props
     const {isShowingModal} = this.state
     const { usersHash, orderId, fileName } = params
     const originalUrl = state ? state.originalUrl : `/order/${usersHash}/${orderId}`
+    const albumId = state ? state.albumId : undefined
     if(!state) return null
 
     return (
@@ -40,17 +41,25 @@ class ImageModal extends Component {
               params={params}
               state={state}
               originalUrl={originalUrl}
+              albumId={albumId}
             />
           : <Redirect to={{
-            pathname: originalUrl
+            pathname: originalUrl,
+            query: { album: albumId },
           }} />
     )
   }
 }
 
 const mapStateToProps = (store, ownProps) => {
+  const { images } = store
+  let imageList = []
+  for(let album in images) {
+    imageList = imageList.concat(images[album].files)
+  }
+
   return {
-    images: store.images
+    images: imageList
   }
 }
 

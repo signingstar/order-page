@@ -1,4 +1,4 @@
-import { SET_IMAGES, REMOVE_IMAGE } from "../actions"
+import { SET_IMAGES, REMOVE_IMAGE, UPDATE_ORDER } from "../actions"
 
 const defaultState = {
   queued: 0,
@@ -8,52 +8,75 @@ const defaultState = {
 }
 
 const image = (state = {}, {type, params = []}) => {
-  let newState, imageSize = 0
+  let newState, newAlbum, imageSize = 0
   switch (type) {
+    case UPDATE_ORDER:
+      params = params.albumData
+    case 'ADD_ALBUM':
+      newState = Object.assign({}, state)
+
+      newState[params.id] = { name: params.name, priority: params.priority}
+
+      return newState
+
     case SET_IMAGES:
       newState = Object.assign({}, state)
-      var files = newState.files ? newState.files.slice() : []
+      var { albumId, images} = params
+      newAlbum = newState[albumId] = Object.assign({}, state[albumId])
+      var files = newAlbum.files ? newAlbum.files.slice() : []
 
-      if(!state.queued && !state.uploaded) {
-        Object.assign(newState, defaultState)
+      if(!newAlbum.queued && !newAlbum.uploaded) {
+        Object.assign(newAlbum, defaultState)
       }
 
-      params.forEach(image => {
+      images.forEach(image => {
         files.push(image)
         imageSize += image.size
       })
 
-      newState.files = files
-      Object.assign(newState, {queued: newState.queued + params.length, queuedSize: newState.queuedSize + imageSize})
+      newAlbum.files = files
+      Object.assign(newAlbum, {queued: newAlbum.queued + images.length, queuedSize: newAlbum.queuedSize + imageSize})
+
       return newState
     case 'REMOVE_IMAGE':
       newState = Object.assign({}, state)
-      var files = newState.files.slice()
+      var { albumId, image } = params
+      newState[albumId] = Object.assign({}, state[albumId])
+      newAlbum = newState[albumId]
+      var files = newAlbum.files.slice()
 
-      const index = files.findIndex(image => image.name ===  params.name)
+      const index = files.findIndex(file => file.name ===  image.name)
 
       if(index > -1) {
         files.splice(index, 1)
       }
 
-      newState.files = files
-      Object.assign(newState, {queued: newState.queued - 1, queuedSize: newState.queuedSize - params.size})
+      newAlbum.files = files
+      Object.assign(newAlbum, {queued: newAlbum.queued - 1, queuedSize: newAlbum.queuedSize - image.size})
 
       return newState
 
     case 'SET_IMAGE_UPLOADED':
       newState = Object.assign({}, state)
+      newState[params] = Object.assign({}, state[params])
+      newAlbum = newState[params]
 
-      newState.files.forEach(image => {
+      newAlbum.files.forEach(image => {
         imageSize += image.size
       })
 
-      Object.assign(newState, {
-        uploaded: newState.files.length,
+      Object.assign(newAlbum, {
+        uploaded: newAlbum.files.length,
         uploadedSize: imageSize,
         queued: 0,
         queuedSize: 0
       })
+
+      return newState
+
+    case 'REMOVE_ALBUM':
+      newState = Object.assign({}, state)
+      delete newState[params]
 
       return newState
 

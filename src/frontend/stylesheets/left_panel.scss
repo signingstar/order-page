@@ -9,7 +9,7 @@
   }
 
   .file-upload-area {
-    margin: 0 auto;
+    margin: 40px auto;
     max-width: 1000px;
     min-width: 500px;
 
@@ -19,6 +19,21 @@
       margin: 5px 0 10px 0;
       padding-bottom: 4px;
 
+    }
+
+    .upload-header {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+
+
+      .delete-album input{
+        border: 0;
+        background: none;
+        color: $button-orig-color;
+        cursor: pointer;
+        font-size: 14px;
+      }
     }
 
     .select-elem {
@@ -101,24 +116,24 @@
         display: flex;
 
         .upload-action {
-          border: 1px solid $button-orig-color;
           height: 36px;
           text-align: center;
           margin-right: 15px;
 
           input {
             background-color: $link-color-bg;
-            border: 0;
+            border: 1px solid $button-orig-color;
             color: $button-orig-color;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             height: 100%;
             outline: 0;
             width: 180px;
 
-            &:hover {
-              background-color: $button-orig-color;
-              color: $link-color-bg;
+            &:disabled {
+              cursor: default;
+              color: $light-gray;
+              border-color: $light-gray;
             }
           }
         }

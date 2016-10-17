@@ -9,11 +9,12 @@ class ImageTileConfiguration extends Component {
   }
 
   render() {
-    const { image, pathname } = this.props
+    const { image, pathname, albumId } = this.props
     return (
       <ImageTile
         image={image}
         pathname={pathname}
+        albumId={albumId}
       />
     )
   }
@@ -21,8 +22,18 @@ class ImageTileConfiguration extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   const { images } = store
-  const { index, id } = ownProps
-  const image = Object.assign({}, images[index], {index})
+  const { index, id, albumId } = ownProps
+
+  let imageList = []
+  if(albumId) {
+    imageList = images[albumId].files
+  } else {
+    for(let album in images) {
+      imageList = imageList.concat(images[album].files)
+    }
+  }
+
+  const image = Object.assign({}, imageList[index], {index})
 
   return {
     image

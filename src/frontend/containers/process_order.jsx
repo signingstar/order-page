@@ -4,7 +4,7 @@ import Redirect from "react-router/Redirect"
 
 import ProductTitle from "../components/product_title"
 import ProcessOrder from "../components/process_order"
-import { processOrder } from "../actions"
+import { processOrder, addAlbum, addAlbumToImage } from "../actions"
 
 class ProcessOrderPage extends Component {
   constructor() {
@@ -15,16 +15,26 @@ class ProcessOrderPage extends Component {
     }
 
     this.handleClick = this.handleClick.bind(this)
+    this.onAddAlbum = this.onAddAlbum.bind(this)
   }
 
   handleClick() {
-    const { images, order } = this.props
+    const { order, image } = this.props
+    const orderdata = {order_id: order.id}
+    Object.keys(image).forEach(albumId => orderdata[albumId] = image[albumId].name)
 
-    processOrder(formData, () => this.setState({formSubmit: true}))
+    processOrder(orderdata, () => this.setState({formSubmit: true}))
+  }
+
+  onAddAlbum() {
+    const { addAlbumToStore, order } = this.props
+    addAlbum({
+      order_id: order.id
+    }, ({res}) => addAlbumToStore(res.album_id, res.album_name, res.priority))
   }
 
   render() {
-    const {pathname, product} = this.props
+    const {pathname, product, image} = this.props
 
     const { value } = product
     if(this.state.formSubmit) {
@@ -37,7 +47,12 @@ class ProcessOrderPage extends Component {
     return (
       <div className='main-section-body'>
         <ProductTitle pathname={pathname} label={value} />
-        <ProcessOrder pathname={pathname} onClick={this.handleClick} />
+        <ProcessOrder
+          pathname={pathname}
+          onClick={this.handleClick}
+          image={image}
+          addAlbum={this.onAddAlbum}
+        />
       </div>
     )
   }
@@ -46,16 +61,20 @@ class ProcessOrderPage extends Component {
 const mapStateToProps = (store, ownProps) => {
   return {
     order: store.order,
-    images: store.image.files,
+    image: store.image,
     product: store.product
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    addAlbumToStore: (id, name, priority) =>  {
+      dispatch(addAlbumToImage(id, name, priority))
+    }
   }
 }
 
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(ProcessOrderPage)

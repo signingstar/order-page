@@ -63,9 +63,17 @@ const controller = ({modules}) => {
                     cb(err, orderResult)
                   })
                 },
+                albums: (cb) => {
+                  redisClient.hget(`order_id_${orderid}`, 'albums', (err, res) => {
+                    if(err) return cb(err)
+                    cb(null, JSON.parse(res))
+                  })
+                },
                 images: (cb) => {
                   redisClient.zrange(`order_id_${orderid}:files`, [0, -1], (err, res) => {
-                    cb(err, res)
+                    if(err) return cb(err)
+                    const images =  res.map(image => JSON.parse(image))
+                    cb(err, images)
                   })
                 },
                 imageReaction: (cb) => {
@@ -85,7 +93,7 @@ const controller = ({modules}) => {
             )
           },
           (results, done) => {
-            const {orderResult, images, imageReaction} = results
+            const {orderResult, images, albums, imageReaction} = results
             if(!orderResult.productid) {
               return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
             }
@@ -164,10 +172,11 @@ const controller = ({modules}) => {
 
             files.forEach((file, index) => {
               const fileObj = JSON.parse(file)
-              redisClient.hgetall(`order_id_${order_id}:files:${fileObj.id}`, (err, res) => {
+              const { id, album_id } = fileObj
+              redisClient.hgetall(`order_id_${order_id}:files:${id}`, (err, res) => {
                 if(!err) {
                   if(res && res !== null) {
-                    filesReactionMap[index] = parseReactions(res, user.id)
+                    filesReactionMap[fileObj.id] = parseReactions(res, user.id, album_id)
                   }
 
                   if(index === files.length -1 ) {
@@ -223,12 +232,12 @@ const controller = ({modules}) => {
   }
 }
 
-const parseReactions = (obj, userId) => {
+const parseReactions = (obj, userId, albumId) => {
   if(!obj) {
     return
   }
 
-  let reactionObj = {likes: false, liked: []}
+  let reactionObj = {likes: false, liked: [], albumId}
 
   for(let index in obj) {
     const jsonObj = JSON.parse(obj[index])
