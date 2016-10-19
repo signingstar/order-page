@@ -28,9 +28,10 @@ class ProcessOrderPage extends Component {
 
   onAddAlbum() {
     const { addAlbumToStore, order } = this.props
-    addAlbum({
-      order_id: order.id
-    }, ({res}) => addAlbumToStore(res.album_id, res.album_name, res.priority))
+    addAlbum({order_id: order.id}, ({res}) => {
+      const { album_id, album_name, priority} = res
+      addAlbumToStore(album_id, album_name, priority)
+    })
   }
 
   render() {

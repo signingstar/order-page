@@ -5,7 +5,7 @@ import Miss from 'react-router/Miss'
 import Products from "../containers/product_list"
 import InitiateOrder from "../containers/initiate_order"
 import ProcessOrder from "../containers/process_order"
-import ConfirmOrder from "../containers/confirm_order"
+import ConfirmOrder from "../containers/confirm/confirm_order"
 import SubmitOrder from "./submit_order"
 
 const App = () => (

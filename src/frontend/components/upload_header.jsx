@@ -10,6 +10,7 @@ const UploadFilesHeader = ({onAlbumRemove, index, albumName, handleNameChange}) 
         required
         name='albumName'
         onBlur={handleNameChange}
+        autoFocus
       />
     </div>
     {

@@ -6,6 +6,7 @@ export const UPDATE_CUSTOMER_DETAILS = 'UPDATE_CUSTOMER_DETAILS'
 export const UPDATE_CUSTOMER_STATUS = 'UPDATE_CUSTOMER_STATUS'
 export const UPDATE_ORDER = 'UPDATE_ORDER'
 export const SET_IMAGES = 'SET_IMAGES'
+export const POPULATE_IMAGES = 'POPULATE_IMAGE_LIST'
 
 //Error related
 export const CLEAR_ALL_ERRORS = 'CLEAR_ALL_ERRORS'
@@ -80,6 +81,13 @@ export const removeAlbum = (albumId) => {
   return {
     type: 'REMOVE_ALBUM',
     params: albumId
+  }
+}
+
+export const populateImageList = (images) => {
+  return {
+    type: POPULATE_IMAGES,
+    params: images
   }
 }
 

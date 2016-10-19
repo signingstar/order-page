@@ -46,9 +46,10 @@ class UploadFilesHandler extends React.Component {
   }
 
   onImageRemove(e, file) {
+    e.stopPropagation()
     const { image, onRemove } = this.props
     const albumId = image.id
-    onRemove(e, image, albumId)
+    onRemove(image, albumId)
   }
 
   onAlbumRemove() {
@@ -58,7 +59,6 @@ class UploadFilesHandler extends React.Component {
   }
 
   render() {
-    const placeholder = 'Drop your files here, or click anywhere in this box to select files to upload';
     const acceptFiles = 'image/jpeg, image/png, .ai';
 
     const { onRemove, image, index } = this.props
@@ -95,8 +95,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setImages(images, index))
     },
 
-    onRemove: (e, image) => {
-      e.stopPropagation()
+    onRemove: (image) => {
       dispatch(removeImage(image, index))
     },
 

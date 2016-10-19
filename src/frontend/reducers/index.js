@@ -7,6 +7,8 @@ import error from "./error"
 import products from "./products"
 import categories from "./categories"
 import image from "./image"
+import imageList from "./image_list"
+
 
 const orderApp = combineReducers({
   products,
@@ -15,6 +17,7 @@ const orderApp = combineReducers({
   customer,
   order,
   image,
+  imageList,
   error
 })
 
