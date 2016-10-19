@@ -13,18 +13,9 @@ import { LIKES, LIKED } from "./frontend/actions"
 const albumifyImages = (imageList, albums) => {
   let images = {}
 
-  imageList.forEach((image) => {
-    const {album_id, album_name} = image
-    if(!images[album_id]) {
-      const album = albums.find(entry => entry.album_id === +album_id )
-      images[album_id] = {
-        album_name: album.album_name,
-        files: []
-      }
-    }
+  albums.forEach((album, index) => images[album.album_id.toString()] = { album_name: album.album_name, priority: index + 1, files: []})
 
-    images[album_id].files.push(image)
-  })
+  imageList.forEach((image) => images[image.album_id].files.push(image) )
 
   return images
 }

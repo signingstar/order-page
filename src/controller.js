@@ -4,7 +4,7 @@ import path from "path"
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
-import { addAlbum } from "./request_builders/add_album"
+import { addAlbum, updateAlbum } from "./request_builders/album"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -177,6 +177,25 @@ const controller = ({modules}) => {
 
       const { order_id } = body
       addAlbum({order_id}, {redisClient}, (err, result) => {
+        if(err) return res.status(500).end()
+        responders.json(result)
+      })
+    },
+
+    updateAlbum: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { order_id, mapping } = body
+
+      if(!mapping || !Object.keys(mapping)) {
+        res.status(200).end()
+      }
+
+      updateAlbum({order_id, mapping}, {redisClient}, (err, result) => {
         if(err) return res.status(500).end()
         responders.json(result)
       })

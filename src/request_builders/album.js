@@ -41,3 +41,46 @@ export const addAlbum = ({order_id}, {redisClient}, cb) => {
     (err) => cb(err)
   )
 }
+
+export const updateAlbum = ({order_id, mapping}, {redisClient}, cb) => {
+  async.waterfall(
+    [
+      (done) => {
+        redisClient.hget(`order_id_${order_id}`, 'albums', (err, albums) => { //TODO fetch albums directly
+          albums = albums ? JSON.parse(albums) : undefined
+
+          if(albums && albums.length) return done(err, albums)
+
+          done(err)
+        })
+      },
+      (albums, done) => {
+        let updateCount = 0
+        albums.forEach(album => {
+          const { album_id, priority } = album
+
+          if(mapping[album_id]) {
+            album.priority = mapping[album_id]
+            updateCount++
+          }
+        })
+
+
+        if(updateCount) {
+          albums.sort((prev, curr) => prev.priority - curr.priority)
+
+          redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
+            if(err) return done(err)
+            done(null, {count: updateCount})
+          })
+        } else {
+          done(null, {count: 0})
+        }
+      },
+      (updateCount, done) => {
+        cb(null, updateCount)
+      }
+    ],
+    (err) => cb(err)
+  )
+}

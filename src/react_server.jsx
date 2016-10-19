@@ -39,10 +39,8 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
             "customer":{"cust_name":"Test user","email":"test3@user.com","phone_number":"234","category":"anniversary","image_count":"2","dirty":false},
             "order":{"id":121},
             "image":{
-              "624":{"name":"Pre-Wedding","priority":120,"queued":0,"queuedSize":0,"uploaded":2,"uploadedSize":228446,"files":[{"size": 100000},{"size": 250000}]},
-              "652":{"name":"Wedding","priority":100,"queued":0,"queuedSize":0,"uploaded":1,"uploadedSize":543307,"files":[{"size": 200000}]},
-              "512":{"name":"Honeymoon","priority":140,"queued":0,"queuedSize":0,"uploaded":1,"uploadedSize":543307,"files":[{"size": 300000}]},
-              "520":{"name":"Travel","priority":110,"queued":0,"queuedSize":0,"uploaded":1,"uploadedSize":943307,"files":[{"size": 900000}]}
+              "624":{"name":"Pre-Wedding","priority":100,"queued":0,"queuedSize":0,"uploaded":2,"uploadedSize":228446,"files":[{"size": 100000},{"size": 250000}]},
+              "652":{"name":"Wedding","priority":120,"queued":0,"queuedSize":0,"uploaded":1,"uploadedSize":543307,"files":[{"size": 200000}]}
             },
               "error":{}
           }`)

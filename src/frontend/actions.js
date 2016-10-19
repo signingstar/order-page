@@ -7,6 +7,7 @@ export const UPDATE_CUSTOMER_STATUS = 'UPDATE_CUSTOMER_STATUS'
 export const UPDATE_ORDER = 'UPDATE_ORDER'
 export const SET_IMAGES = 'SET_IMAGES'
 export const POPULATE_IMAGES = 'POPULATE_IMAGE_LIST'
+export const SWAP_ALBUM = 'SWAP_ALBUM'
 
 //Error related
 export const CLEAR_ALL_ERRORS = 'CLEAR_ALL_ERRORS'
@@ -91,6 +92,13 @@ export const populateImageList = (images) => {
   }
 }
 
+export const swapAlbum = (src, dest) => {
+  return {
+    type: SWAP_ALBUM,
+    params: {src, dest}
+  }
+}
+
 //------------------------- Error Related ---------------------------
 
 export const clearAllErrors = () => {
@@ -170,6 +178,17 @@ export const uploadImages = (data, cb) => {
 export const addAlbum = (data, cb) => {
   ajax({
     url: '/order/album/add',
+    method: 'POST',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, staus: xhr.status}))
+}
+
+export const updateAlbum = (data, cb) => {
+  ajax({
+    url: '/order/album/update',
     method: 'POST',
     data,
     dataType: 'json'

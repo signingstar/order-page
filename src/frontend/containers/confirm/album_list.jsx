@@ -2,20 +2,7 @@ import React, {Component} from "react"
 import { connect } from "react-redux"
 
 import AlbumList from "../../components/confirm/album_list"
-import { populateImageList } from "../../actions"
-
-const reinsert = (albumList, from, to) => {
-  const albumListNew = albumList.slice(0)
-  const srcAlbum = albumListNew[from]
-  const tempPriority = srcAlbum.priority
-
-  srcAlbum.priority = albumListNew[to].priority
-  albumListNew[to].priority = tempPriority
-  albumListNew.splice(from, 1)
-  albumListNew.splice(to, 0, srcAlbum)
-
-  return albumListNew
-}
+import { populateImageList, swapAlbum, updateAlbum } from "../../actions"
 
 // To check if list item is in range
 const clamp = (n, min, max) =>  Math.max(Math.min(n, max), min)
@@ -71,21 +58,37 @@ class AlbumListConfiguration extends Component {
 
     if (isPressed) {
       const mouse = pageY - delta
-      const effectiveMouse = mouse + lastPressedIndex * this.itemHeight
-      const row = clamp(Math.round(effectiveMouse / (this.itemHeight + this.itemSpacing)), 0, imageList.length - 1)
+      const effectiveMousePosition = mouse + lastPressedIndex * this.itemHeight
+      const possibleRow = Math.round(effectiveMouse / (this.itemHeight + this.itemSpacing))
+      const row = clamp(possibleRow, 0, imageList.length - 1)
       const indexLastPressed = imageList.indexOf(lastPressed)
 
-      if(row !== indexLastPressed) {
-        const newImageList = reinsert(imageList, indexLastPressed, row)
-        setImageList(newImageList)
-      }
-
+      this.swapAlbumPriority(indexLastPressed, row)
       this.setState({mouse})
     }
   }
 
   handleMouseUp() {
     this.setState({isPressed: false, delta: 0})
+  }
+
+  swapAlbumPriority(src, target) {
+    if(src === target) return
+
+    const { imageList, swapAlbumInStore, order_id } = this.props
+    const srcAlbum = imageList[src]
+    const destAlbum = imageList[target]
+
+    const updateJson = {
+      order_id,
+      mapping: {
+        [srcAlbum.id]: destAlbum.priority,
+        [destAlbum.id]: srcAlbum.priority
+      }
+    }
+
+    swapAlbumInStore(src, target)
+    updateAlbum(updateJson, ({res}) => console.log(res.count))
   }
 
   render() {
@@ -109,6 +112,7 @@ class AlbumListConfiguration extends Component {
 
 const mapStateToProps = (store) => {
   return {
+    order_id: store.order.id,
     imageList: store.imageList || []
   }
 }
@@ -117,6 +121,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setImageList: (list) => {
       dispatch(populateImageList(list))
+    },
+
+    swapAlbumInStore: (source, destination) => {
+      dispatch(swapAlbum(source, destination))
     }
   }
 }
