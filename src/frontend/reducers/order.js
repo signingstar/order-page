@@ -1,14 +1,18 @@
-import { SET_FILES, UPDATE_ORDER } from "../actions"
+import { SET_FILES, UPDATE_ORDER, SET_ORDER_NAME } from "../actions"
 
 const order = (state = {}, {type, params}) => {
   switch (type) {
     case UPDATE_ORDER:
       return Object.assign({}, state, params.orderData)
+
     case SET_FILES:
-      newState =  Object.assign({}, state, {
+      return Object.assign({}, state, {
         files: params,
       })
-      return newState
+
+    case SET_ORDER_NAME:
+      return Object.assign({}, state, {name: params})
+
     default:
       return state
   }

@@ -36,7 +36,7 @@ export const processOrder = ({params, body, session}, { logger, queryDb }, cb) =
 
   const { order_id } = orderData
   const userid = user.id
-  const queryParams = [userid, order_id, 'in_process']
+  const queryParams = [userid, order_id, 'in_process', null]
 
   updateOrder(queryParams, {logger, queryDb}, (err, result) => {
     cb({err, orderData, result})
@@ -54,9 +54,9 @@ export const confirmOrder = ({params, body, session}, { logger, queryDb }, cb) =
     return cb({err})
   }
 
-  const { order_id } = orderData
+  const { order_id, order_name = null } = orderData
   const userid = user.id
-  const queryParams = [userid, order_id, 'confirmed']
+  const queryParams = [userid, order_id, 'confirmed', order_name]
 
   updateOrder(queryParams, {logger, queryDb}, (err, result) => {
     cb({err, orderData, result})

@@ -3,7 +3,7 @@ import path from "path"
 
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
-import viewCustomerOrder from "../database/api/view_customer_order"
+import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
 import { LIKES, LIKED } from "./frontend/actions"
@@ -57,7 +57,8 @@ const controller = ({modules}) => {
             async.parallel(
               {
                 orderResult: (cb) => {
-                  viewCustomerOrder(orderQueryData, localModule, (err, orderResult) => {
+                  viewCustomerOrder(orderQueryData, localModule, (err, orderResults) => {
+                    const orderResult = orderResults[0]
                     orderResult.id = orderid
 
                     cb(err, orderResult)

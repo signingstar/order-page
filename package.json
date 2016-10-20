@@ -28,7 +28,7 @@
     "react-modal": "^1.5.2",
     "react-motion": "^0.4.5",
     "react-redux": "^5.0.0-beta.2",
-    "react-router": "^4.0.0-alpha.4",
+    "react-router": "^4.0.0-alpha.5",
     "react-router-redux": "^4.0.5",
     "redux": "^3.6.0",
     "tisko-layout": "github:signingstar/tisko-layout",

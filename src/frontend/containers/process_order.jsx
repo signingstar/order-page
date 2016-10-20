@@ -39,10 +39,15 @@ class ProcessOrderPage extends Component {
 
     const { value } = product
     if(this.state.formSubmit) {
-      return <Redirect to={{
-        pathname: `/order/confirm`,
-        state: { from: this.props.location }
-      }}/>
+      return (
+        <Redirect
+          to={{
+            pathname: `/order/confirm`,
+            state: { from: this.props.location }
+          }}
+          push={true}
+        />
+      )
     }
 
     return (

@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Redirect from "react-router/Redirect"
 
 import ConfirmOrder from "../../components/confirm/confirm_order"
-import { confirmOrder, populateImageList } from "../../actions"
+import { confirmOrder, populateImageList, setOrderName } from "../../actions"
 
 const getPreciseSize = (size) => {
   const unitFactor = 1024 * 1024 * 1024
@@ -19,6 +19,7 @@ class ConfirmOrderPage extends Component {
     }
 
     this.handleClick = this.handleClick.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentWillMount() {
@@ -29,8 +30,8 @@ class ConfirmOrderPage extends Component {
 
     const keys = Object.keys(image).sort((id1, id2) => image[id1].priority - image[id2].priority )
     imageList = keys.map(albumId => {
-      const { id, name, priority, files} = image[albumId]
-      const size = files.length > 1 ? files.reduce((prev, curr) => prev.size + curr.size) : files[0].size
+      const { id, name, priority, files = [] } = image[albumId]
+      const size = files.length > 1 ? files.reduce((prev, curr) => prev.size + curr.size) : (files.length > 0 ? files[0].size : 0)
       return {id: albumId, priority, name, count: files.length, size: getPreciseSize(size) }
     })
 
@@ -39,11 +40,16 @@ class ConfirmOrderPage extends Component {
 
   handleClick() {
     const { order } = this.props
-    confirmOrder({order_id: order.id}, () => this.setState({formSubmit: true}))
+    confirmOrder({order_id: order.id, order_name: order.name}, () => this.setState({formSubmit: true}))
+  }
+
+  handleChange(e) {
+    const { setShortName } = this.props
+    setShortName(e.target.value)
   }
 
   render() {
-    const {pathname} = this.props
+    const {pathname, order} = this.props
     if(this.state.formSubmit) {
       return <Redirect to={{
         pathname: `/order/submit`,
@@ -55,6 +61,9 @@ class ConfirmOrderPage extends Component {
       <ConfirmOrder
         pathname={pathname}
         onClick={this.handleClick}
+        orderName={order.name || `Order-${order.id}`}
+        handleChange={this.handleChange}
+        autoFocus={true}
       />
     )
   }
@@ -72,6 +81,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setImageList: (list) => {
       dispatch(populateImageList(list))
+    },
+
+    setShortName: (name) => {
+      dispatch(setOrderName(name))
     }
   }
 }

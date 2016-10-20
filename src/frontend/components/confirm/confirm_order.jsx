@@ -4,9 +4,15 @@ import Link from 'react-router/Link'
 import AlbumList from "../../containers/confirm/album_list"
 import SelectionCriteria from "../../containers/confirm/image_selection_criteria"
 
-const ConfirmOrderComponent = ({pathname, onClick}) => (
+const ConfirmOrderComponent = ({pathname, onClick, orderName, handleChange}) => (
   <div className='main-section-body'>
     <h1>Order Confirmation</h1>
+    <div className='fields row'>
+      <div className='large-field'>
+        <label htmlFor="orderName">Order Name</label>
+        <input type="text" defaultValue={orderName} onChange={handleChange} />
+      </div>
+    </div>
     <AlbumList />
     <SelectionCriteria />
     <div className='fields'>

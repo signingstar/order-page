@@ -3,6 +3,7 @@ import path from "path"
 
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
+import { viewOwnerOrder } from "./database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
 import { addAlbum, updateAlbum } from "./request_builders/album"
 
@@ -201,7 +202,7 @@ const controller = ({modules}) => {
       })
     },
 
-    viewOwner: ({attributes, responders, page}) => {
+    viewOrders: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session } = req
       const orderId = req.params.orderid
@@ -209,7 +210,12 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
-    },
+      viewOwnerOrder([user.id], localModule, (err, orderResults) => {
+        if(err) res.status(500).end()
+
+        responders.json(orderResults)
+      })
+    }
   }
 }
 

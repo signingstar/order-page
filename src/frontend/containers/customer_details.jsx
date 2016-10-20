@@ -99,10 +99,13 @@ class CustomerDetailsPage extends Component {
 
     return (
       this.state.navigate ?
-        <Redirect to={{
-          pathname: `/order/process`,
-          state: { from: location }
-        }}/>
+        <Redirect
+          to={{
+            pathname: `/order/process`,
+            state: { from: location }
+          }}
+          push={true}
+        />
       :
         <div>
           <ProductTitle pathname={pathname} label={value} edit={true} />

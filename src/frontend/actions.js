@@ -8,6 +8,7 @@ export const UPDATE_ORDER = 'UPDATE_ORDER'
 export const SET_IMAGES = 'SET_IMAGES'
 export const POPULATE_IMAGES = 'POPULATE_IMAGE_LIST'
 export const SWAP_ALBUM = 'SWAP_ALBUM'
+export const SET_ORDER_NAME = 'SET_ORDER_NAME'
 
 //Error related
 export const CLEAR_ALL_ERRORS = 'CLEAR_ALL_ERRORS'
@@ -96,6 +97,13 @@ export const swapAlbum = (src, dest) => {
   return {
     type: SWAP_ALBUM,
     params: {src, dest}
+  }
+}
+
+export const setOrderName = (name) => {
+  return {
+    type:SET_ORDER_NAME,
+    params: name
   }
 }
 
