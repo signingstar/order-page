@@ -132,17 +132,21 @@ const controller = ({modules}) => {
         [
           (done) => {
             confirmOrder({params, body, session, location}, {logger, queryDb }, ({err, orderData, result}) => {
-              done(err, {orderId: orderData.order_id})
+              if(err) return done(err)
+
+              const {order_id, order_name} = orderData
+              done(null, {orderId: order_id, orderName: order_name})
             })
           },
           (order, done) => {
-            const {orderId} = order
-            redisClient.hset(`order_id_${orderId}`, ['status', 'confirmed'])
+            const {orderId, orderName} = order
+            redisClient.hmset(`order_id_${orderId}`, ['status', 'confirmed', 'name', orderName])
             redisClient.hgetall(`order_id_${orderId}`, (err, orderData) => {
-              done(null, orderData, session.user)
+              done(null, orderData)
             })
           },
-          (orderData, userData, done) => {
+          (orderData, done) => {
+            const userData = session.user
             const mailOptions = {
               to: orderData.email,
               cc: userData.email,

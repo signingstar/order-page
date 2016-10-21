@@ -11,27 +11,29 @@ class InitiateOrder extends Component {
   }
 
   componentWillMount() {
-    const { onload, product, store_product } = this.props
+    const { setProductFromLink, location: {state} } = this.props
 
-    if(product && (!store_product || product.key !== store_product.key)) {
-      const {key, value} = product
-      onload(key, value)
+    if(state && state.type && state.type.key) {
+      const {key, value} = state.type
+      setProductFromLink(key, value)
     }
   }
 
   render() {
     const { product, pathname, location } = this.props
+    const { state } = location
+    const stateProduct = state && state.type && state.type.key ? state.type : undefined
 
     return (
       <div className='main-section-body customer'>
-        { product ?
+        { product || stateProduct ?
           <CustomerDetails
             pathname={pathname}
             location={location}
           />
           : <Redirect to={{
             pathname: '/order/products',
-            state: { from: this.props.location }
+            state: { from: location }
           }}/>
         }
       </div>
@@ -41,18 +43,15 @@ class InitiateOrder extends Component {
 
 const mapStateToProps = (store, ownProps) => {
   const { order: {product} } = store
-  const { location: {state} } = ownProps
-  const stateType = state && state.type && state.type.key ? state.type : undefined
 
   return {
-    product:  stateType || product,
-    store_product: product
+    product
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onload: (key, value) => {
+    setProductFromLink: (key, value) => {
       dispatch(setProduct(key, value))
     }
   }

@@ -9,6 +9,37 @@ import createStore from "./frontend/store";
 import CreateApp from "./frontend/components/app"
 import RequestBuilder from "./request_builders/view_order"
 
+const albumifyImages = (imageList, albumList) => {
+  let albums = {}
+
+  albumList.forEach((album, index) => albums[album.id.toString()] = { name: album.name, priority: index + 1, files: []})
+
+  imageList.forEach((image) => {
+    image = JSON.parse(image)
+    albums[image.album_id].files.push(Object.assign(image, {name: image.originalname}))
+  })
+
+  Object.keys(albums).forEach(albumId => {
+    const count = albums[albumId].uploaded = albums[albumId].files.length
+    const size = count > 1 ? albums[albumId].files.reduce((prev, curr) => prev.size + curr.size) : (count > 0 ? albums[albumId].files[0].size : 0)
+    albums[albumId].uploadedSize = size
+  })
+
+  return albums
+}
+
+const prepareInitialState = (results) => {
+  const {products, orderInfo: {order, files}} = results
+  const productObj = products.find(product => product.id === +order.product)
+
+  order.product = productObj ? {key: productObj.id, value: productObj.description} : ''
+  order.customer = pick(order, 'email', 'phone_number', 'image_count', 'category')
+  order.customer.cust_name = `${order.first_name} ${order.last_name}`
+
+  const {albums} = pick(order, 'albums')
+
+  return albumifyImages(files, albums)
+}
 
 const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
@@ -46,18 +77,10 @@ const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClie
         //     },
         //       "error":{}
         //   }`)
-        const {products, order, categories} = results
-        const productObj = products.find(product => product.id === order.product)
-        order.product = {key: productObj.id, value: productObj.description}
-        order.customer = pick(order, 'email', 'phone_number', 'image_count', 'category')
-        order.customer.cust_name = `${order.first_name} ${order.last_name}`
-        const {albums} = pick(order, 'albums')
-        let albumObj = {}
-        albums.forEach(album => {
-          const { id, name, priority } = album
-          albumObj[id] = {name, priority }
-        })
-        const initialPayload = Object.assign(results, {image: albumObj})
+
+        const { products, categories, orderInfo: {order, files}} = results
+        const albums = prepareInitialState(results)
+        const initialPayload = { products, categories, order, image: albums }
 
         // Create a new Redux store instance
         const store = createStore(initialPayload)

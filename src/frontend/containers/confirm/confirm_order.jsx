@@ -50,21 +50,24 @@ class ConfirmOrderPage extends Component {
 
   render() {
     const {pathname, order} = this.props
-    if(this.state.formSubmit) {
-      return <Redirect to={{
-        pathname: `/order/submit`,
-        state: { from: this.props.location }
-      }}/>
-    }
 
     return (
-      <ConfirmOrder
-        pathname={pathname}
-        onClick={this.handleClick}
-        orderName={order.name || `Order-${order.id}`}
-        handleChange={this.handleChange}
-        autoFocus={true}
-      />
+      this.state.formSubmit ?
+        <Redirect
+          to={{
+            pathname: `/order/submit`,
+            state: { from: this.props.location }
+          }}
+          push={true}
+        />
+      :
+        <ConfirmOrder
+          pathname={pathname}
+          onClick={this.handleClick}
+          orderName={order.name || `Order-${order.id}`}
+          handleChange={this.handleChange}
+          autoFocus={true}
+        />
     )
   }
 }

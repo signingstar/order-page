@@ -18,50 +18,50 @@ class UploadFilesHandler extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
 
-    const { image, index, order, onUpload } = this.props
-    const images = image.files
+    const { album, index, order, onUpload } = this.props
+    const files = album.files
     const formData = new FormData()
 
     formData.append('order_id', order.id)
     formData.append('album_id', index)
-    formData.append('album_name', image.name)
+    formData.append('album_name', album.name)
 
-    images.map(image => {
-      formData.append('images', image)
+    files.map(file => {
+      formData.append('images', file)
     })
 
-    uploadImages(formData, () => onUpload(image.id))
+    uploadImages(formData, () => onUpload(album.id))
   }
 
   handleNameChange(e) {
-    const { image } = this.props
+    const { album } = this.props
 
-    image.name = e.target.value
+    album.name = e.target.value
   }
 
   onImageAdd(images) {
-    const { image, onDrop } = this.props
-    const albumId = image.id
+    const { album, onDrop } = this.props
+    const albumId = album.id
     onDrop(images, albumId)
   }
 
   onImageRemove(e, file) {
     e.stopPropagation()
-    const { image, onRemove } = this.props
-    const albumId = image.id
-    onRemove(image, albumId)
+    const { album, onRemove } = this.props
+    const albumId = album.id
+    onRemove(album, albumId)
   }
 
   onAlbumRemove() {
-    const { image, onRemoveAlbum } = this.props
-    const albumId = image.id
+    const { album, onRemoveAlbum } = this.props
+    const albumId = album.id
     onRemoveAlbum(albumId)
   }
 
   render() {
     const acceptFiles = 'image/jpeg, image/png, .ai';
 
-    const { onRemove, image, index } = this.props
+    const { onRemove, album, index } = this.props
 
     return (
       <UploadFiles
@@ -71,7 +71,7 @@ class UploadFilesHandler extends React.Component {
         onAlbumRemove={this.onAlbumRemove}
         uploadImage={this.handleSubmit}
         index={index}
-        albumName={image.name}
+        albumName={album.name}
         handleNameChange={this.handleNameChange}
       />
     )
@@ -83,7 +83,7 @@ const mapStateToProps = (store, ownProps) => {
 
   return {
     order: store.order,
-    image: store.image[index]
+    album: store.image[index]
   }
 }
 

@@ -14,6 +14,7 @@ const AddUser = ({onSubmit, onSelect, role, roleNodes}) => {
             ref={node => {
               emailid = node
             }}
+            autoFocus={true}
           />
         </div>
         <Select

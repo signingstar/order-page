@@ -19,15 +19,16 @@ class ProcessOrderPage extends Component {
   }
 
   handleClick() {
-    const { order, image } = this.props
+    const { order, albums } = this.props
     const orderdata = {order_id: order.id}
-    Object.keys(image).forEach(albumId => orderdata[albumId] = image[albumId].name)
 
+    Object.keys(albums).forEach(albumId => orderdata[albumId] = albums[albumId].name)
     processOrder(orderdata, () => this.setState({formSubmit: true}))
   }
 
   onAddAlbum() {
     const { addAlbumToStore, order } = this.props
+
     addAlbum({order_id: order.id}, ({res}) => {
       const { id, name, priority} = res
       addAlbumToStore(id, name, priority)
@@ -35,40 +36,39 @@ class ProcessOrderPage extends Component {
   }
 
   render() {
-    const {pathname, product, image} = this.props
-
+    const {pathname, product, albums, location} = this.props
     const { value } = product
-    if(this.state.formSubmit) {
-      return (
+
+    return (
+      this.state.formSubmit ?
         <Redirect
           to={{
             pathname: `/order/confirm`,
-            state: { from: this.props.location }
+            state: { from: location }
           }}
           push={true}
         />
-      )
-    }
-
-    return (
-      <div className='main-section-body'>
-        <ProductTitle pathname={pathname} label={value} />
-        <ProcessOrder
-          pathname={pathname}
-          onClick={this.handleClick}
-          image={image}
-          addAlbum={this.onAddAlbum}
-        />
-      </div>
+      :
+        <div className='main-section-body'>
+          <ProductTitle pathname={pathname} label={value} />
+          <ProcessOrder
+            pathname={pathname}
+            onClick={this.handleClick}
+            albums={albums}
+            addAlbum={this.onAddAlbum}
+          />
+        </div>
     )
   }
 }
 
 const mapStateToProps = (store, ownProps) => {
+  const { order, image } = store
+
   return {
-    order: store.order,
-    image: store.image,
-    product: store.order.product
+    order,
+    albums: image,
+    product: order.product
   }
 }
 

@@ -10,14 +10,14 @@ import RequestBuilder from "../request_builder"
 
 import { LIKES, LIKED } from "./frontend/actions"
 
-const albumifyImages = (imageList, albums) => {
-  let images = {}
+const albumifyImages = (imageList, albumList) => {
+  let albums = {}
 
-  albums.forEach((album, index) => images[album.id.toString()] = { name: album.name, priority: index + 1, files: []})
+  albumList.forEach((album, index) => albums[album.id.toString()] = { name: album.name, priority: index + 1, files: []})
 
-  imageList.forEach((image) => images[image.id].files.push(image) )
+  imageList.forEach((image) => albums[image.album_id].files.push(image) )
 
-  return images
+  return albums
 }
 
 const prepareInitialState = (order, staticData, imageList = [], imageReaction, albums) => {

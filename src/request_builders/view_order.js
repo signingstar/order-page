@@ -5,33 +5,30 @@ import StaticRequests from "../request_builder"
 
 const RequestBuilder = ({orderid, userid}, {logger, queryDb, redisClient}) => {
   const { products, categories } = StaticRequests({logger, queryDb, redisClient})
-  const order = (cb) => {
+  const orderInfo = (callback) => {
     async.parallel({
-
-    })
-    async.waterfall([
-      (done) => {
+      order: (cb) => {
         redisClient.hgetall(`order_id_${orderid}`, (err, res) => {
           if(!err && res) {
             res.albums = JSON.parse(res.albums)
           }
-          done(err, res)
+          // TODO: Fetch from db once data is synced
+          cb(err, res)
         })
       },
-      (order, done) => {
-        if(!order || order.length === 0) {
-          // TODO: Fetch from db once data is synced
-        } else {
-          cb(null, order)
-        }
+      files: (cb) => {
+        redisClient.zrange(`order_id_${orderid}:files`, [0, -1], (err, res) => {
+          if(err) return cb(err)
+
+          cb(null, res)
+        })
       }
-    ],
-    (err) => {
-      cb(err)
+    }, (err, results) => {
+      callback(err, results)
     })
   }
 
-  return {products, categories, order}
+  return {products, categories, orderInfo}
 }
 
 export default RequestBuilder

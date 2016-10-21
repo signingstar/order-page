@@ -60,16 +60,18 @@ export const validateProcessOrderData = ({order_id}) => {
   return {orderData}
 }
 
-export const validateConfirmOrderData = ({order_id}) => {
+export const validateConfirmOrderData = ({order_id, order_name}) => {
   let err = {}
 
   order_id = xssFilters.inHTMLData(trim(order_id))
+  order_name = xssFilters.inHTMLData(trim(order_name))
   verifyAndAttachError('order_id', order_id, 'isAlphaNumeric', err)
+  verifyAndAttachError('order_name', order_name, 'withSpaces', err)
 
   if(!_.isEmpty(err)) {
     return {err}
   }
-  const orderData = {order_id}
+  const orderData = {order_id, order_name}
 
   return {orderData}
 }

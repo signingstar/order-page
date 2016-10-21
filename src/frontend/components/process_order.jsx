@@ -3,8 +3,8 @@ import Link from 'react-router/Link'
 
 import UploadFiles from "../containers/upload_files"
 
-const ProcessOrderComponent = ({pathname, onClick, addAlbum, image}) => {
-  const keys = Object.keys(image).sort((id1, id2) => image[id1].priority - image[id2].priority )
+const ProcessOrderComponent = ({pathname, onClick, addAlbum, albums}) => {
+  const keys = Object.keys(albums).sort((id1, id2) => albums[id1].priority - albums[id2].priority )
 
   return (
     <div className='image-section'>

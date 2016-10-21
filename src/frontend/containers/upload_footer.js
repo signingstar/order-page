@@ -9,8 +9,8 @@ const getPreciseSize = (size) => {
 
 const mapStateToProps = (store, ownProps) => {
   const { albumId } = ownProps
-  const image = store.image[albumId]
-  const { queued, queuedSize, uploaded, uploadedSize } = image
+  const album = store.image[albumId]
+  const { queued, queuedSize, uploaded, uploadedSize } = album
 
   return {
     queued: queued || 0,
