@@ -59,7 +59,7 @@ class AlbumListConfiguration extends Component {
     if (isPressed) {
       const mouse = pageY - delta
       const effectiveMousePosition = mouse + lastPressedIndex * this.itemHeight
-      const possibleRow = Math.round(effectiveMouse / (this.itemHeight + this.itemSpacing))
+      const possibleRow = Math.round(effectiveMousePosition / (this.itemHeight + this.itemSpacing))
       const row = clamp(possibleRow, 0, imageList.length - 1)
       const indexLastPressed = imageList.indexOf(lastPressed)
 

@@ -1,4 +1,4 @@
-import {ajax} from "jquery"
+import { ajax, post } from "jquery"
 
 export const SET_PRODUCT = 'SET_PRODUCT'
 export const RESET_PRODUCT = 'RESET_PRODUCT'
@@ -33,7 +33,7 @@ export const resetProduct = () => {
 export const updateCustomerDetails = (key, value) => {
   return {
     type: UPDATE_CUSTOMER_DETAILS,
-    params: {[key]: value}
+    params: {key, value}
   }
 }
 
@@ -139,14 +139,10 @@ export const setSuccess = (message) => {
 //-------------------------- Server calls ----------------------------
 
 export const createOrder = (data, cb) => {
-  ajax({
-    method: 'POST',
-    url: '/order/create',
-    data,
-    dataType: 'json'
-  })
-  .done((res, textStatus) => cb({res}))
-  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+  const posting = post('/order/create', data)
+
+  posting.done((res, textStatus) => cb({res}))
+  posting.fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
 
 export const processOrder = (data, cb) => {

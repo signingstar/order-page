@@ -23,15 +23,15 @@ export const addAlbum = ({order_id}, {redisClient}, cb) => {
         let { albums } = orderData
         albums = albums ? JSON.parse(albums) : []
 
-        const album_id = getRandomInt(START_PRIORITY, END_PRIORITY)
-        const album_name = `Album-${album_id}`
+        const id = getRandomInt(START_PRIORITY, END_PRIORITY)
+        const name = `Album-${id}`
         const priority = albums.length ? albums[albums.length - 1].priority + STEP_PRIORITY : START_PRIORITY
 
-        albums.push({album_id, album_name, priority})
+        albums.push({id, name, priority})
 
         redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
           if(err) return done(err)
-          done(null, {album_id, album_name, priority})
+          done(null, {id, name, priority})
         })
       },
       (albumData, done) => {
@@ -57,10 +57,10 @@ export const updateAlbum = ({order_id, mapping}, {redisClient}, cb) => {
       (albums, done) => {
         let updateCount = 0
         albums.forEach(album => {
-          const { album_id, priority } = album
+          const { id, priority } = album
 
-          if(mapping[album_id]) {
-            album.priority = mapping[album_id]
+          if(mapping[id]) {
+            album.priority = mapping[id]
             updateCount++
           }
         })

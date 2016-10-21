@@ -1,4 +1,4 @@
-import { customerOrder, ownerOrder } from "../query/select"
+import { customerOrder, ownerOrders } from "../query/select"
 
 const viewOrder = (query, orderData, modules, cb) => {
   const { queryDb, logger } = modules
@@ -18,4 +18,4 @@ const viewOrder = (query, orderData, modules, cb) => {
 
 export const viewCustomerOrder = (...args) => viewOrder(customerOrder, ...args)
 
-export const viewOwnerOrder = (...args) => viewOrder(ownerOrder, ...args)
+export const viewOwnerOrders = (...args) => viewOrder(ownerOrders, ...args)

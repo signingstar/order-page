@@ -29,8 +29,8 @@ class ProcessOrderPage extends Component {
   onAddAlbum() {
     const { addAlbumToStore, order } = this.props
     addAlbum({order_id: order.id}, ({res}) => {
-      const { album_id, album_name, priority} = res
-      addAlbumToStore(album_id, album_name, priority)
+      const { id, name, priority} = res
+      addAlbumToStore(id, name, priority)
     })
   }
 
@@ -68,7 +68,7 @@ const mapStateToProps = (store, ownProps) => {
   return {
     order: store.order,
     image: store.image,
-    product: store.product
+    product: store.order.product
   }
 }
 

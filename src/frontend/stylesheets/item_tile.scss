@@ -63,6 +63,11 @@ figure.single-row {
     .item-tile {
       text-align: center;
 
+      &:hover {
+        transform: translate3d(10px, 10px, 10px) scale(1.1);
+        transition: 0.3s ease-in-out;
+      }
+
       h2 {
         font-size: 18px;
         font-weight: 400;
@@ -74,11 +79,13 @@ figure.single-row {
         margin-top: 5px;
       }
 
-      .item-image img{
-        height: auto;
-        max-height: 200px;
-        max-width: 280px;
-        width: auto;
+      .item-image {
+        img{
+          height: auto;
+          max-height: 200px;
+          max-width: 280px;
+          width: auto;
+        }
       }
 
       .item-description {

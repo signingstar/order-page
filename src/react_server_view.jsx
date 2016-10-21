@@ -3,15 +3,17 @@ import React from "react";
 import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
+import { pick } from "underscore"
 
 import createStore from "./frontend/store";
 import CreateApp from "./frontend/components/app"
-import RequestBuilder from "./request_builder"
+import RequestBuilder from "./request_builders/view_order"
 
-const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) => {
+
+const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
   const context = createServerRenderContext()
-  const requests = RequestBuilder({logger, queryDb, redisClient})
+  const requests = RequestBuilder({userid, orderid}, {logger, queryDb, redisClient})
 
   async.waterfall(
     [
@@ -44,8 +46,18 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
         //     },
         //       "error":{}
         //   }`)
-
-        const initialPayload = results
+        const {products, order, categories} = results
+        const productObj = products.find(product => product.id === order.product)
+        order.product = {key: productObj.id, value: productObj.description}
+        order.customer = pick(order, 'email', 'phone_number', 'image_count', 'category')
+        order.customer.cust_name = `${order.first_name} ${order.last_name}`
+        const {albums} = pick(order, 'albums')
+        let albumObj = {}
+        albums.forEach(album => {
+          const { id, name, priority } = album
+          albumObj[id] = {name, priority }
+        })
+        const initialPayload = Object.assign(results, {image: albumObj})
 
         // Create a new Redux store instance
         const store = createStore(initialPayload)

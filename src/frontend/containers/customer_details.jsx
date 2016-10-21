@@ -35,7 +35,7 @@ class CustomerDetailsPage extends Component {
     const selected = e.value
 
     if(customer.category !== selected) {
-        setCustomerDetails('category', selected)
+      setCustomerDetails('category', selected)
     }
   }
 
@@ -91,8 +91,8 @@ class CustomerDetailsPage extends Component {
 
   render() {
     const { pathname, customer, message, categories, product, location } = this.props
-    const optionNodes = categories.map(category => {
-      return {value: category.name, label: category.description}
+    const optionNodes = categories.map(({name, description}) => {
+      return {value: name, label: description}
     })
 
     const {value} = product
@@ -124,12 +124,13 @@ class CustomerDetailsPage extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
+  const { order: {customer, id, product}} = store
   return {
-    customer: store.customer,
+    customer,
     message: store.error.message || {},
-    categories: store.categories || [],
-    orderid: store.order.id,
-    product: store.product
+    categories: store.categories,
+    orderid: id,
+    product
   }
 }
 
@@ -137,17 +138,16 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     setCustomerDetails: (key, value) => {
       dispatch(updateCustomerDetails(key, value))
-      dispatch(updateCustomerFormStatus(true))
     },
     addOrderToStore: (res) => {
+      const { id, name, priority, order_id } = res
       dispatch(updateOrder(
         {
-          orderData: {id: res.order_id},
-          albumData: {id: res.id, name: res.name, priority: res.priority},
+          orderData: {id: order_id},
+          albumData: {id, name, priority},
           dirty: false
         }
       ))
-      // dispatch(updateCustomerFormStatus(false))
     },
 
     updateOrderToStore: () => {

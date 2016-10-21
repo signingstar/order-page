@@ -8,7 +8,7 @@ const ConfirmOrderComponent = ({pathname, onClick, orderName, handleChange}) => 
   <div className='main-section-body'>
     <h1>Order Confirmation</h1>
     <div className='fields row'>
-      <div className='large-field'>
+      <div className='large-field required'>
         <label htmlFor="orderName">Order Name</label>
         <input type="text" defaultValue={orderName} onChange={handleChange} />
       </div>

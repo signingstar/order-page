@@ -3,7 +3,8 @@ import path from "path"
 
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
-import { viewOwnerOrder } from "./database/api/view_order"
+import ReactComponentView from "./react_server_view"
+import { viewOwnerOrders } from "./database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
 import { addAlbum, updateAlbum } from "./request_builders/album"
 
@@ -84,7 +85,7 @@ const controller = ({modules}) => {
 
         addAlbum({order_id}, {redisClient}, (err, result) => {
           if(err) return res.status(500).end()
-          const { album_id: id, album_name: name, priority } = result
+          const { id, name, priority } = result
           // Send response first. Redis update can happen thereafter
           responders.json({order_id, id, name, priority})
           redisClient.hmset(`order_id_${order_id}`, orderData)
@@ -110,7 +111,7 @@ const controller = ({modules}) => {
           if(err) return responder.json(err)
           const albums = JSON.parse(res)
           albums.forEach(album => {
-            if(body[album.album_id]) album.album_name = body[album.album_id]
+            if(body[album.id]) album.name = body[album.id]
           })
 
           redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums), 'status', 'in_process'])
@@ -202,18 +203,56 @@ const controller = ({modules}) => {
       })
     },
 
+    // To Get the list of orders
     viewOrders: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session } = req
-      const orderId = req.params.orderid
 
       const user = getUserObject(session, responders, true)
       if (!user) return
 
-      viewOwnerOrder([user.id], localModule, (err, orderResults) => {
+      viewOwnerOrders([user.id], localModule, (err, orderResults) => {
         if(err) res.status(500).end()
 
         responders.json(orderResults)
+      })
+    },
+
+    // This will be order detail page
+    viewOrder: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, url: location } = req
+      const {orderid} = req.params
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      layoutPresenter({user, topNav: false}, page, {jsAsset})
+      const userid = user.id
+
+      ReactComponentView({location, userid, orderid}, localModule, (err, reactHTML, preloadedState) => {
+        if(err) {
+          if(err.reason === 'redirect') {
+            res.writeHead(302, {
+              Location: err.location
+            })
+
+            return res.end()
+          } else if(err.reason === 'missed') {
+            res.status(404)
+          }
+        }
+
+        page.set( {
+          javascript: jsAsset('orderjs'),
+          stylesheet: cssAsset('ordercss'),
+          body_class: 'order',
+          title,
+          reactHTML,
+          preloadedState
+        })
+
+        responders.html(renderHTML(page))
       })
     }
   }

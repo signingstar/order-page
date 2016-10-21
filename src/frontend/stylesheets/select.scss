@@ -186,4 +186,24 @@
     background-color: rgba(0, 126, 255, 0.08);
     color: #333;
   }
+
+  .Select-clear-zone {
+	// @include animation( Select-animation-fadeIn 200ms );
+	color: #999;
+	cursor: pointer;
+	display: table-cell;
+	position: relative;
+	text-align: center;
+	vertical-align: middle;
+	// width: $select-clear-width;
+
+	&:hover {
+		color: #D0021B;;
+	}
+}
+.Select-clear {
+	display: inline-block;
+	// font-size: $select-clear-size;
+	line-height: 1;
+}
 }

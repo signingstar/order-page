@@ -40,14 +40,13 @@ class InitiateOrder extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { product } = store
+  const { order: {product} } = store
   const { location: {state} } = ownProps
   const stateType = state && state.type && state.type.key ? state.type : undefined
-  const productType = product && product.key ? product : undefined
 
   return {
-    product:  stateType || productType,
-    store_product: productType
+    product:  stateType || product,
+    store_product: product
   }
 }
 
