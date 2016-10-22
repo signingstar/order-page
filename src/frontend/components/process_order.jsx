@@ -4,20 +4,20 @@ import Link from 'react-router/Link'
 import UploadFiles from "../containers/upload_files"
 
 const ProcessOrderComponent = ({pathname, onClick, addAlbum, albums}) => {
-  const keys = Object.keys(albums).sort((id1, id2) => albums[id1].priority - albums[id2].priority )
+  const albumIds = Object.keys(albums).sort((id1, id2) => albums[id1].priority - albums[id2].priority )
 
   return (
     <div className='image-section'>
       <h2>Upload Files</h2>
       <div className='fields'>
-        { keys.map(entry => <UploadFiles key={entry} index={entry} />)}
+        { albumIds.map(albumId => <UploadFiles key={albumId} albumId={albumId} />)}
         <div className='action-section'>
           <div className='add-album row'>
             <input type='button' onClick={addAlbum} value='+ Add Another Album' />
           </div>
           <div className='nav-page row'>
             <div className='button back'>
-              <Link to='/order' className='submit-button'>Back</Link>
+              <Link to='/order' replace={true} className='submit-button'>Back</Link>
             </div>
             <div className='button next'>
               <input type='button' onClick={onClick} value='Next' />

@@ -18,12 +18,12 @@ class UploadFilesHandler extends React.Component {
   handleSubmit(e) {
     e.preventDefault()
 
-    const { album, index, order, onUpload } = this.props
+    const { album, albumId, order, onUpload } = this.props
     const files = album.files
     const formData = new FormData()
 
     formData.append('order_id', order.id)
-    formData.append('album_id', index)
+    formData.append('album_id', albumId)
     formData.append('album_name', album.name)
 
     files.map(file => {
@@ -39,29 +39,29 @@ class UploadFilesHandler extends React.Component {
     album.name = e.target.value
   }
 
-  onImageAdd(images) {
+  onImageAdd(acceptedFiles, rejectedFiles) {
     const { album, onDrop } = this.props
     const albumId = album.id
-    onDrop(images, albumId)
+    onDrop(acceptedFiles, albumId)
   }
 
   onImageRemove(e, file) {
     e.stopPropagation()
     const { album, onRemove } = this.props
     const albumId = album.id
-    onRemove(album, albumId)
+    onRemove(file, albumId)
   }
 
   onAlbumRemove() {
     const { album, onRemoveAlbum } = this.props
     const albumId = album.id
+
     onRemoveAlbum(albumId)
   }
 
   render() {
     const acceptFiles = 'image/jpeg, image/png, .ai';
-
-    const { onRemove, album, index } = this.props
+    const { onRemove, album, albumId, albumCount } = this.props
 
     return (
       <UploadFiles
@@ -70,41 +70,44 @@ class UploadFilesHandler extends React.Component {
         onRemove={this.onImageRemove}
         onAlbumRemove={this.onAlbumRemove}
         uploadImage={this.handleSubmit}
-        index={index}
+        albumId={albumId}
         albumName={album.name}
         handleNameChange={this.handleNameChange}
+        albumCount={albumCount}
+        disablePreview={true}
       />
     )
   }
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { index } = ownProps
+  const { albumId } = ownProps
 
   return {
     order: store.order,
-    album: store.image[index]
+    album: store.image[albumId],
+    albumCount: Object.keys(store.image).length
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
-  const { index } = ownProps
+  const { albumId } = ownProps
 
   return {
     onDrop: (images) => {
-      dispatch(setImages(images, index))
+      dispatch(setImages(images, albumId))
     },
 
     onRemove: (image) => {
-      dispatch(removeImage(image, index))
+      dispatch(removeImage(image, albumId))
     },
 
     onRemoveAlbum: () => {
-      dispatch(removeAlbum(index))
+      dispatch(removeAlbum(albumId))
     },
 
     onUpload: () => {
-      dispatch(setImageUploaded(index))
+      dispatch(setImageUploaded(albumId))
     }
   }
 }

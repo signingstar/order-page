@@ -7,13 +7,13 @@ import UploadHeader from "../components/upload_header"
 
 class UploadFiles extends Component {
   render() {
-    const {onDrop, onRemove, onAlbumRemove, accept, albumName, handleNameChange, uploadImage , index} = this.props
+    const {onDrop, onRemove, onAlbumRemove, accept, albumName, handleNameChange, uploadImage , albumId, albumCount} = this.props
     return (
       <div className='file-upload-area'>
         <form onSubmit={uploadImage}>
           <UploadHeader
             onAlbumRemove={onAlbumRemove}
-            index={index}
+            albumCount={albumCount}
             albumName={albumName}
             handleNameChange={handleNameChange}
           />
@@ -25,13 +25,14 @@ class UploadFiles extends Component {
             rejectClassName='reject'
             accept={accept}
             ref={(node) => { this.dropzone = node }}
+            disableClick={true}
           >
             <div className='upload-content'>
-              <ImageList onRemove={onRemove} index={index} />
+              <ImageList onRemove={onRemove} albumId={albumId} />
             </div>
           </Dropzone>
 
-          <UploadFooter albumId={index} onAddImage={() => this.dropzone.open()}/>
+          <UploadFooter albumId={albumId} onAddImage={() => this.dropzone.open()}/>
         </form>
       </div>
     )

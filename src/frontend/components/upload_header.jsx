@@ -1,6 +1,6 @@
 import React from "react"
 
-const UploadFilesHeader = ({onAlbumRemove, index, albumName, handleNameChange}) => (
+const UploadFilesHeader = ({onAlbumRemove, albumCount, albumName, handleNameChange}) => (
   <div className='row upload-header'>
     <div className='album-name large-field required'>
       <label htmlFor="mainAlbum">Album Name</label>
@@ -14,7 +14,7 @@ const UploadFilesHeader = ({onAlbumRemove, index, albumName, handleNameChange}) 
       />
     </div>
     {
-      index > 0 ?
+      albumCount > 1 ?
         <div className='delete-album'><input type='button' value='Remove Album' onClick={onAlbumRemove} /></div>
       : undefined
     }

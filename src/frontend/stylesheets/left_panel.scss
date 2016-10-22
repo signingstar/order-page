@@ -82,24 +82,41 @@
         }
 
         .image-list {
+          display: flex;
           height: 100%;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          padding: 5px;
 
           .image-list-item {
-            border: 1px solid $light-gray;
+            background-color: $lightest-gray;
             display: inline-block;
-            font-size: 14px;
-            margin: 3px 6px;
-            padding: 2px;
+            font-size: 13px;
+            height: 118px;
+            margin: 5px 9px;
             position: relative;
+            text-align: center;
+            width: 120px;
 
             .image-name {
-              padding: 3px 15px 3px 5px;
+              padding: 3px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
 
             .image-action {
+              background-color: $close-icon-background;
+              border-radius: 50%;
+              color: white;
+              cursor: pointer;
+              font-size: 12px;
+              height: 16px;
               position: absolute;
-              top: 0;
-              right: 2px;
+              right: -5px;
+              text-align: center;
+              top: -5px;
+              width: 15px;
             }
           }
         }

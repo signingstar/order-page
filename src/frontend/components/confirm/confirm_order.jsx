@@ -19,7 +19,7 @@ const ConfirmOrderComponent = ({pathname, onClick, orderName, handleChange}) => 
       <div className='action-section'>
         <div className='nav-page row'>
           <div className='button back'>
-            <Link to='/order/process' className='submit-button'>Back</Link>
+            <Link to='/order/process' replace={true} className='submit-button'>Back</Link>
           </div>
           <div className='button next'>
             <input type='button' onClick={onClick} value='Confirm' />
