@@ -1,8 +1,8 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 
-const WIDTH  = 120
-const HEIGHT = 95
+const WIDTH  = 112
+const HEIGHT = 87
 
 class CanvasItem extends Component {
   constructor() {
