@@ -14,9 +14,17 @@ const albumifyImages = (imageList, albumList) => {
 
   albumList.forEach((album, index) => albums[album.id] = { name: album.name, priority: index + 1, files: []})
 
-  imageList.forEach((image) => {
-    image = JSON.parse(image)
-    albums[image.album_id].files.push(Object.assign(image, {name: image.originalname, uploaded: true}))
+  imageList.forEach(image => {
+    const {album_id, originalname, size, destination, filename} = JSON.parse(image)
+
+    albums[album_id].files.push(
+      {
+        name: originalname,
+        size,
+        filesrc: `${destination}/${filename}`,
+        uploaded: true
+      }
+    )
   })
 
   Object.keys(albums).forEach(albumId => {

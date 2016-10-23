@@ -6,7 +6,7 @@ import ReactComponent from "./react_server"
 import ReactComponentView from "./react_server_view"
 import { viewOwnerOrders } from "./database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
-import { addAlbum, updateAlbum, removeAlbum } from "./request_builders/album"
+import { addAlbum, updateAlbum, removeAlbum, removeImage } from "./request_builders/album"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -212,6 +212,25 @@ const controller = ({modules}) => {
           responders.json(result)
         })
       }
+    },
+
+    deleteFile: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { order_id, album_id, filename } = body
+
+      if(!order_id || !filename || !album_id) {
+        res.status(400).end()
+      }
+
+      removeImage({order_id, album_id, filename}, {redisClient}, (err, result) => {
+        if(err) return res.status(500).end()
+        responders.json(result)
+      })
     },
 
     // To Get the list of orders

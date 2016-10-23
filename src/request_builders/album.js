@@ -1,4 +1,5 @@
 import async from "async"
+import fs from "fs"
 
 const START_PRIORITY = 100
 const END_PRIORITY = 1000
@@ -85,53 +86,91 @@ export const updateAlbum = ({order_id, mapping}, {redisClient}, cb) => {
   )
 }
 
-export const removeAlbum = ({order_id, album_id}, {redisClient}, cb) => {
-  async.waterfall(
-    [
-      (done) => {
-        redisClient.hget(`order_id_${order_id}`, 'albums', (err, albums) => {
-          albums = albums ? JSON.parse(albums) : undefined
+export const removeAlbum = ({order_id, album_id}, {redisClient}, callback) => {
 
-          if(albums && albums.length) return done(err, albums)
+  async.parallel(
+    {
+      removeAlbumFiles: (cb) => {
+        const key = `order_id_${order_id}:files`
+        redisClient.zrange(key, [0, -1], (err, files) => {
+          if(err) return cb(err)
 
-          done(err)
+          files.forEach(file => album_id === JSON.parse(file).album_id  ? removeFile(redisClient, key, file) : 'noop')
+          cb(null)
         })
       },
-      (albums, done) => {
-        const index = albums.findIndex(album => album.id === album_id)
 
-        if(index > -1) {
-          albums.splice(index, 1)
+      removeAlbumFromOrder: (cb) => {
+        async.waterfall(
+          [
+            (done) => {
+              redisClient.hget(`order_id_${order_id}`, 'albums', (err, albums) => {
+                albums = albums ? JSON.parse(albums) : undefined
 
-          redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
-            if(err) return done(err)
-            done(null, {count: 1})
-          })
-        } else {
-          done(null, {count: 0})
-        }
-      },
-      (updateCount, done) => {
-        cb(null, updateCount)
+                if(albums && albums.length) return done(err, albums)
+
+                done(err)
+              })
+            },
+            (albums, done) => {
+              const index = albums.findIndex(album => album.id === album_id)
+
+              if(index > -1) {
+                albums.splice(index, 1)
+
+                redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
+                  if(err) return done(err)
+                  done(null, {count: 1})
+                })
+              } else {
+                done(null, {count: 0})
+              }
+            },
+            (updateCount, done) => {
+              cb(null, updateCount)
+            }
+          ],
+          (err) => cb(err)
+        )
       }
-    ],
-    (err) => cb(err)
+    },
+    (err, results) => {
+      callback(err, results.removeAlbumFromOrder)
+    }
   )
 }
 
+const removeFile = (redisClient, key, entry, cb) => {
+  const {destination, filename} = JSON.parse(entry)
+  const filePath = `${destination}/${filename}`
+
+  fs.unlink(filePath, (err) => {
+    if(!err) {
+      redisClient.zrem(key, entry, (err, data) => {
+        if(cb) cb(err, {count: 1})
+      })
+    }
+  })
+}
+
 export const removeImage = ({order_id, album_id, filename}, {redisClient}, cb) => {
+  const key = `order_id_${order_id}:files`
+
   async.waterfall(
     [
       (done) => {
-        redisClient.zrange(`order_id_${order_id}:files`, [0,-1], (err, files) => {
+        redisClient.zrange(key, [0,-1], (err, files) => {
           done(err, files)
         })
       },
       (files, done) => {
-        const fileObj = files.find(file => file.filename === filename && file.album_id === album_id)
+        const fileObj = files.find(file => {
+          const jsonFile = JSON.parse(file)
+          return filename === jsonFile.originalname  && jsonFile.album_id === album_id
+        })
 
         if(fileObj) {
-          redisClient.zrem(`order_id_${order_id}:fiiles`, fileObj, (err, data) => {
+          removeFile(redisClient, key, fileObj, (err, data) => {
             if(err) return done(err)
             done(null, {count: 1})
           })

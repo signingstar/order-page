@@ -211,3 +211,14 @@ export const updateAlbum = (data, cb) => {
   .done((res, textStatus) => cb({res}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, staus: xhr.status}))
 }
+
+export const deleteFile = (data, cb) => {
+  ajax({
+    url: '/order/file/delete',
+    method: 'POST',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, staus: xhr.status}))
+}

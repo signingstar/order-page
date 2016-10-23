@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import UploadFiles from "../components/upload_files";
-import { uploadImages, setImages, removeImage, setImageUploaded, removeAlbum, updateAlbum } from "../actions";
+import { uploadImages, setImages, removeImage, setImageUploaded, removeAlbum, updateAlbum, deleteFile } from "../actions";
 
 class UploadFilesHandler extends React.Component {
   constructor() {
@@ -38,6 +38,7 @@ class UploadFilesHandler extends React.Component {
 
     const { album, albumId, order, onUpload } = this.props
     const files = album.files
+    const fileNames = []
     const formData = new FormData()
 
     formData.append('order_id', order.id)
@@ -47,8 +48,11 @@ class UploadFilesHandler extends React.Component {
     files.map(file => {
       if(!file.uploaded) {
         formData.append('images', file)
+        fileNames.push(file.name)
       }
     })
+
+    formData.append('imagelist', fileNames)
 
     const uploading = uploadImages(formData, this.trackProgress, () => {
       this.setState({uploading: false})
@@ -83,9 +87,13 @@ class UploadFilesHandler extends React.Component {
 
   onImageRemove(e, file) {
     e.stopPropagation()
-    const { album, onRemove } = this.props
-    const albumId = album.id
-    onRemove(file, albumId)
+    const { order, albumId, removeImageFromStore } = this.props
+
+    if(file.uploaded) {
+      deleteFile({order_id: order.id, filename: file.name, album_id: albumId}, ({res, err}) => console.log(res))
+    }
+
+    removeImageFromStore(file, albumId)
   }
 
   onAlbumRemove() {
@@ -141,7 +149,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setImages(images, albumId))
     },
 
-    onRemove: (image) => {
+    removeImageFromStore: (image) => {
       dispatch(removeImage(image, albumId))
     },
 
