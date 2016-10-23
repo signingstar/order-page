@@ -31,7 +31,7 @@ class ConfirmOrderPage extends Component {
     const keys = Object.keys(image).sort((id1, id2) => image[id1].priority - image[id2].priority )
     imageList = keys.map(albumId => {
       const { id, name, priority, files = [] } = image[albumId]
-      const size = files.length > 1 ? files.reduce((prev, curr) => prev.size + curr.size) : (files.length > 0 ? files[0].size : 0)
+      const size = files.length > 1 ? files.reduce((prev, curr) => prev + curr.size, 0) : (files.length > 0 ? files[0].size : 0)
       return {id: albumId, priority, name, count: files.length, size: getPreciseSize(size) }
     })
 

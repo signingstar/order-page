@@ -43,12 +43,27 @@
     }
 
 
-    .album-name.large-field {
+    .large-field {
       margin-left: 10px;
       margin-bottom: 12px;
 
       label {
         width: 130px;
+      }
+    }
+
+    .upload-header {
+      border: 1px solid #aaa;
+      display: flex;
+      padding: 5px;
+      justify-content: space-between;
+
+      .upload-title {
+        font-size: 18px;
+      }
+
+      .preview-mode button {
+        height: 20px;
       }
     }
 
@@ -69,54 +84,104 @@
       }
 
       .upload-content {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        font-size: 18px;
         height: 100%;
         overflow: auto;
+        position: relative;
 
         .placeholder {
-          width: 100%;
+          position: absolute;
           text-align: center;
+          top: 50%;
+          width: 100%;
+        }
+
+        .image-view {
+          height: 100%;
+
+          .list-header {
+            border: 1px dotted $lighter-gray;
+            display: flex;
+            padding: 2px 10px;
+
+            .name {
+              flex-grow: 15;
+            }
+
+            .size {
+              flex-grow: 2;
+              text-align: right;
+            }
+            .action {
+              flex-grow: 1;
+              text-align: right;
+            }
+          }
         }
 
         .image-list {
           display: flex;
-          height: 100%;
           flex-wrap: wrap;
-          justify-content: flex-start;
           padding: 5px;
 
-          .image-list-item {
-            background-color: $lightest-gray;
-            display: inline-block;
-            font-size: 13px;
-            height: 110px;
-            margin: 5px 6px;
-            position: relative;
-            text-align: center;
-            width: 112px;
+          &.thumbnail {
+            flex-direction: row;
+          }
 
-            .image-name {
-              padding: 3px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
+          &.list {
+            flex-direction: column;
+          }
+
+          .image-list-item {
+
+            .thumbnail-view {
+              background-color: $lightest-gray;
+              display: inline-block;
+              font-size: 13px;
+              height: 127px;
+              margin: 5px 6px;
+              position: relative;
+              text-align: center;
+              width: 115px;
+
+              .image-name {
+                padding: 3px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+
+              .image-action {
+                background-color: $close-icon-background;
+                border-radius: 50%;
+                color: white;
+                cursor: pointer;
+                font-size: 12px;
+                height: 16px;
+                position: absolute;
+                right: -5px;
+                text-align: center;
+                top: -5px;
+                width: 15px;
+              }
             }
 
-            .image-action {
-              background-color: $close-icon-background;
-              border-radius: 50%;
-              color: white;
-              cursor: pointer;
-              font-size: 12px;
-              height: 16px;
-              position: absolute;
-              right: -5px;
-              text-align: center;
-              top: -5px;
-              width: 15px;
+            .list-view {
+              display: flex;
+              padding: 2px 10px;
+
+              .image-name {
+                flex-grow: 15;
+              }
+
+              .image-size {
+                flex-grow: 2;
+                text-align: right;
+              }
+              .image-action {
+                flex-grow: 1;
+                text-align: right;
+              }
+
             }
           }
         }
@@ -140,12 +205,13 @@
           input {
             background-color: $link-color-bg;
             border: 1px solid $button-orig-color;
+            border-radius: 6px;
             color: $button-orig-color;
             cursor: pointer;
             font-size: 14px;
             height: 100%;
             outline: 0;
-            width: 180px;
+            width: 175px;
 
             &:disabled {
               cursor: default;
@@ -161,7 +227,7 @@
         display: flex;
         justify-content: space-between;
         line-height: 38px;
-        width: 320px;
+        width: 350px;
       }
     }
   }

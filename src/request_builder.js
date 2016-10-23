@@ -23,7 +23,6 @@ const RequestBuilder = ({logger, queryDb, redisClient}) => {
           cb(null, products.map(product => JSON.parse(product)))
         }
       }
-
     ],
     (err) => {
       cb(err)

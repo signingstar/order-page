@@ -1,6 +1,6 @@
 import React from "react"
 
-const UploadFilesFooter = ({queued, queuedSize, uploaded, uploadedSize, onAddImage}) => (
+const UploadFilesFooter = ({queued, queuedSize, uploaded, uploadedSize, onAddImage, uploadProgress, handleCancel}) => (
   <div className='upload-footer'>
     <div className='action'>
       <div className='upload-action'>
@@ -13,6 +13,8 @@ const UploadFilesFooter = ({queued, queuedSize, uploaded, uploadedSize, onAddIma
     <div className='status'>
       <div className='queued status'>Queued: {queued} {queuedSize ? ` (${queuedSize})` : undefined} </div>
       <div className='uploaded status'>Uploaded: {uploaded} {uploadedSize ? ` (${uploadedSize})` : undefined}</div>
+      <div>{uploadProgress}</div>
+      <div><input type='button' onClick={handleCancel} value='Cancel' /></div>
     </div>
   </div>
 )

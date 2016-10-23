@@ -23,7 +23,7 @@ export const addAlbum = ({order_id}, {redisClient}, cb) => {
         let { albums } = orderData
         albums = albums ? JSON.parse(albums) : []
 
-        const id = getRandomInt(START_PRIORITY, END_PRIORITY)
+        const id = getRandomInt(START_PRIORITY, END_PRIORITY).toString()
         const name = `Album-${id}`
         const priority = albums.length ? albums[albums.length - 1].priority + STEP_PRIORITY : START_PRIORITY
 
@@ -72,6 +72,68 @@ export const updateAlbum = ({order_id, mapping}, {redisClient}, cb) => {
           redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
             if(err) return done(err)
             done(null, {count: updateCount})
+          })
+        } else {
+          done(null, {count: 0})
+        }
+      },
+      (updateCount, done) => {
+        cb(null, updateCount)
+      }
+    ],
+    (err) => cb(err)
+  )
+}
+
+export const removeAlbum = ({order_id, album_id}, {redisClient}, cb) => {
+  async.waterfall(
+    [
+      (done) => {
+        redisClient.hget(`order_id_${order_id}`, 'albums', (err, albums) => {
+          albums = albums ? JSON.parse(albums) : undefined
+
+          if(albums && albums.length) return done(err, albums)
+
+          done(err)
+        })
+      },
+      (albums, done) => {
+        const index = albums.findIndex(album => album.id === album_id)
+
+        if(index > -1) {
+          albums.splice(index, 1)
+
+          redisClient.hmset(`order_id_${order_id}`, ['albums', JSON.stringify(albums)], (err, data) => {
+            if(err) return done(err)
+            done(null, {count: 1})
+          })
+        } else {
+          done(null, {count: 0})
+        }
+      },
+      (updateCount, done) => {
+        cb(null, updateCount)
+      }
+    ],
+    (err) => cb(err)
+  )
+}
+
+export const removeImage = ({order_id, album_id, filename}, {redisClient}, cb) => {
+  async.waterfall(
+    [
+      (done) => {
+        redisClient.zrange(`order_id_${order_id}:files`, [0,-1], (err, files) => {
+          done(err, files)
+        })
+      },
+      (files, done) => {
+        const fileObj = files.find(file => file.filename === filename && file.album_id === album_id)
+
+        if(fileObj) {
+          redisClient.zrem(`order_id_${order_id}:fiiles`, fileObj, (err, data) => {
+            if(err) return done(err)
+            done(null, {count: 1})
           })
         } else {
           done(null, {count: 0})

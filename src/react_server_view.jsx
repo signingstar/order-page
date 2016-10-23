@@ -12,16 +12,16 @@ import RequestBuilder from "./request_builders/view_order"
 const albumifyImages = (imageList, albumList) => {
   let albums = {}
 
-  albumList.forEach((album, index) => albums[album.id.toString()] = { name: album.name, priority: index + 1, files: []})
+  albumList.forEach((album, index) => albums[album.id] = { name: album.name, priority: index + 1, files: []})
 
   imageList.forEach((image) => {
     image = JSON.parse(image)
-    albums[image.album_id].files.push(Object.assign(image, {name: image.originalname}))
+    albums[image.album_id].files.push(Object.assign(image, {name: image.originalname, uploaded: true}))
   })
 
   Object.keys(albums).forEach(albumId => {
     const count = albums[albumId].uploaded = albums[albumId].files.length
-    const size = count > 1 ? albums[albumId].files.reduce((prev, curr) => prev.size + curr.size) : (count > 0 ? albums[albumId].files[0].size : 0)
+    const size = count > 1 ? albums[albumId].files.reduce((prev, curr) => prev + curr.size, 0) : (count > 0 ? albums[albumId].files[0].size : 0)
     albums[albumId].uploadedSize = size
   })
 

@@ -8,7 +8,7 @@ const ProcessOrderComponent = ({pathname, onClick, addAlbum, albums}) => {
 
   return (
     <div className='image-section'>
-      <h2>Upload Files</h2>
+      <h2 style={{display: 'none'}}>Upload Files</h2>
       <div className='fields'>
         { albumIds.map(albumId => <UploadFiles key={albumId} albumId={albumId} />)}
         <div className='action-section'>

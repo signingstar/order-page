@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 
 import UploadFiles from "../components/upload_files";
-import { uploadImages, setImages, removeImage, setImageUploaded, removeAlbum } from "../actions";
+import { uploadImages, setImages, removeImage, setImageUploaded, removeAlbum, updateAlbum } from "../actions";
 
 class UploadFilesHandler extends React.Component {
   constructor() {
@@ -13,6 +13,24 @@ class UploadFilesHandler extends React.Component {
     this.onImageRemove = this.onImageRemove.bind(this)
     this.onAlbumRemove = this.onAlbumRemove.bind(this)
     this.handleNameChange = this.handleNameChange.bind(this)
+    this.handleModeChange = this.handleModeChange.bind(this)
+    this.trackProgress = this.trackProgress.bind(this)
+    this.handleCancelUpload = this.handleCancelUpload.bind(this)
+
+    this.state = {
+      previewMode: 'list',
+      uploadPercent: 0
+    }
+  }
+
+  trackProgress(e) {
+    if(e.lengthComputable){
+      var max = e.total
+      var current = e.loaded
+
+      const uploadPercent = Math.round((current * 100)/max)
+      this.setState({uploadPercent})
+    }
   }
 
   handleSubmit(e) {
@@ -27,10 +45,28 @@ class UploadFilesHandler extends React.Component {
     formData.append('album_name', album.name)
 
     files.map(file => {
-      formData.append('images', file)
+      if(!file.uploaded) {
+        formData.append('images', file)
+      }
     })
 
-    uploadImages(formData, () => onUpload(album.id))
+    const uploading = uploadImages(formData, this.trackProgress, () => {
+      this.setState({uploading: false})
+      onUpload(album.id)
+    })
+    this.setState({uploading})
+  }
+
+  handleCancelUpload() {
+    const {uploading} = this.state
+
+    if(uploading) {
+      uploading.abort()
+    }
+  }
+
+  handleModeChange(mode) {
+    this.setState({previewMode: mode})
   }
 
   handleNameChange(e) {
@@ -53,10 +89,13 @@ class UploadFilesHandler extends React.Component {
   }
 
   onAlbumRemove() {
-    const { album, onRemoveAlbum } = this.props
-    const albumId = album.id
+    const { albumId, removeAlbumFromStore, order } = this.props
 
-    onRemoveAlbum(albumId)
+    updateAlbum({order_id: order.id, album_id: albumId, action: -1}, ({res, err}) => {
+      if(!err && res.count) {
+        removeAlbumFromStore(albumId)
+      }
+    })
   }
 
   render() {
@@ -75,6 +114,10 @@ class UploadFilesHandler extends React.Component {
         handleNameChange={this.handleNameChange}
         albumCount={albumCount}
         disablePreview={true}
+        handleModeChange={this.handleModeChange}
+        mode={this.state.previewMode}
+        uploadProgress={this.state.uploadPercent}
+        cancelUpload={this.handleCancelUpload}
       />
     )
   }
@@ -102,7 +145,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(removeImage(image, albumId))
     },
 
-    onRemoveAlbum: () => {
+    removeAlbumFromStore: () => {
       dispatch(removeAlbum(albumId))
     },
 

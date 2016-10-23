@@ -22,7 +22,6 @@ class CanvasItem extends Component {
 
       Reader.onload = this.loadCanvas.bind(this, context)
       Reader.readAsDataURL(image)
-
     }
   }
 
@@ -50,7 +49,7 @@ class CanvasItem extends Component {
 
     return (
       image.preview ?
-        <div>
+        <div className='thumbnail-view'>
           <canvas
             ref={node => { this.canvasNode = node }}
             height={HEIGHT}

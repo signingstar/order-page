@@ -35,7 +35,7 @@ const image = (state = {}, {type, params = []}) => {
       })
 
       newAlbum.files = files
-      Object.assign(newAlbum, {queued: newAlbum.queued + images.length, queuedSize: newAlbum.queuedSize + imageSize})
+      Object.assign(newAlbum, {queued: (newAlbum.queued || 0) + images.length, queuedSize: (newAlbum.queuedSize || 0) + imageSize})
 
       return newState
     case 'REMOVE_IMAGE':
@@ -52,7 +52,12 @@ const image = (state = {}, {type, params = []}) => {
       }
 
       newAlbum.files = files
-      Object.assign(newAlbum, {queued: newAlbum.queued - 1, queuedSize: newAlbum.queuedSize - image.size})
+
+      if(!image.uploaded) {
+        Object.assign(newAlbum, {queued: newAlbum.queued - 1, queuedSize: newAlbum.queuedSize - image.size})
+      } else {
+        Object.assign(newAlbum, {uploaded: newAlbum.uploaded - 1, uploadedSize: newAlbum.uploadedSize - image.size})
+      }
 
       return newState
 
@@ -62,6 +67,7 @@ const image = (state = {}, {type, params = []}) => {
       newAlbum = newState[params]
 
       newAlbum.files.forEach(image => {
+        image.uploaded = true
         imageSize += image.size
       })
 

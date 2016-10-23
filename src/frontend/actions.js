@@ -1,4 +1,4 @@
-import { ajax, post } from "jquery"
+import { ajax, post, ajaxSettings } from "jquery"
 
 export const SET_PRODUCT = 'SET_PRODUCT'
 export const RESET_PRODUCT = 'RESET_PRODUCT'
@@ -167,16 +167,27 @@ export const confirmOrder = (data, cb) => {
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 }
 
-export const uploadImages = (data, cb) => {
-  ajax({
+export const uploadImages = (data, progress, cb) => {
+  const posting = ajax({
     url: '/order/upload',
     method: 'POST',
     processData: false,
     contentType: false,
-    data
+    data,
+    xhr: () => {
+      const myXhr = ajaxSettings.xhr()
+
+      if(myXhr.upload){
+         myXhr.upload.addEventListener('progress', progress, false);
+      }
+
+      return myXhr
+    }
   })
   .done((res, textStatus) => cb({res}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+
+  return posting
 }
 
 export const addAlbum = (data, cb) => {

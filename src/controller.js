@@ -6,7 +6,7 @@ import ReactComponent from "./react_server"
 import ReactComponentView from "./react_server_view"
 import { viewOwnerOrders } from "./database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
-import { addAlbum, updateAlbum } from "./request_builders/album"
+import { addAlbum, updateAlbum, removeAlbum } from "./request_builders/album"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -195,16 +195,23 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
-      const { order_id, mapping } = body
+      const { order_id, mapping, album_id, action } = body
 
-      if(!mapping || !Object.keys(mapping)) {
-        res.status(200).end()
+      if((action && !album_id) || (!action  && (!mapping || !Object.keys(mapping)))) {
+        res.status(400).end()
       }
 
-      updateAlbum({order_id, mapping}, {redisClient}, (err, result) => {
-        if(err) return res.status(500).end()
-        responders.json(result)
-      })
+      if(action === '-1') {
+        removeAlbum({order_id, album_id}, {redisClient}, (err, result) => {
+          if(err) return res.status(500).end()
+          responders.json(result)
+        })
+      } else {
+        updateAlbum({order_id, mapping}, {redisClient}, (err, result) => {
+          if(err) return res.status(500).end()
+          responders.json(result)
+        })
+      }
     },
 
     // To Get the list of orders

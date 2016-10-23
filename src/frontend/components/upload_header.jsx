@@ -1,8 +1,8 @@
 import React from "react"
 
 const UploadFilesHeader = ({onAlbumRemove, albumCount, albumName, handleNameChange}) => (
-  <div className='row upload-header'>
-    <div className='album-name large-field required'>
+  <div className='row album-name'>
+    <div className='large-field required'>
       <label htmlFor="mainAlbum">Album Name</label>
       <input
         type='text'
