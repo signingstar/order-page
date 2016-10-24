@@ -1,4 +1,4 @@
-import { updateOrderTable, addAdditionalUser, updateAdditionalUser } from "../query/update"
+import { updateOrderTable, addAdditionalUser, updateAdditionalUser, updateToConfirmOrder } from "../query/update"
 
 const updateDatabaseEntry = (query, params, modules, cb) => {
   const { queryDb, logger } = modules
@@ -21,3 +21,5 @@ export const updateOrder = (...args) => updateDatabaseEntry(updateOrderTable, ..
 export const addUser = (...args) => updateDatabaseEntry(addAdditionalUser, ...args)
 
 export const updateUser = (...args) => updateDatabaseEntry(updateAdditionalUser, ...args)
+
+export const updateOrderToConfirm = (...args) => updateDatabaseEntry(updateToConfirmOrder, ...args)

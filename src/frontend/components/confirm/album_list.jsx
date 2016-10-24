@@ -35,7 +35,7 @@ const AlbumList = ({albumList, handleMouseDown, mouse, isPressed, lastPressed, l
                       boxShadow: `rgba(0, 0, 0, 0.2) 0px ${shadow}px ${2 * shadow}px 0px`,
                       transform: `translate3d(0, ${y}px, 0) scale(${scale})`,
                       WebkitTransform: `translate3d(0, ${y}px, 0) scale(${scale})`,
-                      zIndex: entry === lastPressed ? 99 : index,
+                      zIndex: entry === lastPressed ? 98 : index,
                     }}>
                     <div className='album-summary-item name'>Album: <span>{entry.name}</span></div>
                     <div className='album-summary-item count'>Image Count: <span>{entry.count}</span></div>

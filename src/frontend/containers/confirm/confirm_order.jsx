@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import Redirect from "react-router/Redirect"
 
 import ConfirmOrder from "../../components/confirm/confirm_order"
-import { confirmOrder, populateImageList, setOrderName } from "../../actions"
+import { confirmOrder, populateImageList, setOrderParam } from "../../actions"
 
 const getPreciseSize = (size) => {
   const unitFactor = 1024 * 1024 * 1024
@@ -20,6 +20,7 @@ class ConfirmOrderPage extends Component {
 
     this.handleClick = this.handleClick.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleSelect = this.handleSelect.bind(this)
   }
 
   componentWillMount() {
@@ -39,17 +40,37 @@ class ConfirmOrderPage extends Component {
   }
 
   handleClick() {
-    const { order } = this.props
-    confirmOrder({order_id: order.id, order_name: order.name}, () => this.setState({formSubmit: true}))
+    const { order: {id, name, category} } = this.props
+
+    confirmOrder(
+      {
+        order_id: id,
+        order_name: name,
+        category
+      },
+      () => this.setState({formSubmit: true})
+    )
   }
 
   handleChange(e) {
-    const { setShortName } = this.props
-    setShortName(e.target.value)
+    this.props.updateOrderParam({name: e.target.value})
+  }
+
+  handleSelect(e) {
+    const { order, updateOrderParam } = this.props
+    const selected = e.value
+
+    if(order.category !== selected) {
+      updateOrderParam({category: selected})
+    }
   }
 
   render() {
-    const {pathname, order} = this.props
+    const {pathname, categories, order} = this.props
+
+    const optionNodes = categories.map(({id, description}) => {
+      return {value: id, label: description}
+    })
 
     return (
       this.state.formSubmit ?
@@ -66,7 +87,9 @@ class ConfirmOrderPage extends Component {
           onClick={this.handleClick}
           orderName={order.name || `Order-${order.id}`}
           handleChange={this.handleChange}
-          autoFocus={true}
+          onSelect={this.handleSelect}
+          optionNodes={optionNodes}
+          category={order.category}
         />
     )
   }
@@ -75,6 +98,7 @@ class ConfirmOrderPage extends Component {
 const mapStateToProps = (store, ownProps) => {
   return {
     order: store.order,
+    categories: store.categories,
     image: store.image,
     imageList: store.imageList || []
   }
@@ -86,8 +110,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(populateImageList(list))
     },
 
-    setShortName: (name) => {
-      dispatch(setOrderName(name))
+    updateOrderParam: (param) => {
+      dispatch(setOrderParam(param))
     }
   }
 }

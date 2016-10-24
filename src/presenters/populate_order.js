@@ -28,11 +28,17 @@ const albumifyImages = (imageList, albumList) => {
 }
 
 const populateOrder = (results) => {
-  const {products, categories, orderInfo: {order, files}} = results
+  const {products, categories, orderInfo} = results
+
+  if(!orderInfo) {
+    return { products, categories}
+  }
+
+  const {order, files} = orderInfo
   const productObj = products.find(product => product.id === +order.product)
 
   order.product = productObj ? {key: productObj.id, value: productObj.description} : ''
-  order.customer = pick(order, 'email', 'phone_number', 'image_count', 'category')
+  order.customer = pick(order, 'email', 'phone_number', 'image_count')
   order.customer.cust_name = `${order.first_name} ${order.last_name}`
 
   const {albums} = pick(order, 'albums')

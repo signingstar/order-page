@@ -209,20 +209,31 @@
           margin-right: 15px;
 
           input {
-            background-color: $link-color-bg;
-            border: 1px solid $button-orig-color;
+
+            &.queue {
+              background-color: $button-bg-pink;
+              border: 1px solid $button-bg-pink;
+              color: $white;
+            }
+
+            &.upload {
+              background-color: $button-bg-cyan;
+              border: 1px solid $button-bg-cyan;
+              color: $white;
+            }
+
             border-radius: 6px;
-            color: $button-orig-color;
             cursor: pointer;
             font-size: 14px;
             height: 100%;
             outline: 0;
-            width: 175px;
+            width: 180px;
 
             &:disabled {
+              background-color: $button-bg-lightcyan;
               cursor: default;
-              color: $light-gray;
-              border-color: $light-gray;
+              color: $lighter-gray;
+              border-color: $button-bg-lightcyan;
             }
           }
         }
@@ -233,7 +244,7 @@
         display: flex;
         justify-content: space-between;
         line-height: 38px;
-        width: 350px;
+        width: 400px;
       }
     }
   }

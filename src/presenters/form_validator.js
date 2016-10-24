@@ -10,7 +10,6 @@ export const validateOrderData = ({ id, category, product, first_name, last_name
 
   first_name = verifyAndAttachError('first_name', first_name, 'stringWithSpaces', err)
   last_name = verifyAndAttachError('last_name', last_name, 'stringWithSpaces', err)
-  category = verifyAndAttachError('category', category, 'stringWithNoSpaces', err)
   product = verifyAndAttachError('product', product, 'numeric', err)
   email = verifyAndAttachError('email', email, 'email', err)
   phone_number = verifyAndAttachError('phone_number', phone_number, 'numeric', err)
@@ -20,7 +19,7 @@ export const validateOrderData = ({ id, category, product, first_name, last_name
     return {err}
   }
 
-  const orderData = { category, product, first_name, last_name, email, phone_number, image_count }
+  const orderData = { product, first_name, last_name, email, phone_number, image_count }
   if(id) {
     orderData.id = id
   }
@@ -60,18 +59,17 @@ export const validateProcessOrderData = ({order_id}) => {
   return {orderData}
 }
 
-export const validateConfirmOrderData = ({order_id, order_name}) => {
+export const validateConfirmOrderData = ({order_id, order_name, category}) => {
   let err = {}
 
-  order_id = xssFilters.inHTMLData(trim(order_id))
-  order_name = xssFilters.inHTMLData(trim(order_name))
-  verifyAndAttachError('order_id', order_id, 'isAlphaNumeric', err)
-  verifyAndAttachError('order_name', order_name, 'withSpaces', err)
+  order_id = verifyAndAttachError('order_id', order_id, 'isAlphaNumeric', err)
+  order_name = verifyAndAttachError('order_name', order_name, 'withSpaces', err)
+  category = verifyAndAttachError('category', category, 'numeric', err)
 
   if(!_.isEmpty(err)) {
     return {err}
   }
-  const orderData = {order_id, order_name}
+  const orderData = {order_id, order_name, category}
 
   return {orderData}
 }

@@ -16,7 +16,6 @@ class CustomerDetailsPage extends Component {
     this.state = {navigate: false}
 
     this.handleChange = this.handleChange.bind(this)
-    this.handleSelect = this.handleSelect.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.addOrder = this.addOrder.bind(this)
   }
@@ -27,15 +26,6 @@ class CustomerDetailsPage extends Component {
 
     if(customer[name] !== value) {
       setCustomerDetails(name, value)
-    }
-  }
-
-  handleSelect(e) {
-    const { customer, setCustomerDetails } = this.props
-    const selected = e.value
-
-    if(customer.category !== selected) {
-      setCustomerDetails('category', selected)
     }
   }
 
@@ -56,7 +46,7 @@ class CustomerDetailsPage extends Component {
   }
 
   prepareOrderData(customer, product) {
-    const { cust_name, email, phone_number, category, image_count} = customer
+    const { cust_name, email, phone_number, image_count} = customer
     const nameParts = cust_name ? cust_name.split(" ") : undefined
     let first_name = cust_name, last_name = ''
 
@@ -70,7 +60,6 @@ class CustomerDetailsPage extends Component {
       last_name,
       email,
       phone_number,
-      category,
       product: product.key,
       image_count
     }
@@ -90,11 +79,7 @@ class CustomerDetailsPage extends Component {
   }
 
   render() {
-    const { pathname, customer, message, categories, product, location } = this.props
-    const optionNodes = categories.map(({name, description}) => {
-      return {value: name, label: description}
-    })
-
+    const { pathname, customer, message, product, location } = this.props
     const {value} = product
 
     return (
@@ -114,8 +99,6 @@ class CustomerDetailsPage extends Component {
             onChange={this.handleChange}
             data={customer}
             message={message}
-            onSelect={this.handleSelect}
-            optionNodes={optionNodes}
             onSubmit={this.handleSubmit}
           />
         </div>
@@ -128,7 +111,6 @@ const mapStateToProps = (store, ownProps) => {
   return {
     customer,
     message: store.error.message || {},
-    categories: store.categories,
     orderid: id,
     product
   }

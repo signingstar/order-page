@@ -1,4 +1,4 @@
-import { SET_FILES, UPDATE_ORDER, SET_ORDER_NAME, SET_PRODUCT, RESET_PRODUCT, UPDATE_CUSTOMER_DETAILS } from "../actions"
+import { SET_FILES, UPDATE_ORDER, SET_ORDER_PARAM, SET_PRODUCT, RESET_PRODUCT, UPDATE_CUSTOMER_DETAILS } from "../actions"
 
 const order = (state = {customer:{}}, {type, params}) => {
   switch (type) {
@@ -12,8 +12,8 @@ const order = (state = {customer:{}}, {type, params}) => {
         files: params,
       })
 
-    case SET_ORDER_NAME:
-      return Object.assign({}, state, {name: params})
+    case SET_ORDER_PARAM:
+      return Object.assign({}, state, params)
 
     case SET_PRODUCT:
       return Object.assign({}, state, {product: params})

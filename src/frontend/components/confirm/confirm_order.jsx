@@ -1,18 +1,30 @@
 import React, {Component} from "react"
 import Link from 'react-router/Link'
+import Select from "react-select"
 
 import AlbumList from "../../containers/confirm/album_list"
 import SelectionCriteria from "../../containers/confirm/image_selection_criteria"
 
-const ConfirmOrderComponent = ({pathname, onClick, orderName, handleChange}) => (
+const ConfirmOrderComponent = ({pathname, onClick, orderName, onSelect, handleChange, category, optionNodes}) => (
   <div className='main-section-body'>
     <h1>Order Confirmation</h1>
     <div className='fields row'>
       <div className='large-field required'>
         <label htmlFor="orderName">Order Name</label>
-        <input type="text" defaultValue={orderName} onChange={handleChange} />
+        <input type="text" defaultValue={orderName} onChange={handleChange} autoFocus={true} />
       </div>
-    </div>
+      <div className='large-field'>
+        <label htmlFor='category'>Event Type</label>
+        <Select
+          name='category'
+          options={optionNodes}
+          onChange={onSelect}
+          className='field '
+          value={category}
+          searchable={false}
+          clearable={false}
+        />
+      </div>    </div>
     <AlbumList />
     <SelectionCriteria />
     <div className='fields'>

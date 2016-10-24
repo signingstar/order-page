@@ -34,5 +34,13 @@ describe('Reducer', function() {
       let order = reducer(state2, {type: 'RESET_PRODUCT'})
       expect(order).to.have.property('product').to.not.have.property('key')
     })
+
+    it('should update order object with params', () => {
+      let order = reducer(state2, {type: 'SET_ORDER_PARAM', params: {name: 'My Order'}})
+      expect(order).to.have.property('name').to.be.equal('My Order')
+
+      order = reducer(order, {type: 'SET_ORDER_PARAM', params: {category: 'husbandnwife'}})
+      expect(order).to.have.property('category').to.be.equal('husbandnwife')
+    })
   })
 })

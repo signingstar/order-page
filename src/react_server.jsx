@@ -27,6 +27,8 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
             }
             done(err, {})
           })
+        } else {
+          done(null, {})
         }
       },
       ({orderid, status}, done) => {

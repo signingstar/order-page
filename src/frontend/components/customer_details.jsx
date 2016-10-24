@@ -1,8 +1,7 @@
 import React from "react"
-import Select from "react-select"
 
-const CustomerDetails = ({onChange, onSubmit, onSelect, title, data ={}, pathname, message, optionNodes}) => {
-  const { cust_name, email, phone_number, category, image_count } = data
+const CustomerDetails = ({onChange, onSubmit, title, data ={}, pathname, message}) => {
+  const { cust_name, email, phone_number, image_count } = data
 
   const hasError = !isEmpty(message)
   const messageClass = 'message ' + (message.success ? 'success' : 'error')
@@ -46,18 +45,7 @@ const CustomerDetails = ({onChange, onSubmit, onSelect, title, data ={}, pathnam
               required
             />
           </div>
-          <div className='large-field'>
-            <label htmlFor='category'>Event Type</label>
-            <Select
-              name='category'
-              options={optionNodes}
-              onChange={onSelect}
-              className={'field ' + (message.category ? 'error' : '')}
-              value={category}
-              searchable={false}
-              clearable={false}
-            />
-          </div>
+
           <div className='small-field'>
             <label htmlFor='image_count'>Number of Images</label>
             <input
