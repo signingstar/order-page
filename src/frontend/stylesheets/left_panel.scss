@@ -68,15 +68,42 @@
         font-size: 18px;
       }
 
-      .preview-mode button {
-        height: 20px;
+      .preview-mode {
+        border: 1px solid #999;
+        padding: 1px;
+        border-radius: 4px;
+
+        button {
+         border: 0;
+         cursor: pointer;
+         padding: 0 2px;
+         // height: 30px;
+         // width: 30px;
+         outline: 0;
+         background: transparent;
+
+         span {
+           height: 22px;
+           width: 22px;
+           float: left;
+
+           &.list {
+             background: url(/assets/list-icon.png) no-repeat 1px 1px;
+             background-size: 21px 21px;
+           }
+
+           &.thumbnail {
+             background: url(/assets/thumbnail-icon.png) no-repeat -1px 0;
+             background-size: 26px 26px;
+           }
+         }
+       }
       }
     }
 
     .upload-box {
       border: 2px dashed $dark-gray;
       border-radius: 5px;
-      cursor: pointer;
       height: 300px;
       margin: 0 auto;
       width: auto;
@@ -105,7 +132,7 @@
           height: 100%;
 
           .list-header {
-            border: 1px dotted $lighter-gray;
+            border-bottom: 1px dotted $lighter-gray;
             display: flex;
             padding: 2px 10px;
 
@@ -232,7 +259,7 @@
             &:disabled {
               background-color: $button-bg-lightcyan;
               cursor: default;
-              color: $lightest-gray;
+              color: $button-disabled;
               border-color: $button-bg-lightcyan;
             }
           }

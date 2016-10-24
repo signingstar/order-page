@@ -25,8 +25,8 @@ class UploadFiles extends Component {
                 Select Files
               </div>
               <div className='preview-mode'>
-                <input type='button' onClick={()=> handleModeChange('list')} value='List' />
-                <input type='button' onClick={()=> handleModeChange('thumbnail')} value='Thumbnail' />
+                <button type='button' onClick={()=> handleModeChange('list')}><span className='list'></span></button>
+                <button type='button' onClick={()=> handleModeChange('thumbnail')}><span className='thumbnail'></span></button>
               </div>
             </div>
             <Dropzone
