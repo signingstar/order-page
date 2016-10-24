@@ -10,3 +10,11 @@ export const ownerOrders = `
     WHERE o.user_id=$1
     ORDER BY o.status ASC, o.id DESC
   `
+
+export const lastOpenOrder = `
+  SELECT * FROM orders.order WHERE id IN (
+    SELECT id FROM orders.order
+    WHERE user_id = $1
+    ORDER BY updated_at DESC LIMIT 1
+  )
+  AND status < 'confirmed'`

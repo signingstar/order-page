@@ -52,6 +52,8 @@ const controller = ({modules}) => {
             return res.end()
           } else if(err.reason === 'missed') {
             res.status(404)
+          } else if(err.reason === 'order_not_found') {
+            res.redirect('/')
           }
         }
 

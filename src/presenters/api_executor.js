@@ -23,6 +23,26 @@ export const createOrder = ({formData, session}, { logger, queryDb }, cb) => {
   })
 }
 
+export const updateCustomerDetails = ({formData, session}, { logger, queryDb }, cb) => {
+  const {user} = session
+  if(!user || !user.id) {
+    return cb({err: {message: 'session timed out', statusCode: 401}})
+  }
+
+  const { err, orderData } = validateOrderData(formData)
+  if(err) {
+    return cb({err})
+  }
+
+  const { category, product, first_name, last_name, email, phone_number, image_count } = orderData
+  const userid = user.id
+  const queryParams = [userid, category, product, first_name, last_name, email, phone_number, image_count]
+
+  updateOrder(queryParams, {logger, queryDb}, (err, result) => {
+    cb({err, orderData, result})
+  })
+}
+
 export const processOrder = ({params, body, session}, { logger, queryDb }, cb) => {
   const {user} = session
   if(!user || !user.id) {
