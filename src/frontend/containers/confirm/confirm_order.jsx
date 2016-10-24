@@ -24,14 +24,14 @@ class ConfirmOrderPage extends Component {
   }
 
   componentWillMount() {
-    let { image, imageList, setImageList } = this.props
-    if(imageList.length > 0 || Object.keys(image).length === 0) {
+    let { albums, imageList, setImageList } = this.props
+    if(imageList.length > 0 || Object.keys(albums).length === 0) {
       return
     }
 
-    const keys = Object.keys(image).sort((id1, id2) => image[id1].priority - image[id2].priority )
+    const keys = Object.keys(albums).sort((id1, id2) => albums[id1].priority - albums[id2].priority )
     imageList = keys.map(albumId => {
-      const { id, name, priority, files = [] } = image[albumId]
+      const { id, name, priority, files = [] } = albums[albumId]
       const size = files.length > 1 ? files.reduce((prev, curr) => prev + curr.size, 0) : (files.length > 0 ? files[0].size : 0)
       return {id: albumId, priority, name, count: files.length, size: getPreciseSize(size) }
     })
@@ -96,11 +96,13 @@ class ConfirmOrderPage extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
+  const { order, categories, albums, imageList = []} = store
+
   return {
-    order: store.order,
-    categories: store.categories,
-    image: store.image,
-    imageList: store.imageList || []
+    order,
+    categories,
+    albums,
+    imageList
   }
 }
 

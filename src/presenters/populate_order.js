@@ -5,8 +5,8 @@ const albumifyImages = (imageList, albumList) => {
 
   albumList.forEach((album, index) => albums[album.id] = { name: album.name, priority: index + 1, files: []})
 
-  imageList.forEach(image => {
-    const {album_id, originalname, size, destination, filename} = JSON.parse(image)
+  imageList.forEach(file => {
+    const {album_id, originalname, size, destination, filename} = JSON.parse(file)
 
     albums[album_id].files.push(
       {
@@ -41,11 +41,11 @@ const populateOrder = (results) => {
   order.customer = pick(order, 'email', 'phone_number', 'image_count')
   order.customer.cust_name = `${order.first_name} ${order.last_name}`
 
-  const {albums} = pick(order, 'albums')
+  let {albums} = pick(order, 'albums')
 
-  const image = albumifyImages(files, albums)
+  albums = albumifyImages(files, albums)
 
-  return { products, categories, order, image}
+  return { products, categories, order, albums}
 }
 
 export default populateOrder

@@ -133,11 +133,12 @@ class UploadFilesHandler extends React.Component {
 
 const mapStateToProps = (store, ownProps) => {
   const { albumId } = ownProps
+  const albums = store.albums
 
   return {
     order: store.order,
-    album: store.image[albumId],
-    albumCount: Object.keys(store.image).length
+    album: albums[albumId],
+    albumCount: Object.keys(albums).length
   }
 }
 

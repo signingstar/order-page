@@ -5,10 +5,10 @@ import ImageList from "../components/image_list"
 const mapStateToProps = (store, ownProps) => {
   const placeholder = 'Drop your image files here...'
   const { albumId } = ownProps
-  const album = store.image[albumId]
+  const album = store.albums[albumId]
 
   return {
-    images: store.image[albumId].files || [],
+    images: album.files || [],
     placeholder
   }
 }

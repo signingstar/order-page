@@ -63,11 +63,11 @@ class ProcessOrderPage extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { order, image } = store
+  const { order, albums } = store
 
   return {
     order,
-    albums: image,
+    albums,
     product: order.product
   }
 }
