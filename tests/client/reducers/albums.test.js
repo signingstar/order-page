@@ -1,4 +1,4 @@
-import reducer from '../../../src/frontend/reducers/image'
+import reducer from '../../../src/frontend/reducers/albums'
 import { expect } from 'chai'
 
 let state = { id_1: {name: "name_1", priority: 5}}

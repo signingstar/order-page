@@ -1,21 +1,32 @@
 import React from "react"
 
-const UploadFilesFooter = ({queued, queuedSize, uploaded, uploadedSize, onAddImage, uploadProgress, handleCancel}) => (
+const UploadFilesFooter = ({queued, queuedSize, uploaded, uploadedSize, uploadProgress, handleCancel, uploading}) => (
   <div className='upload-footer'>
-    <div className='action'>
-      <div className='upload-action'>
-        <input className='queue' type='button' value='Add Images' onClick={onAddImage} />
-      </div>
-      <div className='upload-action'>
-        <input className='upload' type='submit' value='Start Upload' disabled={queued ? false : true} />
+    <div className='queued'>Images Queued: {queued} {queuedSize ? ` (${queuedSize})` : ''} </div>
+    <div className='uploaded'>Images Uploaded: {uploaded} {uploadedSize ? ` (${uploadedSize})` : ''}</div>
+    <div className='upload-progress'>
+      <div className="progress">
+        <div
+          className="progress-bar progress-bar-info progress-bar-striped"
+          role="progressbar"
+          aria-valuenow={uploadProgress}
+          aria-valuemin="0"
+          aria-valuemax="100"
+          style={{
+            width: `${uploadProgress}%`,
+            minWidth: '1em'
+          }}
+        >
+          <div>{uploadProgress}%</div>
+        </div>
       </div>
     </div>
-    <div className='status'>
-      <div className='queued'>Queued: {queued} {queuedSize ? ` (${queuedSize})` : undefined} </div>
-      <div className='uploaded'>Uploaded: {uploaded} {uploadedSize ? ` (${uploadedSize})` : undefined}</div>
-      <div>{uploadProgress}</div>
-      <div><input type='button' onClick={handleCancel} value='Cancel' /></div>
+    <div className='upload-action'>
+      <button className='cancel' onClick={handleCancel} disabled={uploading ? false : true}>
+        <span className='glyphicon glyphicon-ban-circle'></span>Cancel Upload
+      </button>
     </div>
+
   </div>
 )
 

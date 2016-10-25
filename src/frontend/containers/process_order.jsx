@@ -36,7 +36,7 @@ class ProcessOrderPage extends Component {
   }
 
   render() {
-    const {pathname, product, albums, location} = this.props
+    const { order, pathname, product, albums, location} = this.props
     const { value } = product
 
     return (
@@ -50,7 +50,7 @@ class ProcessOrderPage extends Component {
         />
       :
         <div className='main-section-body'>
-          <ProductTitle pathname={pathname} label={value} />
+          <ProductTitle pathname={pathname} label={value} orderId={order.id} />
           <ProcessOrder
             pathname={pathname}
             onClick={this.handleClick}

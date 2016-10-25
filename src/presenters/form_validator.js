@@ -14,6 +14,7 @@ export const validateOrderData = ({ id, category, product, first_name, last_name
   email = verifyAndAttachError('email', email, 'email', err)
   phone_number = verifyAndAttachError('phone_number', phone_number, 'numeric', err)
   id = verifyAndAttachError('id', id, 'numeric', err, true)
+  image_count = verifyAndAttachError('image_count', image_count, 'numeric', err, true) || 0
 
   if(!_.isEmpty(err)) {
     return {err}

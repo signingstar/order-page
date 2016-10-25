@@ -53,19 +53,21 @@ class UploadFilesHandler extends React.Component {
     })
 
     formData.append('imagelist', fileNames)
+    this.setState({uploading: true})
 
-    const uploading = uploadImages(formData, this.trackProgress, () => {
+    const uploadRequest = uploadImages(formData, this.trackProgress, () => {
+      this.setState({uploadRequest: undefined})
       this.setState({uploading: false})
       onUpload(album.id)
     })
-    this.setState({uploading})
+    this.setState({uploadRequest})
   }
 
   handleCancelUpload() {
-    const {uploading} = this.state
+    const {uploadRequest} = this.state
 
-    if(uploading) {
-      uploading.abort()
+    if(uploadRequest) {
+      uploadRequest.abort()
     }
   }
 
@@ -108,7 +110,7 @@ class UploadFilesHandler extends React.Component {
 
   render() {
     const acceptFiles = 'image/jpeg, image/png, .ai';
-    const { onRemove, album, albumId, albumCount } = this.props
+    const { onRemove, album, albumId } = this.props
 
     return (
       <UploadFiles
@@ -118,14 +120,13 @@ class UploadFilesHandler extends React.Component {
         onAlbumRemove={this.onAlbumRemove}
         uploadImage={this.handleSubmit}
         albumId={albumId}
-        albumName={album.name}
         handleNameChange={this.handleNameChange}
-        albumCount={albumCount}
         disablePreview={true}
         handleModeChange={this.handleModeChange}
         mode={this.state.previewMode}
         uploadProgress={this.state.uploadPercent}
         cancelUpload={this.handleCancelUpload}
+        uploading={this.state.uploading}
       />
     )
   }
@@ -137,8 +138,7 @@ const mapStateToProps = (store, ownProps) => {
 
   return {
     order: store.order,
-    album: albums[albumId],
-    albumCount: Object.keys(albums).length
+    album: albums[albumId]
   }
 }
 
