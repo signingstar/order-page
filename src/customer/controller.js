@@ -7,23 +7,9 @@ import ReactPreviewComponent from "./react_server_preview"
 import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
-import { LIKES, LIKED } from "./frontend/actions"
 import requestBuilder from "./request_builders"
 
 let debug = require("debug")('Modules:Order:Controller')
-
-const getUserObject = (session, responders, ajax, logger, location) => {
-  const {user} = session
-
-  if(!user || !user.id) {
-    if(ajax) {
-      return responders.json(null, {message: 'Session Timed out'}, 401 )
-    }
-    return responders.redirectForAuthentication(location, "authenticate", logger)
-  }
-
-  return user
-}
 
 const controller = ({modules}) => {
   const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
@@ -34,12 +20,25 @@ const controller = ({modules}) => {
   const isSecured = true
   const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
 
+  const getUserObject = (session, responders, ajax, location) => {
+    const {user} = session
+
+    if(!user || !user.id) {
+      if(ajax) {
+        return responders.json(null, {message: 'Session Timed out'}, 401 )
+      }
+      return responders.redirectForAuthentication(location, "authenticate", logger)
+    }
+
+    return user
+  }
+
   return {
     viewCustomer: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session, params: {orderId, image_id}, url: location} = req
 
-      const user = getUserObject(session, responders, false, logger, location)
+      const user = getUserObject(session, responders, false, location)
       if (!user) return
 
       layoutPresenter({user, topNav: false}, page, {jsAsset})
@@ -51,10 +50,10 @@ const controller = ({modules}) => {
       }
 
       const userid = user.id
-      const orderid = formData.orderId
-      const orderQueryData = [userid, orderid, user.email]
+      const order_id = formData.orderId
+      const orderQueryData = [userid, order_id, user.email]
 
-      const { fetchOrderForCustomer, albums, images, imageReactions } = RequestBuilder
+      const { fetchOrderForCustomer, getAlbums, getImages, getImageReactions } = RequestBuilder
 
       async.waterfall(
         [
@@ -62,9 +61,9 @@ const controller = ({modules}) => {
             async.parallel(
               {
                 orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
-                albums: (cb) => albums(orderid, cb),
-                images: (cb) => images(orderid, cb),
-                imageReaction: (cb) => imageReactions({orderid, image_id}, cb)
+                albums: (cb) => getAlbums(order_id, cb),
+                images: (cb) => getImages(order_id, cb),
+                imageReaction: (cb) => getImageReactions({order_id, image_id, user_id: userid}, cb)
               },
               (err, results) => done(err, results)
             )
@@ -72,7 +71,7 @@ const controller = ({modules}) => {
           (results, done) => {
             const {orderResult, images, albums, imageReaction} = results
 
-            orderResult.id = orderid
+            orderResult.id = order_id
             if(!orderResult.productid) {
               return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
             }
@@ -112,6 +111,7 @@ const controller = ({modules}) => {
 
       layoutPresenter({undefined, topNav: false}, page, {jsAsset})
 
+      // TODO: Remove hard coded user id
       const orderQueryData = ['3011b393-e9bf-4177-b50a-7a25fc4a64d2', orderid, 'abc']
 
       const { fetchOrderForCustomer, albums, images, imageReactions } = RequestBuilder
@@ -160,21 +160,10 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
-      const { reaction_type, image_uuid, order_id, index } = body
+      const { reaction_type: reaction, image_uuid: image_id, order_id, index } = body
+      const { setImageReaction } = RequestBuilder
 
-      const fileToUserMap = {
-        user_name: user.first_name,
-        reaction: reaction_type
-      }
-
-      redisClient.hset(`order_id_${order_id}:files:${image_uuid}`, [user.id, JSON.stringify(fileToUserMap)])
-
-      const userToFileMap = {
-        image_id: image_uuid,
-        reaction: reaction_type
-      }
-
-      redisClient.zadd([`order_id_${order_id}:users:${user.id}`, +(new Date()), JSON.stringify(userToFileMap)])
+      setImageReaction({order_id, user, reaction, image_id})
       res.status(200).end()
     },
 
@@ -186,30 +175,25 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
+      const { getImages, getImageReactions } = RequestBuilder
+
       async.waterfall(
         [
-          (done) => {
-            redisClient.zrange(`order_id_${order_id}:files`, [0, 10], (err, res) => {
-              done(err, res)
-            })
-          },
+          (done) => getImages(order_id, done),
           (files, done) => {
             let filesReactionMap = {}
 
             files.forEach((file, index) => {
-              const fileObj = JSON.parse(file)
-              const { id, album_id } = fileObj
-              redisClient.hgetall(`order_id_${order_id}:files:${id}`, (err, res) => {
-                if(!err) {
-                  if(res && res !== null) {
-                    filesReactionMap[fileObj.id] = parseReactions(res, user.id, album_id)
-                  }
+              const { id, album_id } = file
+              getImageReactions({order_id, image_id: id, user_id: user.id, album_id}, (err, res) => {
+                if(err) return done(err)
 
-                  if(index === files.length -1 ) {
-                    return done(null, filesReactionMap)
-                  }
-                } else {
-                  return done(err)
+                if(res !== null) {
+                  filesReactionMap[id] = res[id]
+                }
+
+                if(index === files.length -1 ) {
+                  return done(null, filesReactionMap)
                 }
               })
             })
@@ -256,26 +240,6 @@ const controller = ({modules}) => {
     }
 
   }
-}
-
-const parseReactions = (obj, userId, albumId) => {
-  if(!obj) {
-    return
-  }
-
-  let reactionObj = {likes: false, liked: [], albumId}
-
-  for(let index in obj) {
-    const jsonObj = JSON.parse(obj[index])
-
-    if(index === userId) {
-      reactionObj[LIKES] = +jsonObj.reaction
-    } else {
-      reactionObj[LIKED].push({name: jsonObj.user_name, reaction_type: jsonObj.reaction})
-    }
-  }
-
-  return reactionObj
 }
 
 export default controller

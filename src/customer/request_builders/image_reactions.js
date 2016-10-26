@@ -1,3 +1,7 @@
+import { LIKES, LIKED } from "../frontend/actions"
+
+
+//Returns {"3bbb7a37a0f34b3f958582802d8d6dba":{"likes":1,"liked":[],"albumId":"465"}}
 const parseReactions = (obj, userId, albumId) => {
   if(!obj) {
     return
@@ -19,14 +23,14 @@ const parseReactions = (obj, userId, albumId) => {
 }
 
 
-const imageReaction = ({orderid, image_id}, {redisClient}, cb) => {
+const imageReaction = ({order_id, image_id, user_id, album_id}, {redisClient}, cb) => {
   if(!image_id) {
     return cb(null, undefined)
   }
 
-  redisClient.hgetall(`order_id_${orderid}:files:${image_id}`, (err, res) => {
+  redisClient.hgetall(`order_id_${order_id}:files:${image_id}`, (err, res) => {
     if(!err && res !== null) {
-      cb(null, {[image_id]: parseReactions(res, user.id)})
+      cb(null, {[image_id]: parseReactions(res, user_id, album_id)})
     } else {
       cb(err)
     }
