@@ -18,6 +18,8 @@ class UploadFiles extends Component {
             albumId={albumId}
             handleNameChange={handleNameChange}
             onAddImage={() => this.dropzone.open()}
+            handleModeChange={handleModeChange}
+            mode={mode}
           />
           <div className='drop-area'>
             <Dropzone

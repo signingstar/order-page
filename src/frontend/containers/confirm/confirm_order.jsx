@@ -4,11 +4,7 @@ import Redirect from "react-router/Redirect"
 
 import ConfirmOrder from "../../components/confirm/confirm_order"
 import { confirmOrder, populateImageList, setOrderParam } from "../../actions"
-
-const getPreciseSize = (size) => {
-  const unitFactor = 1024 * 1024 * 1024
-  return size ? (size > unitFactor ? (size/unitFactor).toFixed(2) + ' GB' : (size/(1024*1024)).toFixed(2) + ' MB') : 0
-}
+import { imageMapToList } from "../../utils"
 
 class ConfirmOrderPage extends Component {
   constructor() {
@@ -24,19 +20,9 @@ class ConfirmOrderPage extends Component {
   }
 
   componentWillMount() {
-    let { albums, imageList, setImageList } = this.props
-    if(imageList.length > 0 || Object.keys(albums).length === 0) {
-      return
-    }
+    let { albums, setImageList } = this.props
 
-    const keys = Object.keys(albums).sort((id1, id2) => albums[id1].priority - albums[id2].priority )
-    imageList = keys.map(albumId => {
-      const { id, name, priority, files = [] } = albums[albumId]
-      const size = files.length > 1 ? files.reduce((prev, curr) => prev + curr.size, 0) : (files.length > 0 ? files[0].size : 0)
-      return {id: albumId, priority, name, count: files.length, size: getPreciseSize(size) }
-    })
-
-    setImageList(imageList)
+    setImageList(imageMapToList(albums))
   }
 
   handleClick() {

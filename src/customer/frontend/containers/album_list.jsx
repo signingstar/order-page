@@ -6,7 +6,7 @@ const mapStateToProps = (store) => {
   const { images } = store
 
   const albumList = Object.keys(images).map(albumId => (
-    {id: albumId, name: images[albumId].album_name, priority: images[albumId].priority}
+    {id: albumId, name: images[albumId].name, priority: images[albumId].priority}
   ))
 
   albumList.sort((prev, curr) => prev.priority - curr.priority)

@@ -1,11 +1,7 @@
 import { connect } from "react-redux"
 
 import UploadFooter from "../components/upload_footer"
-
-const getPreciseSize = (size) => {
-  const unitFactor = 1024 * 1024 * 1024
-  return size ? (size > unitFactor ? (size/unitFactor).toFixed(2) + ' GB' : (size/(1024*1024)).toFixed(2) + ' MB') : 0
-}
+import { getPreciseSize } from "../utils"
 
 const mapStateToProps = (store, ownProps) => {
   const { albumId } = ownProps

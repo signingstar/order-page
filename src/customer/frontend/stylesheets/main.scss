@@ -49,10 +49,12 @@
             border-radius: 15px;
             color: $white;
           }
-      }
 
-
-
+          &:disabled {
+            pointer-events: none;
+            cursor: default;
+          }
+        }
       }
     }
   }

@@ -53,12 +53,20 @@
           outline: 0;
         }
 
-        .delete-album input{
-          border: 0;
-          background: none;
-          color: $button-orig-color;
-          cursor: pointer;
-          font-size: 14px;
+        .delete-album {
+          button {
+            border: 0;
+            background-color: transparent;
+            color: $button-bg-red;
+            cursor: pointer;
+            font-size: 18px;
+            outline: 0;
+            vertical-align: middle;
+
+            .icon {
+              top: 3px;
+            }
+          }
         }
       }
 
@@ -127,12 +135,19 @@
           &.list {
             color: $button-bg-blue;
             border-right: 0;
+
+            &.selected {
+              color: $button-bg-lighterblue;
+            }
           }
 
           &.thumbnail {
-            // border-left: 0;
             color: $button-bg-red;
             margin-bottom: 0;
+
+            &.selected {
+              color: $button-bg-lighterred;
+            }
           }
 
           span {

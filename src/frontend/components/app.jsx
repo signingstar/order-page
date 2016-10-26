@@ -7,7 +7,7 @@ import InitiateOrder from "../containers/initiate_order"
 import ProcessOrder from "../containers/process_order"
 import ConfirmOrder from "../containers/confirm/confirm_order"
 import SubmitOrder from "./submit_order"
-import ViewOrder from "../containers/order_view"
+import ViewOrder from "../containers/order_page/order_view"
 
 const App = () => (
     <div className='main-section-content'>

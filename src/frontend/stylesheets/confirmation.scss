@@ -1,23 +1,27 @@
+.row {
+  max-width: 1000px;
+}
+
 .album-container {
   margin-bottom: 20px;
 
   .album-list {
     .album-entry {
+      background-color: $white;
       border: 1px solid $light-gray;
       border-radius: 4px;
       cursor: move;
       display: flex;
-      justify-content: space-between;
-      height: 50px;
-      overflow: visible;
-      pointer-events: auto;
-      transform-origin: 50% 50% 0px;
-      line-height: 50px;
-      padding: 0 22px;
       font-size: 16px;
       font-weight: 400;
-      background-color: rgb(255, 255, 255);
+      height: 50px;
+      justify-content: space-between;
+      line-height: 50px;
+      overflow: visible;
+      padding: 0 22px;
+      pointer-events: auto;
       position: relative;
+      transform-origin: 50% 50% 0px;
       width: 1000px;
 
       .album-summary-item {
@@ -43,6 +47,115 @@
           flex: 1;
           min-width: 175px;
         }
+      }
+    }
+  }
+
+  .album-list-view {
+    .album-entry {
+      background-color: $white;
+      border: 1px solid $light-gray;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 400;
+      margin-bottom: 10px;
+      overflow: visible;
+      position: relative;
+      width: 1000px;
+
+      .album-header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        height: 45px;
+        line-height: 45px;
+        padding-left: 15px;
+
+        .album-summary-item {
+          width: 300px;
+
+          &.name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 3;
+          }
+
+          &.count {
+            flex: 2;
+          }
+
+          span {
+            font-size: 18px;
+            padding-left: 7px;
+          }
+
+          &.size {
+            flex: 1;
+            min-width: 175px;
+          }
+        }
+
+        .expand {
+          width: 40px;
+          text-align: center;
+          background-color: $button-bg-lighter-blue;
+          color: $button-bg-indigo;
+
+          button {
+            border: 0;
+            background-color: transparent;
+            cursor: pointer;
+            font-size: 22px;
+            outline: 0;
+            vertical-align: middle;
+
+            .icon {
+              top: 3px;
+            }
+          }
+        }
+      }
+
+      .file-list {
+        border-top: 1px solid $light-gray;
+        padding-top: 12px;
+
+        li {
+          padding: 0 10px;
+        }
+      }
+    }
+  }
+}
+
+.inner-section {
+  border-bottom: 1px dotted $light-gray;
+  margin-bottom: 10px;
+  padding-bottom: 30px;
+
+  &:last-child {
+    border: none;
+  }
+
+  h3 span {
+    font-size: 15px;
+    font-weight: 400;
+    padding-left: 10px;
+  }
+
+  &.customer {
+    .customer-info {
+      display: flex;
+      justify-content: space-between;
+
+      .icon {
+        top: 2px;
+        color: $button-bg-maroon;
+      }
+
+      .value {
+        margin-left: 10px;
       }
     }
   }

@@ -3,10 +3,12 @@ import path from "path"
 
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
+import ReactPreviewComponent from "./react_server_preview"
 import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
 import { LIKES, LIKED } from "./frontend/actions"
+import requestBuilder from "./request_builders"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -30,6 +32,7 @@ const controller = ({modules}) => {
   const title = 'Tisko - My Order'
   const localModule = { logger, queryDb, redisClient }
   const isSecured = true
+  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
 
   return {
     viewCustomer: ({attributes, responders, page}) => {
@@ -51,50 +54,25 @@ const controller = ({modules}) => {
       const orderid = formData.orderId
       const orderQueryData = [userid, orderid, user.email]
 
+      const { fetchOrderForCustomer, albums, images, imageReactions } = RequestBuilder
+
       async.waterfall(
         [
           (done) => {
             async.parallel(
               {
-                orderResult: (cb) => {
-                  viewCustomerOrder(orderQueryData, localModule, (err, orderResults) => {
-                    const orderResult = orderResults[0]
-                    orderResult.id = orderid
-
-                    cb(err, orderResult)
-                  })
-                },
-                albums: (cb) => {
-                  redisClient.hget(`order_id_${orderid}`, 'albums', (err, res) => {
-                    if(err) return cb(err)
-                    cb(null, JSON.parse(res))
-                  })
-                },
-                images: (cb) => {
-                  redisClient.zrange(`order_id_${orderid}:files`, [0, -1], (err, res) => {
-                    if(err) return cb(err)
-                    const images =  res.map(image => JSON.parse(image))
-                    cb(err, images)
-                  })
-                },
-                imageReaction: (cb) => {
-                  if(!image_id) {
-                    return cb(err, undefined)
-                  }
-                  redisClient.hgetall(`order_id_${orderid}:files:${image_id}`, (err, res) => {
-                    if(!err && res !== null) {
-                      cb(null, {[image_id]: parseReactions(res, user.id)})
-                    } else {
-                      cb(err)
-                    }
-                  })
-                }
+                orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
+                albums: (cb) => albums(orderid, cb),
+                images: (cb) => images(orderid, cb),
+                imageReaction: (cb) => imageReactions({orderid, image_id}, cb)
               },
               (err, results) => done(err, results)
             )
           },
           (results, done) => {
             const {orderResult, images, albums, imageReaction} = results
+
+            orderResult.id = orderid
             if(!orderResult.productid) {
               return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
             }
@@ -127,6 +105,53 @@ const controller = ({modules}) => {
         }
       )
     },
+
+    viewPreview: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params: {orderid, image_id}, url: location} = req
+
+      layoutPresenter({undefined, topNav: false}, page, {jsAsset})
+
+      const orderQueryData = ['3011b393-e9bf-4177-b50a-7a25fc4a64d2', orderid, 'abc']
+
+      const { fetchOrderForCustomer, albums, images, imageReactions } = RequestBuilder
+
+      async.waterfall(
+        [
+          (done) => {
+            async.parallel(
+              {
+                orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
+                albums: (cb) => albums(orderid, cb),
+                images: (cb) => images(orderid, cb)
+              },
+              (err, results) => done(err, results)
+            )
+          },
+          (results, done) => {
+            const {orderResult, images, albums} = results
+
+            orderResult.id = orderid
+            ReactPreviewComponent(location, results, localModule, (err, reactHTML, preloadedState) => {
+              page.set( {
+                javascript: jsAsset('preview'),
+                stylesheet: cssAsset('customercss'),
+                body_class: 'customer-order',
+                title,
+                reactHTML,
+                preloadedState
+              })
+
+              responders.html(renderHTML(page))
+            })
+          }
+        ], (err) => {
+          logger.error('ERROR in viewOrderAsCustomer' + err)
+          return res.status(500).end()
+        }
+      )
+    },
+
 
     customerFeedback: ({attributes, responders, page}) => {
       const { req, res } = attributes
