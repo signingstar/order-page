@@ -152,7 +152,6 @@ const controller = ({modules}) => {
       )
     },
 
-
     customerFeedback: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session, body } = req
