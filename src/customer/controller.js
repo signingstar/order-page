@@ -187,7 +187,7 @@ const controller = ({modules}) => {
               getImageReactions({order_id, image_id: id, user_id: user.id, album_id}, (err, res) => {
                 if(err) return done(err)
 
-                if(res !== null) {
+                if(res && res !== null) {
                   filesReactionMap[id] = res[id]
                 }
 

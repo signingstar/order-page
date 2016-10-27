@@ -12,6 +12,7 @@ const AlbumList = ({ usersHash, id, albums }) => {
         activeClassName='active'
         activeOnlyWhenExact
       >
+        <span className='glyphicon glyphicon-picture icon'></span>
         {album.name}
       </Link>
     </li>

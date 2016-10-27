@@ -10,8 +10,11 @@ class ImageModalTileConfiguration extends Component {
 
     this.increment = this.increment.bind(this)
     this.decrement = this.decrement.bind(this)
+    this.showFullScreen = this.showFullScreen.bind(this)
 
-    this.state = {}
+    this.state = {
+      showFull: false
+    }
   }
 
   componentWillMount() {
@@ -58,8 +61,9 @@ class ImageModalTileConfiguration extends Component {
         pathname: `${originalUrl}/${image.id}`,
         state: { originalUrl, fromModal: true, index: index + 1, albumId }
       }}
+        className='image-nav-item'
       >
-        Next
+        <span className='glyphicon glyphicon-menu-right icon'></span>
       </Link>
     )
   }
@@ -73,10 +77,15 @@ class ImageModalTileConfiguration extends Component {
         pathname: `${originalUrl}/${image.id}`,
         state: { originalUrl, fromModal: true, index: index - 1, albumId }
       }}
+        className='image-nav-item'
       >
-        Previous
+        <span className='glyphicon glyphicon-menu-left icon'></span>
       </Link>
     )
+  }
+
+  showFullScreen() {
+    this.setState({showFull: !this.state.showFull})
   }
 
   render() {
@@ -96,6 +105,8 @@ class ImageModalTileConfiguration extends Component {
         image={image}
         previousLink={previousLink}
         nextLink={nextLink}
+        showFullScreen={this.showFullScreen}
+        fullScreen={this.state.showFull}
       />
     )
   }

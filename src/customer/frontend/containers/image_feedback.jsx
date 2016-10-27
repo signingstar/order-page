@@ -68,11 +68,6 @@ class ImageFeedbackHandler extends Component {
       }
     })
 
-    if(likes >= 0 && likes !== false) {
-      reactionList[likes].count = reactionList[likes].count + 1
-      reactionList[likes].users.unshift('You')
-    }
-
     return reactionList
   }
 
