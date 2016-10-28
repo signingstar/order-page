@@ -3,6 +3,7 @@ import {connect} from "react-redux"
 import Link from "react-router/Link"
 
 import ImageModalTile from "../components/image_modal_tile"
+import NavLinks from "../components/nav_links"
 
 class ImageModalTileConfiguration extends Component {
   constructor() {
@@ -57,14 +58,13 @@ class ImageModalTileConfiguration extends Component {
     const image = images[index + 1]
 
     return (
-      <Link to={{
-        pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index + 1, albumId }
-      }}
-        className='image-nav-item'
-      >
-        <span className='glyphicon glyphicon-menu-right icon'></span>
-      </Link>
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={image.id}
+        albumId={albumId}
+        index={index}
+        next={true}
+      />
     )
   }
 
@@ -73,14 +73,33 @@ class ImageModalTileConfiguration extends Component {
     const image = images[index - 1]
 
     return (
-      <Link to={{
-        pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index - 1, albumId }
-      }}
-        className='image-nav-item'
-      >
-        <span className='glyphicon glyphicon-menu-left icon'></span>
-      </Link>
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={image.id}
+        albumId={albumId}
+        index={index}
+        next={false}
+      />
+    )
+  }
+
+  getNavLink(index, originalUrl, albumId, right) {
+    const { images } = this.props
+
+    if((right && index >= images.length-1) || (!right && index <= 0)) {
+      return
+    }
+
+    const nextImage = images[right ? index + 1 : index - 1]
+
+    return (
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={nextImage.id}
+        albumId={albumId}
+        index={index}
+        next={right}
+      />
     )
   }
 
@@ -93,8 +112,8 @@ class ImageModalTileConfiguration extends Component {
     const { index } = this.state
     const image = Object.assign({}, images[index], {index})
 
-    const previousLink = index > 0 ? this.getPreviousLink(index, originalUrl, albumId) : undefined
-    const nextLink = index < images.length - 1 ? this.getNextLink(index, originalUrl, albumId) : undefined
+    const previousLink = this.getNavLink(index, originalUrl, albumId, false)
+    const nextLink = this.getNavLink(index, originalUrl, albumId, true)
 
     return (
       <ImageModalTile

@@ -7,6 +7,9 @@ const ImageFeedback = ({ onLike, onDisike, onLove, likes, reactions }) => {
   const liked = reactions[LIKE] || {}
   const disliked = reactions[DISLIKE] || {}
   const loved = reactions[LOVE] || {}
+  const iLike = likes === LIKE
+  const iDislike = likes === DISLIKE
+  const iLove = likes === LOVE
 
   return (
 
@@ -15,8 +18,8 @@ const ImageFeedback = ({ onLike, onDisike, onLove, likes, reactions }) => {
       <button
         type='button'
         onClick={onLike}
-        className={likes === LIKE ? 'selected' : 'enable'}
-        title={likes === LIKE ? 'You like it' : 'Like'}
+        className={iLike ? 'selected' : 'enable'}
+        title={iLike ? 'You like it' : 'Like'}
       >
         <span className='glyphicon glyphicon-thumbs-up icon'></span>
       </button>
@@ -26,8 +29,8 @@ const ImageFeedback = ({ onLike, onDisike, onLove, likes, reactions }) => {
       <button
         type='button'
         onClick={onDisike}
-        className={likes === DISLIKE ? 'selected' : 'enable' }
-        title={likes === DISLIKE ? 'You dislike it' : 'Dislike' }
+        className={iDislike ? 'selected' : 'enable' }
+        title={iDislike ? 'You dislike it' : 'Dislike' }
       >
         <span className='glyphicon glyphicon-thumbs-down icon'></span>
       </button>
@@ -37,10 +40,10 @@ const ImageFeedback = ({ onLike, onDisike, onLove, likes, reactions }) => {
       <button
         type='button'
         onClick={onLove}
-        className={likes === LOVE ? 'selected' : 'enable' }
-        title={likes === LOVE ? 'You Love It' : 'Love' }
+        className={iLove ? 'selected' : 'enable' }
+        title={iLove? 'You Love It' : 'Love' }
       >
-        <span className={`glyphicon icon ${likes === LOVE ? 'glyphicon-heart' : 'glyphicon-heart-empty'}`}></span>
+        <span className={`glyphicon icon ${iLove ? 'glyphicon-heart' : 'glyphicon-heart-empty'}`}></span>
       </button>
       <span className='number'>{loved.count}</span>
     </div>
