@@ -11,8 +11,8 @@ const ImageFeedback = ({ onLike, onDisike, onLove, onClose, likes, reactions }) 
 
   return (
   <div>
-    <div className='close-icon' onClick={onClose}>
-      <span>Close</span>
+    <div className='close-icon' >
+      <button className='glyph' type='button' onClick={onClose}><span className='glyphicon glyphicon-remove'></span></button>
     </div>
     <div className="item-action-modal">
       <div className='like'>

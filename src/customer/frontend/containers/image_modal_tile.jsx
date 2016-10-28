@@ -3,6 +3,7 @@ import {connect} from "react-redux"
 import Link from "react-router/Link"
 
 import ImageModalTile from "../components/image_modal_tile"
+import NavLinks from "../components/nav_links"
 
 class ImageModalTileConfiguration extends Component {
   constructor() {
@@ -10,8 +11,11 @@ class ImageModalTileConfiguration extends Component {
 
     this.increment = this.increment.bind(this)
     this.decrement = this.decrement.bind(this)
+    this.showFullScreen = this.showFullScreen.bind(this)
 
-    this.state = {}
+    this.state = {
+      showFull: false
+    }
   }
 
   componentWillMount() {
@@ -54,13 +58,13 @@ class ImageModalTileConfiguration extends Component {
     const image = images[index + 1]
 
     return (
-      <Link to={{
-        pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index + 1, albumId }
-      }}
-      >
-        Next
-      </Link>
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={image.id}
+        albumId={albumId}
+        index={index}
+        next={true}
+      />
     )
   }
 
@@ -69,14 +73,38 @@ class ImageModalTileConfiguration extends Component {
     const image = images[index - 1]
 
     return (
-      <Link to={{
-        pathname: `${originalUrl}/${image.id}`,
-        state: { originalUrl, fromModal: true, index: index - 1, albumId }
-      }}
-      >
-        Previous
-      </Link>
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={image.id}
+        albumId={albumId}
+        index={index}
+        next={false}
+      />
     )
+  }
+
+  getNavLink(index, originalUrl, albumId, right) {
+    const { images } = this.props
+
+    if((right && index >= images.length-1) || (!right && index <= 0)) {
+      return
+    }
+
+    const nextImage = images[right ? index + 1 : index - 1]
+
+    return (
+      <NavLinks
+        originalUrl={originalUrl}
+        imageId={nextImage.id}
+        albumId={albumId}
+        index={index}
+        next={right}
+      />
+    )
+  }
+
+  showFullScreen() {
+    this.setState({showFull: !this.state.showFull})
   }
 
   render() {
@@ -84,8 +112,8 @@ class ImageModalTileConfiguration extends Component {
     const { index } = this.state
     const image = Object.assign({}, images[index], {index})
 
-    const previousLink = index > 0 ? this.getPreviousLink(index, originalUrl, albumId) : undefined
-    const nextLink = index < images.length - 1 ? this.getNextLink(index, originalUrl, albumId) : undefined
+    const previousLink = this.getNavLink(index, originalUrl, albumId, false)
+    const nextLink = this.getNavLink(index, originalUrl, albumId, true)
 
     return (
       <ImageModalTile
@@ -96,6 +124,8 @@ class ImageModalTileConfiguration extends Component {
         image={image}
         previousLink={previousLink}
         nextLink={nextLink}
+        showFullScreen={this.showFullScreen}
+        fullScreen={this.state.showFull}
       />
     )
   }

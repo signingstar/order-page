@@ -15,7 +15,7 @@ const ImageTile = ({pathname, albumId, image}) => {
             state: { originalUrl: pathname, index: index, albumId }
           }}
           >
-            <img id={id} src={`/${destination}/${filename}`} title={originalname} alt='' />
+            <img id={id} src={`/${destination}/${filename}_tile`} title={originalname} alt='' />
           </Link>
         </div>
         <figcaption>

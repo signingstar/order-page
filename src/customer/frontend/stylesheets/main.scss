@@ -2,7 +2,7 @@
 @import './select';
 
 .customer-order .main-contents {
-  max-width: 1500px;
+  max-width: 1600px;
 }
 
 .top-panel {
@@ -19,11 +19,11 @@
   .left-panel {
     display: flex;
     flex-direction: column;
+    font-size: 1rem;
     margin-top: 20px;
-    width: 240px;
 
     ul {
-      margin: 0 10px;
+      margin: 0 8px;
 
       .nav-left {
         margin: 5px 0;
@@ -35,6 +35,13 @@
           min-width: 200px;
           outline: none;
           padding: 2px 15px;
+
+          span {
+            padding-right: 10px;
+            font-size: 14px;
+            color: #CD5C5C;
+            top: 0;
+          }
 
           &.active {
             background-color: #76c4ae;
@@ -55,6 +62,12 @@
             cursor: default;
           }
         }
+      }
+
+      &.admin-panel {
+        border-top: 1px dotted $light-gray;
+        border-bottom: 1px dotted $light-gray;
+        margin-top: 15px;
       }
     }
   }

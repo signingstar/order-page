@@ -1,6 +1,6 @@
 .right-panel {
   min-width: 800px;
-  padding: 0 20px 0 40px;
+  padding-left: 10px;
 
   .thumbnail {
     display: flex;
@@ -8,11 +8,11 @@
 
     figure.multi-row {
       display: inline-block;
-      margin: 15px 20px;
+      margin: 15px 8px;
 
       .item-tile {
         align-items: center;
-        width: 250px;
+        width: 237px;
 
         h2 {
           font-size: 18px;
@@ -27,7 +27,7 @@
 
         .item-image {
           background-color: $dark-gray;
-          height: 170px;
+          height: 168px;
           text-align: center;
 
           a {
@@ -38,8 +38,8 @@
           }
           img{
             height: auto;
-            max-width: 250px;
-            max-height: 170px;
+            max-width: 237px;
+            max-height: 168px;
             width: auto;
             vertical-align: middle;
           }
@@ -48,9 +48,10 @@
 
       figcaption {
         background-color: $lightest-gray;
-        height: 100px;
+        height: 75px;
 
         .item-label {
+          font-size: 0.9rem;
           padding: 6px 10px;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -84,11 +85,53 @@
   }
 }
 
+.half-screen, .full-screen {
+  .image-nav {
+    display: flex;
+    justify-content: space-between;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    width: 100%;
+
+    .slide {
+      background-color: $light-gray;
+      background: rgba(204, 204, 204, 0.5);
+
+      &.invisible {
+        visibility: hidden;
+      }
+
+      .image-nav-item {
+        display: block;
+        outline: 0;
+
+        span {
+          color: $dark-gray;
+          cursor: pointer;
+          font-size: 48px;
+        }
+      }
+    }
+  }
+
+  .fullscreen {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.7;
+    outline: 0;
+
+    button {
+      font-size: 20px;
+    }
+  }
+}
+
 .half-screen{
   display: flex;
 
   .screen-left {
-    border-right: 1px dotted #aaa;
     position: relative;
 
     img {
@@ -97,24 +140,6 @@
       vertical-align: middle;
     }
 
-    .image-nav {
-      display: flex;
-      justify-content: space-between;
-      left: 0;
-      position: absolute;
-      top: 50%;
-      width: 100%;
-
-      .slide {
-        &.invisible {
-          visibility: hidden;
-        }
-
-        input {
-          cursor: pointer;
-        }
-      }
-    }
   }
 
   .screen-right {
@@ -133,29 +158,61 @@
   }
 }
 
+.full-screen{
+  overflow: hidden;
+
+  .full-screen-image {
+    min-height: 100%;
+    min-width: 100%;
+    height: auto;
+    width: auto;
+
+    img {
+      height: auto;
+      width: auto;
+      vertical-align: middle;
+    }
+  }
+
+  .fullscreen button {
+    font-size: 25px;
+  }
+}
+
 .item-action {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  margin: 0 5px;
 
-  input {
-    border: none;
+  .number {
+    font-size: 16px;
+  }
+
+  button {
+    border: 0;
     background-color: transparent;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: 500;
     outline: 0;
+    vertical-align: middle;
+
+
+    .icon {
+      color: $light-black;
+      font-size: 1rem;
+      top: 0;
+    }
   }
 
-  .like .selected {
-    color: green;
+  .like .selected .icon {
+    color: $button-bg-likeblue;
   }
 
-  .dislike .selected {
-    color: red;
+  .dislike .selected .icon {
+    color: $button-bg-dislike;
   }
 
-  .love .selected {
-    color: blue;
+  .love .selected .icon {
+    color: $button-bg-love;
   }
 }
 
@@ -202,4 +259,12 @@
   .love .selected {
     color: blue;
   }
+}
+
+button.glyph {
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  outline: 0;
+  vertical-align: middle;
 }

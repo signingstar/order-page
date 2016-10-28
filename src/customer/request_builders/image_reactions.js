@@ -14,9 +14,9 @@ const parseReactions = (obj, userId, albumId) => {
 
     if(index === userId) {
       reactionObj[LIKES] = +jsonObj.reaction
-    } else {
-      reactionObj[LIKED].push({name: jsonObj.user_name, reaction_type: jsonObj.reaction})
     }
+
+    reactionObj[LIKED].push({name: jsonObj.user_name, reaction_type: jsonObj.reaction})
   }
 
   return reactionObj

@@ -21,7 +21,7 @@ class ImageConfiguration extends Component {
         return onMergeReactions(res)
       }
 
-      logger.error(err)
+      console.log(err)
     })
   }
 
