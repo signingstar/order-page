@@ -10,13 +10,15 @@ const parseReactions = (obj, userId, albumId) => {
   let reactionObj = {likes: false, liked: [], albumId}
 
   for(let index in obj) {
-    const jsonObj = JSON.parse(obj[index])
+    const { user_name, reaction } = JSON.parse(obj[index])
 
     if(index === userId) {
-      reactionObj[LIKES] = +jsonObj.reaction
-    }
+      reactionObj[LIKES] = +reaction
+      reactionObj[LIKED].push({name: 'You', reaction_type: reaction})
 
-    reactionObj[LIKED].push({name: jsonObj.user_name, reaction_type: jsonObj.reaction})
+    } else {
+      reactionObj[LIKED].push({name: user_name, reaction_type: reaction})
+    }
   }
 
   return reactionObj

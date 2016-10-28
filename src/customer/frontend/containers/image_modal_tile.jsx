@@ -53,36 +53,6 @@ class ImageModalTileConfiguration extends Component {
     }
   }
 
-  getNextLink(index, originalUrl, albumId) {
-    const { images } = this.props
-    const image = images[index + 1]
-
-    return (
-      <NavLinks
-        originalUrl={originalUrl}
-        imageId={image.id}
-        albumId={albumId}
-        index={index}
-        next={true}
-      />
-    )
-  }
-
-  getPreviousLink(index, originalUrl, albumId) {
-    const { images } = this.props
-    const image = images[index - 1]
-
-    return (
-      <NavLinks
-        originalUrl={originalUrl}
-        imageId={image.id}
-        albumId={albumId}
-        index={index}
-        next={false}
-      />
-    )
-  }
-
   getNavLink(index, originalUrl, albumId, right) {
     const { images } = this.props
 

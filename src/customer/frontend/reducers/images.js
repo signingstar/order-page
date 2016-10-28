@@ -36,6 +36,13 @@ const updateReaction = (index, value, state, albumId) => {
   }
 
   image[LIKES] = value
+  const reactionObj = image[LIKED].find(like => like.name === 'You')
+
+  if(reactionObj) {
+    reactionObj.reaction_type = value
+  } else {
+    image[LIKED].push({name: "You", reaction_type: value})
+  }
 
   return newState
 }
