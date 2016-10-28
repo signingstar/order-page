@@ -197,20 +197,21 @@
 
 
     .icon {
+      color: $light-black;
       font-size: 1rem;
       top: 0;
     }
   }
 
-  .like .selected {
+  .like .selected .icon {
     color: $button-bg-likeblue;
   }
 
-  .dislike .selected {
+  .dislike .selected .icon {
     color: $button-bg-dislike;
   }
 
-  .love .selected {
+  .love .selected .icon {
     color: $button-bg-love;
   }
 }
