@@ -47,7 +47,7 @@ class AddUserHandler extends Component {
 
     return (
       role === 5 ?
-      <div>
+      <div className='add-users extra-margin'>
         <AddUser
           image={image}
           pathname={pathname}

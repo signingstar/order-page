@@ -14,7 +14,7 @@ const MainPanel = ({ order, usersHash, query }) => {
     <div className='main-panel'>
       <div className='left-panel'>
         <AlbumList usersHash={usersHash} id={id} />
-        <ul>
+        <ul className='all-images'>
           <li className='nav-left'>
             <Link
               to={`/order/${usersHash}/${id}`}
@@ -24,7 +24,7 @@ const MainPanel = ({ order, usersHash, query }) => {
                 (!location.query || !location.query.album) && location.pathname.match(/^\/order\/[a-z0-9]+\/[0-9]+$/)
               )}
             >
-              <span className='glyphicon glyphicon-picture icon' style={{color: '#800080'}}></span>
+              <span className='glyphicon glyphicon-picture icon'></span>
               All Photos
             </Link>
           </li>
@@ -37,7 +37,7 @@ const MainPanel = ({ order, usersHash, query }) => {
                   to={`/order/${usersHash}/${id}/addUser`}
                   activeClassName='active'
                 >
-                  <span className='glyphicon glyphicon-wrench icon' style={{color: '#006400'}}></span>
+                  <span className='glyphicon glyphicon-wrench icon'></span>
                   Add Users
                 </Link>
               </li>
@@ -46,7 +46,7 @@ const MainPanel = ({ order, usersHash, query }) => {
                   to={`/order/${usersHash}/${id}/finalize`}
                   activeClassName='active'
                 >
-                  <span className='glyphicon glyphicon-ok icon' style={{color: '#8B4513'}}></span>
+                  <span className='glyphicon glyphicon-ok icon'></span>
                   Finalize Selection
                 </Link>
               </li>

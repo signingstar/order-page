@@ -19,7 +19,7 @@ const AlbumList = ({ usersHash, id, albums }) => {
   ))
 
   return (
-    <ul>
+    <ul className='albums'>
       {albumList}
     </ul>
   )

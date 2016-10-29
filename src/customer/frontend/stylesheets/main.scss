@@ -39,7 +39,6 @@
           span {
             padding-right: 10px;
             font-size: 14px;
-            color: #CD5C5C;
             top: 0;
           }
 
@@ -48,6 +47,10 @@
             border: 1px solid #76c4ae;
             border-radius: 15px;
             color: $white;
+
+            span {
+              color: $white;
+            }
           }
 
           &:hover {
@@ -55,6 +58,10 @@
             border: 1px solid #9fc2ba;
             border-radius: 15px;
             color: $white;
+
+            span {
+              color: $white;
+            }
           }
 
           &:disabled {
@@ -64,18 +71,38 @@
         }
       }
 
+      &.albums a span {
+        color: $close-icon-background;
+      }
+
+      &.all-images a span {
+        color: $button-bg-purple;
+        font-size: 1.1rem;
+        top: 1px;
+      }
+
+      &.admin-panel a {
+        .glyphicon-wrench {
+          color: $button-bg-green;
+        }
+
+        .glyphicon-ok {
+          color: $button-bg-darkred;
+        }
+      }
+
+      .active span {
+        color: $white;
+      }
+
+
       &.admin-panel {
         border-top: 1px dotted $light-gray;
         border-bottom: 1px dotted $light-gray;
         margin-top: 15px;
+        padding: 5px 0;
       }
     }
-  }
-
-  .fields {
-    border-bottom: 1px solid $lighter-gray;
-    margin-bottom: 10px;
-    padding-bottom: 22px;
   }
 
   .user-info {
@@ -106,6 +133,9 @@
   .fields {
     display: flex;
     justify-content: space-between;
+    border-bottom: 1px solid $lighter-gray;
+    margin-bottom: 10px;
+    padding-bottom: 22px;
 
     .field {
       input {
@@ -156,4 +186,12 @@
       width: 300px;
     }
   }
+}
+
+button.glyph {
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+  outline: 0;
+  vertical-align: middle;
 }

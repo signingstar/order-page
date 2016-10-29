@@ -232,7 +232,24 @@ const controller = ({modules}) => {
 
       const { emailid, order_id } = body
 
+      //TODO
       addUser([emailid, `{"active": false, "role": 1}`, order_id, user.id], {queryDb, logger}, (err, result) => {
+        if(err) return res.status(500).end()
+        res.status(200).end()
+      })
+    },
+
+    qualifyImage: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, body } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      const { image_id, order_id, reaction } = body
+      const { forceQualifyImage } = RequestBuilder
+
+      forceQualifyImage({order_id, user, reaction, image_id}, (err, result) => {
         if(err) return res.status(500).end()
         res.status(200).end()
       })

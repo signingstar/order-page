@@ -8,6 +8,10 @@ export const LIKE = 1
 export const LOVE = 2
 export const DEFAULT_REACTION = -1
 
+export const ALL = 'all'
+export const QUALIFIED = 'qualified'
+export const UNQUALIFIED = 'unqualified'
+
 // ------------------- Customer Portal Actions --------------------------
 export const UPDATE_REACTION = 'UPDATE_REACTION'
 export const COMMENT_ON_IMAGE = 'COMMENT_ON_IMAGE'
@@ -62,6 +66,20 @@ export const deleteUserFromStore = (email) => {
   }
 }
 
+export const updateScore = (scores) => {
+  return {
+    type: 'UPDATE_SCORE',
+    params: scores
+  }
+}
+
+export const updateImageQualification = (imageId, albumId, qualified) => {
+  return {
+    type: 'UPDATE_QUALIFICATION',
+    params: {imageId, albumId, qualified}
+  }
+}
+
 
 //------------------------------ AJAX calls -------------------------------
 
@@ -107,4 +125,16 @@ export const deleteUser = (data, cb) => {
   })
   .done((res, textStatus) => cb({res, textStatus}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const updateQualification = (data, cb) => {
+  ajax({
+    method: 'POST',
+    url: '/order/customer/qualify',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res, textStatus}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+
 }
