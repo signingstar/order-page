@@ -7,13 +7,18 @@ import { pick } from "underscore"
 
 import createStore from "./frontend/store";
 import CreateApp from "./frontend/components/app"
-import RequestBuilder from "./request_builders/view_order"
 import populateOrder from "./presenters/populate_order"
+import requestBuilder from "./request_builders"
 
 const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
   const context = createServerRenderContext()
-  const requests = RequestBuilder({userid, orderid}, {logger, queryDb, redisClient})
+  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
+  const { products, categories, viewOrder } = RequestBuilder
+
+  const orderInfo = (cb) => viewOrder({orderid, userid}, cb)
+
+  const requests = { products, categories, orderInfo}
 
   async.waterfall(
     [

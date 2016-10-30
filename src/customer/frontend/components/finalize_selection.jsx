@@ -29,7 +29,8 @@ const FinalizeSelection = ({images, filter, handleChange, willEnter, willLeave, 
               <li key={key} style={Object.assign(style, {backgroundColor: `#fff`})} className='filtered-item'>
                 { viewMode === 'thumbnail' ?
                   <div className='order-entry-item image'>
-                    <img src={`/${JSON.parse(srcSet).thumbnail}`} />
+                    <img src={srcSet.thumbnail ? `/${srcSet.thumbnail}` :  `/${JSON.parse(srcSet).thumbnail}`} />
+                    {/* TODO: Fix parsing */}
                   </div>
                   : ''
                 }

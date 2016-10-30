@@ -6,7 +6,8 @@ import ReactComponent from "./react_server"
 import ReactComponentView from "./react_server_view"
 import { viewOwnerOrders } from "./database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
-import { addAlbum, updateAlbum, removeAlbum, removeImage } from "./request_builders/album"
+import requestBuilder from "./request_builders"
+
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -30,6 +31,7 @@ const controller = ({modules}) => {
   const title = 'Tisko - Place an Order'
   const localModule = { logger, queryDb, redisClient }
   const isSecured = true
+  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
 
   return {
     main: ({attributes, responders, page}) => {
@@ -148,6 +150,11 @@ const controller = ({modules}) => {
             })
           },
           (orderData, done) => {
+            persistOrderToDatabase(order_id, (err, res) => {
+              done(err, orderData)
+            })
+          },
+          (orderData, done) => {
             const userData = session.user
             const mailOptions = {
               to: orderData.email,
@@ -184,7 +191,10 @@ const controller = ({modules}) => {
       if (!user) return
 
       const { order_id } = body
-      addAlbum({order_id}, {redisClient}, (err, result) => {
+
+      const { addAlbum } = RequestBuilder
+
+      addAlbum({order_id}, (err, result) => {
         if(err) return res.status(500).end()
         responders.json(result)
       })
@@ -203,13 +213,15 @@ const controller = ({modules}) => {
         res.status(400).end()
       }
 
+      const { updateAlbum, removeAlbum } = RequestBuilder
+
       if(action === '-1') {
-        removeAlbum({order_id, album_id}, {redisClient}, (err, result) => {
+        removeAlbum({order_id, album_id}, (err, result) => {
           if(err) return res.status(500).end()
           responders.json(result)
         })
       } else {
-        updateAlbum({order_id, mapping}, {redisClient}, (err, result) => {
+        updateAlbum({order_id, mapping}, (err, result) => {
           if(err) return res.status(500).end()
           responders.json(result)
         })
@@ -229,7 +241,9 @@ const controller = ({modules}) => {
         res.status(400).end()
       }
 
-      removeImage({order_id, album_id, filename}, {redisClient}, (err, result) => {
+      const { searchAndRemoveFile } = RequestBuilder
+
+      searchAndRemoveFile({order_id, album_id, filename}, (err, result) => {
         if(err) return res.status(500).end()
         responders.json(result)
       })

@@ -7,7 +7,7 @@ import ReactPreviewComponent from "./react_server_preview"
 import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
-import requestBuilder from "./request_builders"
+import requestBuilder from "../request_builders"
 
 let debug = require("debug")('Modules:Order:Controller')
 

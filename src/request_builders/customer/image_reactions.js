@@ -1,4 +1,4 @@
-import { LIKES, LIKED } from "../frontend/actions"
+import { LIKES, LIKED } from "../../globals"
 
 
 //Returns {"3bbb7a37a0f34b3f958582802d8d6dba":{"likes":1,"liked":[],"albumId":"465"}}

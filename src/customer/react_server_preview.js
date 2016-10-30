@@ -6,7 +6,6 @@ import { ServerRouter, createServerRenderContext } from "react-router"
 
 import createStore from "./frontend/preview/store";
 import App from "./frontend/preview/components/app"
-import RequestBuilder from "../request_builder"
 
 const albumifyImages = (imageList, albumList) => {
   let albums = {}

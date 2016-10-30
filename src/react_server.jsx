@@ -6,16 +6,18 @@ import { ServerRouter, createServerRenderContext } from "react-router"
 
 import createStore from "./frontend/store";
 import CreateApp from "./frontend/components/app"
-import StaticRequestBuilder from "./request_builder"
-import OrderRequestBuilder from "./request_builders/view_order"
+import OrderRequestBuilder from "./request_builders/creater/view_order"
 import { viewInProgressOrder } from "./database/api/view_order"
 import populateOrder from "./presenters/populate_order"
+import requestBuilder from "./request_builders"
 
 const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
   const context = createServerRenderContext()
-  const requests = StaticRequestBuilder({logger, queryDb, redisClient})
   const pageInProgress = location === '/order/process' || location === '/order/confirm' ? true : false
+  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
+
+  const requests = { products: RequestBuilder.products, categories: RequestBuilder.categories}
 
   async.waterfall(
     [

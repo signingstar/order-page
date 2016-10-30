@@ -6,7 +6,7 @@ import { ServerRouter, createServerRenderContext } from "react-router"
 
 import createStore from "./frontend/store";
 import App from "./frontend/components/app"
-import RequestBuilder from "../request_builder"
+import requestBuilder from "../request_builders"
 
 import { LIKES, LIKED } from "./frontend/actions"
 
@@ -57,7 +57,10 @@ export const mergeReaction = (reaction, images) => {
 
 const ReactComponent = (location, {images, orderResult, albums, imageReaction}, {logger, queryDb, redisClient}, cb) => {
   const context = createServerRenderContext()
-  const requests = RequestBuilder({logger, queryDb, redisClient})
+  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
+
+  const requests = { products: RequestBuilder.products, categories: RequestBuilder.categories}
+  // const requests = RequestBuilder({logger, queryDb, redisClient})
 
   async.waterfall(
     [

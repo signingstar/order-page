@@ -98,15 +98,15 @@
       border: 1px solid #999;
       border-radius: 4px;
       cursor: pointer;
-      padding: 2px 2px;
-      outline: 0;
       font-size: 18px;
+      outline: 0;
+      padding: 1px;
 
       &.list {
         border-bottom-right-radius: 0;
+        border-right: 0;
         border-top-right-radius: 0;
         color: $button-bg-lighterblue;
-        border-right: 0;
 
         &.selected {
           color: $button-bg-blue;
@@ -125,12 +125,12 @@
       }
 
       span {
-        font-size: 1.5rem;
-        left: 1px;
-        height: 30px;
-        width: 38px;
         float: left;
+        font-size: 1.5rem;
+        height: 30px;
+        left: 1px;
         top: 2px;
+        width: 38px;
       }
    }
   }
@@ -199,10 +199,6 @@
       &:nth-child(even) {
         background-color: #e8f2e9;
       }
-
-      // &:nth-child(odd) {
-      //   background-color: #00ee00;
-      // }
 
       img {
         width: 110px;
