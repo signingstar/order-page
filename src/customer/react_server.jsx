@@ -6,9 +6,8 @@ import { ServerRouter, createServerRenderContext } from "react-router"
 
 import createStore from "./frontend/store";
 import App from "./frontend/components/app"
-import requestBuilder from "../request_builders"
 
-import { LIKES, LIKED } from "./frontend/actions"
+import { LIKES, LIKED } from "../globals"
 
 const albumifyImages = (imageList, albumList) => {
   let albums = {}
@@ -24,10 +23,10 @@ const albumifyImages = (imageList, albumList) => {
   return albums
 }
 
-const prepareInitialState = (order, staticData, imageList = [], imageReaction, albums) => {
-  const {products, categories} = staticData
+const prepareInitialState = (order, products, categories, imageReaction) => {
+  const { users, productid, albumlist, imagefiles } = order
+
   const product = products.find(product => product.id === order.productid)
-  const { users } = order
 
   order.productLabel = product.description
   let userList = []
@@ -45,8 +44,8 @@ const prepareInitialState = (order, staticData, imageList = [], imageReaction, a
   }
 
   delete order.users
-  const images = albumifyImages(imageList, albums)
-  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, imageList) : images
+  const images = albumifyImages(imagefiles, albumlist)
+  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, imagefiles) : images
 
   return { order, images, users: userList }
 }
@@ -59,61 +58,44 @@ export const mergeReaction = (reaction, images) => {
   image[LIKED] = reaction[image_id].liked
 }
 
-const ReactComponent = (location, {images, orderResult, albums, imageReaction}, {logger, queryDb, redisClient}, cb) => {
+const ReactComponent = (location, {orderResult, products, categories, imageReaction}, cb) => {
+  let err = null
+  const initialPayload = prepareInitialState(orderResult, products, categories, imageReaction)
   const context = createServerRenderContext()
-  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
 
-  const requests = { products: RequestBuilder.products, categories: RequestBuilder.categories}
-  // const requests = RequestBuilder({logger, queryDb, redisClient})
+  // Create a new Redux store instance
+  const store = createStore(initialPayload)
 
-  async.waterfall(
-    [
-      (done) => {
-        async.parallel(requests, (err, results) => {
-          done(err, results)
-        })
-      },
-      (results, done) => {
-        let err = null
-        let initialPayload = prepareInitialState(orderResult, results, images, imageReaction, albums)
-
-        const context = createServerRenderContext();
-        // Create a new Redux store instance
-        const store = createStore(initialPayload)
-
-        let reactHTML = renderToString(
-          <Provider store={store}>
-            <ServerRouter location={location} context={context}>
-              <App />
-            </ServerRouter>
-          </Provider>
-        )
-
-        const result = context.getResult()
-
-        if (result.redirect) {
-          err = {reason: 'redirect', location: result.redirect.pathname}
-          cb(err)
-        } else {
-          if (result.missed) {
-            reactHTML = renderToString(
-              <Provider store={store}>
-                <ServerRouter location={location} context={context}>
-                  <App />
-                </ServerRouter>
-              </Provider>
-            )
-
-            err = {reason: 'missed'}
-          }
-        }
-        // Grab the initial state from our Redux store
-        const preloadedState = store.getState()
-
-        cb(err, reactHTML, preloadedState)
-      }
-    ]
+  let reactHTML = renderToString(
+    <Provider store={store}>
+      <ServerRouter location={location} context={context}>
+        <App />
+      </ServerRouter>
+    </Provider>
   )
+
+  const result = context.getResult()
+
+  if (result.redirect) {
+    err = {reason: 'redirect', location: result.redirect.pathname}
+    cb(err)
+  } else {
+    if (result.missed) {
+      reactHTML = renderToString(
+        <Provider store={store}>
+          <ServerRouter location={location} context={context}>
+            <App />
+          </ServerRouter>
+        </Provider>
+      )
+
+      err = {reason: 'missed'}
+    }
+  }
+  // Grab the initial state from our Redux store
+  const preloadedState = store.getState()
+
+  cb(err, {reactHTML, preloadedState})
 }
 
-export default ReactComponent;
+export default ReactComponent

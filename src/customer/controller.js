@@ -1,4 +1,5 @@
 import async from "async"
+import auto from "async/auto"
 import path from "path"
 
 import layoutPresenter from "tisko-layout"
@@ -49,60 +50,57 @@ const controller = ({modules}) => {
         return
       }
 
-      const userid = user.id
+      const user_id = user.id
       const order_id = formData.orderId
-      const orderQueryData = [userid, order_id, user.email]
+      const orderQueryData = {user_id, order_id, email: user.email}
 
-      const { fetchOrderForCustomer, getAlbums, getImages, getImageReactions, getRawImages } = RequestBuilder
+      const { fetchOrderForCustomer, getAlbums, getImages, getImageReactions, getRawImages, products, categories } = RequestBuilder
 
-      async.waterfall(
-        [
-          (done) => {
-            async.parallel(
-              {
-                orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
-                albums: (cb) => getAlbums(order_id, cb),
-                images: (cb) => getRawImages(order_id, cb),
-                imageReaction: (cb) => getImageReactions({order_id, image_id, user_id: userid}, cb)
-              },
-              (err, results) => done(err, results)
-            )
-          },
-          (results, done) => {
-            const {orderResult, images, albums, imageReaction} = results
+      auto({
+        orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
+        imageReaction: (cb) => getImageReactions({order_id, image_id, user_id}, cb),
+        handle_redirect: ['orderResult', 'imageReaction', (results, cb) => {
+          const { orderResult } = results
 
-            orderResult.id = order_id
-            if(!orderResult.productid) {
-              return responders.redirectWithoutCookies(`/myorder/${orderid}`, logger, '[Incorrect Portal]')
-            }
-            ReactComponent(location, results, localModule, (err, reactHTML, preloadedState) => {
-              if(err) {
-                if(err.reason === 'redirect') {
-                  res.writeHead(301, {
-                    Location: result.redirect.pathname
-                  })
-                  res.end()
-                } else if(err.reason === 'missed') {
-                  res.status(404).end()
-                }
-              }
-              page.set( {
-                javascript: jsAsset('customerjs'),
-                stylesheet: cssAsset('customercss'),
-                body_class: 'customer-order',
-                title,
-                reactHTML,
-                preloadedState
-              })
-
-              responders.html(renderHTML(page))
-            })
+          if(!orderResult.productid) {
+            return responders.redirectWithoutCookies(`/orders/${order_id}`, logger, '[Incorrect Portal]')
           }
-        ], (err) => {
-          logger.error('ERROR in viewOrderAsCustomer' + err)
-          return res.status(500).end()
+          cb()
+        }],
+        products: (cb) => products(cb),
+        categories: (cb) => categories(cb),
+        reactHandler: ['handle_redirect', 'products', 'categories', (results, cb) => ReactComponent(location, results, cb)],
+        renderUI: ['reactHandler', (results, cb) => {
+          const {reactHTML, preloadedState} = results.reactHandler
+
+          page.set( {
+            javascript: jsAsset('customerjs'),
+            stylesheet: cssAsset('customercss'),
+            body_class: 'customer-order',
+            title,
+            reactHTML,
+            preloadedState
+          })
+
+          responders.html(renderHTML(page))
+          cb()
+        }]
+      }, (err, results)=> {
+        if(err) {
+          if(err.reason === 'redirect') {
+            res.writeHead(301, {
+              Location: result.redirect.pathname
+            })
+            res.end()
+          } else if(err.reason === 'missed') {
+            res.status(404).end()
+          } else {
+            res.status(500).end()
+          }
+        } else {
+          logger.info(`response successfully emitted for user`)
         }
-      )
+      })
     },
 
     viewPreview: ({attributes, responders, page}) => {
@@ -116,40 +114,30 @@ const controller = ({modules}) => {
 
       const { fetchOrderForCustomer, getAlbums, getImages } = RequestBuilder
 
-      async.waterfall(
-        [
-          (done) => {
-            async.parallel(
-              {
-                orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
-                albums: (cb) => getAlbums(orderid, cb),
-                images: (cb) => getImages(orderid, cb)
-              },
-              (err, results) => done(err, results)
-            )
-          },
-          (results, done) => {
-            const {orderResult, images, albums} = results
+      auto({
+        orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
+        albums: (cb) => getAlbums(orderid, cb),
+        images: (cb) => getImages(orderid, cb),
+        render_ui: ['orderResult', 'albums', 'images', (results, cb) => {
+          const { orderResult, albums, images } = results
 
-            orderResult.id = orderid
-            ReactPreviewComponent(location, results, localModule, (err, reactHTML, preloadedState) => {
-              page.set( {
-                javascript: jsAsset('preview'),
-                stylesheet: cssAsset('customercss'),
-                body_class: 'customer-order',
-                title,
-                reactHTML,
-                preloadedState
-              })
-
-              responders.html(renderHTML(page))
+          orderResult.id = orderid
+          ReactPreviewComponent(location, results, localModule, (err, reactHTML, preloadedState) => {
+            page.set( {
+              javascript: jsAsset('preview'),
+              stylesheet: cssAsset('customercss'),
+              body_class: 'customer-order',
+              title,
+              reactHTML,
+              preloadedState
             })
-          }
-        ], (err) => {
-          logger.error('ERROR in viewOrderAsCustomer' + err)
-          return res.status(500).end()
-        }
-      )
+
+            responders.html(renderHTML(page))
+          })
+        }]
+      }, (err, results)=> {
+        logger.info(`err`, err)
+      })
     },
 
     customerFeedback: ({attributes, responders, page}) => {

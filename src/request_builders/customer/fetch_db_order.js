@@ -1,12 +1,11 @@
 import { viewCustomerOrder } from "../../database/api/view_order"
 
-const orderResult = (orderQueryData, modules, cb) => {
-  viewCustomerOrder(orderQueryData, modules, (err, orderResults) => {
+const orderResult = ({user_id, order_id, email}, modules, cb) => {
+
+  viewCustomerOrder([user_id, order_id, email], modules, (err, orderResults) => {
     if(err || !orderResults[0]) cb(err)
 
-    // orderResult.id = orderid
-
-    cb(err, orderResults[0])
+    cb(err, Object.assign(orderResults[0], {id: order_id}))
   })
 }
 

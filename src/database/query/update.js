@@ -6,4 +6,4 @@ export const addAdditionalUser = `UPDATE orders.order
 
 export const updateToConfirmOrder = `UPDATE orders.order SET status=$3, category_id=$5, short_name=COALESCE($4, short_name) WHERE user_id=$1 AND id=$2`
 
-  export const saveFileList = `SELECT * FROM orders.persist_order($1, $2, $3, $4, $5) AS customer_id;`
+export const saveAlbumnFile = `SELECT * FROM orders.persist_order($1, $2, $3, $4, $5, $6) AS customer_id;`
