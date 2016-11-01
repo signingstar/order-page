@@ -1,8 +1,8 @@
 import async from "async"
 
-const START_PRIORITY = 100
-const END_PRIORITY = 1000
-const STEP_PRIORITY = 20
+const START_PRIORITY = 10
+const END_PRIORITY = 100
+const STEP_PRIORITY = 2
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min)

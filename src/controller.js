@@ -1,4 +1,7 @@
-import async from "async"
+import waterfall from "async/waterfall"
+import parallel from "async/parallel"
+import auto from "async/auto"
+
 import path from "path"
 
 import layoutPresenter from "tisko-layout"
@@ -80,6 +83,8 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
+      const { addAlbum } = RequestBuilder
+
       createOrder({formData, session}, {logger, queryDb }, ({err, orderData, result}) => {
         if(err) {
           return responders.json(null, err, err.statusCode || 500)
@@ -87,7 +92,7 @@ const controller = ({modules}) => {
         const {order_id} = result
         orderData.id = order_id
 
-        addAlbum({order_id}, {redisClient}, (err, result) => {
+        addAlbum({order_id}, (err, result) => {
           if(err) return res.status(500).end()
           const { id, name, priority } = result
           // Send response first. Redis update can happen thereafter
@@ -132,55 +137,41 @@ const controller = ({modules}) => {
       const user = getUserObject(session, responders, true)
       if (!user) return
 
-      async.waterfall(
-        [
-          (done) => {
-            confirmOrder({params, body, session, location}, {logger, queryDb }, ({err, orderData, result}) => {
-              if(err) return done(err)
+      const { order_id, order_name = null, category = 'wedding'} = body
+      const { getOrderInfo, getImages, persistOrder } = RequestBuilder
 
-              const {order_id, order_name} = orderData
-              done(null, {orderId: order_id, orderName: order_name})
-            })
-          },
-          (order, done) => {
-            const {orderId, orderName} = order
-            redisClient.hmset(`order_id_${orderId}`, ['status', 'confirmed', 'name', orderName])
-            redisClient.hgetall(`order_id_${orderId}`, (err, orderData) => {
-              done(null, orderData)
-            })
-          },
-          (orderData, done) => {
-            persistOrderToDatabase(order_id, (err, res) => {
-              done(err, orderData)
-            })
-          },
-          (orderData, done) => {
-            const userData = session.user
-            const mailOptions = {
-              to: orderData.email,
-              cc: userData.email,
-              from: 'verify@tisko.com',
-              subject: 'Tisko Order Creation',
-              text: 'You are receiving this because Anil has created request on behalf of you.\n\n' +
-                        'Please click on the following link, or paste this into your browser to view the details:\n\n' +
-                        `http://${req.headers.host}/order/random_string/${orderData.id}` + '\n\n' +
-                        'If you did not request this, please ignore this email and chill out :D.\n'
-            }
-
-            Mailer(mailOptions)((err, info) => {
-              if(err) {
-                req.flash('An error occured whie sending the reset email')
-              } else {
-                req.flash('info', 'An e-mail has been sent to ' + 'me' + ' with further instructions.')
-              }
-              res.status(200).end()
-            })
+      auto({
+        order_info: (cb) => getOrderInfo({order_id}, cb),
+        images: (cb) => getImages(order_id, cb),
+        persist_order: ['order_info', 'images', (results, cb) => persistOrder(Object.assign(results, {order_name, category, userId: user.id}), cb)],
+        send_mail: ['persist_order', ({order_info}, cb)  => {
+          const {email, id} = order_info
+          const userData = session.user
+          const mailOptions = {
+            to: email,
+            cc: user.email,
+            from: 'verify@tisko.com',
+            subject: 'Tisko Order Creation',
+            text: 'You are receiving this because Anil has created request on behalf of you.\n\n' +
+                      'Please click on the following link, or paste this into your browser to view the details:\n\n' +
+                      `http://${req.headers.host}/order/random_string/${id}` + '\n\n' +
+                      'If you did not request this, please ignore this email and chill out :D.\n'
           }
-        ],
-        (err) => {
-          res.status(500).end()
-        }
-      )
+
+          Mailer(mailOptions)((err, info) => {
+            if(err) {
+              req.flash('An error occured whie sending the reset email')
+            } else {
+              req.flash('info', 'An e-mail has been sent to ' + 'me' + ' with further instructions.')
+            }
+            cb()
+            res.status(200).end()
+          })
+        }]
+      },
+      (err, results) => {
+        res.status(200).end()
+      })
     },
 
     addAlbum: ({attributes, responders, page}) => {

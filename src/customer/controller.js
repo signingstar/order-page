@@ -6,7 +6,7 @@ import ReactComponent from "./react_server"
 import ReactPreviewComponent from "./react_server_preview"
 import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
-import { validateOrderDat, validateCustomerLinkData } from "./presenters/form_validator"
+import { validateOrderData, validateCustomerLinkData } from "./presenters/form_validator"
 import requestBuilder from "../request_builders"
 
 let debug = require("debug")('Modules:Order:Controller')
@@ -53,7 +53,7 @@ const controller = ({modules}) => {
       const order_id = formData.orderId
       const orderQueryData = [userid, order_id, user.email]
 
-      const { fetchOrderForCustomer, getAlbums, getImages, getImageReactions } = RequestBuilder
+      const { fetchOrderForCustomer, getAlbums, getImages, getImageReactions, getRawImages } = RequestBuilder
 
       async.waterfall(
         [
@@ -62,7 +62,7 @@ const controller = ({modules}) => {
               {
                 orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
                 albums: (cb) => getAlbums(order_id, cb),
-                images: (cb) => getImages(order_id, cb),
+                images: (cb) => getRawImages(order_id, cb),
                 imageReaction: (cb) => getImageReactions({order_id, image_id, user_id: userid}, cb)
               },
               (err, results) => done(err, results)
@@ -114,7 +114,7 @@ const controller = ({modules}) => {
       // TODO: Remove hard coded user id
       const orderQueryData = ['3011b393-e9bf-4177-b50a-7a25fc4a64d2', orderid, 'abc']
 
-      const { fetchOrderForCustomer, albums, images, imageReactions } = RequestBuilder
+      const { fetchOrderForCustomer, getAlbums, getImages } = RequestBuilder
 
       async.waterfall(
         [
@@ -122,8 +122,8 @@ const controller = ({modules}) => {
             async.parallel(
               {
                 orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
-                albums: (cb) => albums(orderid, cb),
-                images: (cb) => images(orderid, cb)
+                albums: (cb) => getAlbums(orderid, cb),
+                images: (cb) => getImages(orderid, cb)
               },
               (err, results) => done(err, results)
             )

@@ -28,13 +28,12 @@ const albumifyImages = (imageList, albumList) => {
 }
 
 const populateOrder = (results) => {
-  const {products, categories, orderInfo} = results
+  const {products, categories, files, order} = results
 
-  if(!orderInfo) {
+  if(!order) {
     return { products, categories}
   }
 
-  const {order, files} = orderInfo
   const productObj = products.find(product => product.id === +order.product)
 
   order.product = productObj ? {key: productObj.id, value: productObj.description} : ''

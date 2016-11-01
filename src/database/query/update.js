@@ -5,3 +5,5 @@ export const addAdditionalUser = `UPDATE orders.order
                                   WHERE id=$3 AND on_behalf=$4`
 
 export const updateToConfirmOrder = `UPDATE orders.order SET status=$3, category_id=$5, short_name=COALESCE($4, short_name) WHERE user_id=$1 AND id=$2`
+
+  export const saveFileList = `SELECT * FROM orders.persist_order($1, $2, $3, $4, $5) AS customer_id;`

@@ -64,20 +64,14 @@ export const processOrder = ({params, body, session}, { logger, queryDb }, cb) =
   })
 }
 
-export const confirmOrder = ({params, body, session}, { logger, queryDb }, cb) => {
-  const {user} = session
-  if(!user || !user.id) {
-    return cb({err: {message: 'session timed out', statusCode: 401}})
-  }
-
+export const confirmOrder = ({params, body, userId}, { logger, queryDb }, cb) => {
   const { err, orderData } = validateConfirmOrderData(body)
   if(err) {
     return cb({err})
   }
 
   const { order_id, order_name = null, category = WEDDING} = orderData
-  const userid = user.id
-  const queryParams = [userid, order_id, 'confirmed', order_name, category]
+  const queryParams = [userId, order_id, 'confirmed', order_name, category]
 
   updateOrderToConfirm(queryParams, {logger, queryDb}, (err, result) => {
     cb({err, orderData, result})

@@ -1,8 +1,7 @@
 import async from "async"
-import getStaticDetails from "../../database/api/select_from_orders"
 
 const orderInfo = ({orderid, userid}, {logger, queryDb, redisClient}, callback) => {
-  async.parallel({
+  return {
     order: (cb) => {
       redisClient.hgetall(`order_id_${orderid}`, (err, res) => {
         if(!err && res) {
@@ -19,9 +18,7 @@ const orderInfo = ({orderid, userid}, {logger, queryDb, redisClient}, callback) 
         cb(null, res)
       })
     }
-  }, (err, results) => {
-    callback(err, results)
-  })
+  }
 }
 
 

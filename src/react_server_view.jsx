@@ -16,9 +16,9 @@ const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClie
   const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
   const { products, categories, viewOrder } = RequestBuilder
 
-  const orderInfo = (cb) => viewOrder({orderid, userid}, cb)
+  const {order, files} = viewOrder({orderid, userid})
 
-  const requests = { products, categories, orderInfo}
+  const requests = { products, categories, order, files}
 
   async.waterfall(
     [

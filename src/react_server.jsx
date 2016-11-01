@@ -15,9 +15,9 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
   let err = null
   const context = createServerRenderContext()
   const pageInProgress = location === '/order/process' || location === '/order/confirm' ? true : false
-  const RequestBuilder = requestBuilder({redisClient, queryDb, logger})
+  const { products, categories, viewOrder } = requestBuilder({redisClient, queryDb, logger})
 
-  const requests = { products: RequestBuilder.products, categories: RequestBuilder.categories}
+  const requests = { products, categories }
 
   async.waterfall(
     [
@@ -36,8 +36,9 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
       ({orderid, status}, done) => {
         if(pageInProgress) {
           if(orderid) {
-            const requestOrderData = OrderRequestBuilder({userid, orderid}, {logger, queryDb, redisClient})
-            Object.assign(requests, requestOrderData)
+            const orderInfo = viewOrder({orderid, userid})
+            // const requestOrderData = OrderRequestBuilder({userid, orderid}, {logger, queryDb, redisClient})
+            Object.assign(requests, orderInfo)
           } else {
             return done({reason: 'order_not_found'})
           }

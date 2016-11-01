@@ -18,3 +18,24 @@ export const lastOpenOrder = `
     ORDER BY updated_at DESC LIMIT 1
   )
   AND status < 'confirmed'`
+
+export const getFiles = `SELECT files
+  FROM orders.order_item oi
+  WHERE order_id = $1;`
+
+// export const sampleImageQuery = `select files #> '{0}' from orders.order_item where order_id=148 and files #> '{0}' @> '{"id":"aaeb1758526a4a0f8d81bb0a2472dca7"}';`
+
+// export const multipleFieldQuery = `select section ->> 'id', section ->> 'originalname' from orders.order_item t
+//     cross join jsonb_array_elements(files) section
+//     where order_id=148`
+
+
+// export const multipleFieldQueryForObject = ` select files #> array[section, 'originalname'] from orders.order_item t
+    // cross join jsonb_object_keys(files) section
+    // where order_id=148`
+
+
+ // select files #> array[section] ->> 'index', section from orders.order_item t
+ //    cross join jsonb_object_keys(files) section
+ //    where order_id=148 and files #>> array[section, 'index'] >= '0'
+ //    order by files #>> array[section, 'index'] ;

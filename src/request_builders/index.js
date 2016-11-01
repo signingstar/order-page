@@ -1,4 +1,5 @@
 import images from "./all_images"
+import rawImages from "./raw_images"
 
 // ----------------- Customer ------------------
 import albums from "./customer/albums"
@@ -14,6 +15,8 @@ import removeAlbum from "./creater/remove_album"
 import removeFile from "./creater/remove_file"
 import searchAndRemoveFile from "./creater/search_remove_file"
 import viewOrder from "./creater/view_order"
+import persistOrder from "./creater/persist_order"
+import getOrderInfo from "./creater/order_info"
 
 // ------------------ Common ---------------------
 import products from "./products"
@@ -31,11 +34,14 @@ const requestList = (modules) => {
     forceQualifyImage: (params, cb) => forceQualifyImage(params, modules, cb),
     viewOrder: (params, cb) => viewOrder(params, modules, cb),
 
+    getOrderInfo: (params, cb) => getOrderInfo(params, {redisClient}, cb),
     addAlbum: (params, cb) => addAlbum(params, {redisClient}, cb),
     updateAlbum: (params, cb) => updateAlbum(params, {redisClient}, cb),
     removeAlbum: (params, cb) => removeAlbum(params, {redisClient}, cb),
     removeFile: (params, cb) => removeFile(params, {redisClient}, cb),
     searchAndRemoveFile: (params, cb) => searchAndRemoveFile(params, {redisClient}, cb),
+    persistOrder: (params, cb) => persistOrder(params, {queryDb, logger}, cb),
+    getRawImages: (params, cb) => rawImages(params, modules, cb),
 
     // Static Data
 

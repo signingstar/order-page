@@ -57,7 +57,7 @@ class FinalizeSelection extends Component {
       case QUALIFIED:
         return reaction_type === QUALIFIED || (reaction_type !== UNQUALIFIED && score > 0)
       case UNQUALIFIED:
-        return reaction_type === UNQUALIFIED || (reaction_type !== QUALIFIED && score < 1)
+        return reaction_type === UNQUALIFIED || (reaction_type !== QUALIFIED && !score)
     }
 
     return true
