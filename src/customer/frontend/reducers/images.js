@@ -101,13 +101,8 @@ const mergeScore = (scores, state) => {
 
   for(let imageId in scores) {
     const {album_id, score} = scores[imageId]
-    let newAlbum = albums[album_id]
-    if(!newAlbum) {
-      newAlbum = albums[album_id] = Object.assign({}, newState[album_id])
-    }
 
-    const files = newAlbum.files.slice()
-    const image = files.find(file => file.id === imageId)
+    const image = newState[imageId]
     image.score = score
     // newAlbum[imageId] = image
   }
@@ -119,13 +114,8 @@ const updateQualification = (params, state) => {
   const {imageId, albumId, qualified} = params
 
   const newState = Object.assign({}, state)
-  const albums = {}
-
-  const newAlbum = Object.assign({}, newState[albumId])
-
-  const files = newAlbum.files.slice()
-  const image = files.find(file => file.id === imageId)
-  image.forceQualify = {name: 'You', reaction_type: qualified}
+  const image = newState[imageId]
+  image.force_qualify = {name: 'You', reaction: qualified}
 
   return newState
 }

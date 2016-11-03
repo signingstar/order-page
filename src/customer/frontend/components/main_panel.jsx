@@ -34,10 +34,10 @@ const MainPanel = ({ order, usersHash, query }) => {
             <ul className='admin-panel'>
               <li className='nav-left'>
                 <Link
-                  to={`/order/${usersHash}/${id}/addUser`}
+                  to={`/order/${usersHash}/${id}/adduser`}
                   activeClassName='active'
                 >
-                  <span className='glyphicon glyphicon-wrench icon'></span>
+                  <span className='glyphicon glyphicon-user icon'></span>
                   Add Users
                 </Link>
               </li>
@@ -56,7 +56,7 @@ const MainPanel = ({ order, usersHash, query }) => {
       </div>
       <div className='right-panel'>
         <Match exactly pattern='/order/:usersHash/:orderId' component={ImageTiles} />
-        <Match exactly pattern='/order/:usersHash/:orderId/addUser' component={AddUser} />
+        <Match exactly pattern='/order/:usersHash/:orderId/adduser' component={AddUser} />
         <Match exactly pattern='/order/:usersHash/:orderId/finalize' component={FinalizeSelection} />
       </div>
     </div>

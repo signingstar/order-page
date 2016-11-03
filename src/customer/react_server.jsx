@@ -3,6 +3,7 @@ import React from "react";
 import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
+import { pick } from "underscore"
 
 import createStore from "./frontend/store";
 import App from "./frontend/components/app"
@@ -12,11 +13,11 @@ import { LIKES, LIKED } from "../globals"
 const albumifyImages = (imageList, albumList) => {
   let albums = {}
 
-  albumList.forEach((album, index) => albums[album.id.toString()] = { name: album.name, priority: index + 1, files: []})
+  albumList.forEach((album, index) => albums[album.id] = { name: album.name, priority: index + 1, files: []})
 
   for(let imageId in imageList) {
     const image = imageList[imageId]
-    albums[image.album_id].files.push(Object.assign(image, {id: imageId}))
+    albums[image.album_id].files.push(imageId)
   }
   // Object.keys(imageList).forEach((image) => albums[image.album_id].files.push(image) )
 
@@ -43,11 +44,12 @@ const prepareInitialState = (order, products, categories, imageReaction) => {
     }
   }
 
-  delete order.users
-  const images = albumifyImages(imagefiles, albumlist)
-  const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, imagefiles) : images
+  const albums = albumifyImages(imagefiles, albumlist)
+  const minOrder = pick(order, 'id', 'productLabel', 'role', 'photographer', 'orderstatus')
 
-  return { order, images, users: userList }
+  // const imagesWithReaction = imageReaction ? mergeReaction(imageReaction, imagefiles) : images
+
+  return { order: minOrder, images: imagefiles, users: userList, albums }
 }
 
 export const mergeReaction = (reaction, images) => {

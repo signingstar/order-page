@@ -37,7 +37,9 @@ const controller = ({modules}) => {
   return {
     viewCustomer: ({attributes, responders, page}) => {
       const { req, res } = attributes
-      const { session, params: {orderId, image_id}, url: location} = req
+      const { session, params, url: location} = req
+      const orderId = params.orderId
+      const image_id = params.image_id === 'finalize' || params.image_id === 'adduser' ? undefined: params.image_id
 
       const user = getUserObject(session, responders, false, location)
       if (!user) return
@@ -58,7 +60,7 @@ const controller = ({modules}) => {
 
       auto({
         orderResult: (cb) => fetchOrderForCustomer(orderQueryData, cb),
-        imageReaction: (cb) => getImageReactions({order_id, image_id, user_id}, cb),
+        imageReaction: ['orderResult', (results, cb) => getImageReactions({order_id, image_id, user_id, files: results.orderResult.imagefiles}, cb)],
         handle_redirect: ['orderResult', 'imageReaction', (results, cb) => {
           const { orderResult } = results
 
@@ -69,7 +71,7 @@ const controller = ({modules}) => {
         }],
         products: (cb) => products(cb),
         categories: (cb) => categories(cb),
-        reactHandler: ['handle_redirect', 'products', 'categories', (results, cb) => ReactComponent(location, results, cb)],
+        reactHandler: ['handle_redirect', 'products', 'categories', 'imageReaction', (results, cb) => ReactComponent(location, results, cb)],
         renderUI: ['reactHandler', (results, cb) => {
           const {reactHTML, preloadedState} = results.reactHandler
 

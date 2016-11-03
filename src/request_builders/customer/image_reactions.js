@@ -2,7 +2,7 @@ import { LIKES, LIKED } from "../../globals"
 
 
 //Returns {"3bbb7a37a0f34b3f958582802d8d6dba":{"likes":1,"liked":[],"albumId":"465"}}
-const parseReactions = (obj, userId, albumId) => {
+const parseReactions = (obj, userId, albumId, image) => {
   if(!obj) {
     return
   }
@@ -12,9 +12,7 @@ const parseReactions = (obj, userId, albumId) => {
   for(let index in obj) {
     const { user_name, reaction } = JSON.parse(obj[index])
 
-    if(index === 'force_qualify') {
-      reactionObj.forceQualify = {name: user_name, reaction_type: reaction}
-    } else if(index === userId) {
+    if(index === userId) {
       reactionObj[LIKES] = +reaction
       reactionObj[LIKED].push({name: 'You', reaction_type: reaction})
 
@@ -23,22 +21,41 @@ const parseReactions = (obj, userId, albumId) => {
     }
   }
 
-  return reactionObj
+  Object.assign(image, reactionObj)
 }
 
 
-const imageReaction = ({order_id, image_id, user_id, album_id}, {redisClient}, cb) => {
-  if(!image_id) {
-    return cb(null, undefined)
-  }
+const imageReaction = ({order_id, image_id, user_id, album_id, files}, {redisClient}, cb) => {
 
-  redisClient.hgetall(`order_id_${order_id}:files:${image_id}`, (err, res) => {
-    if(!err && res !== null) {
-      cb(null, {[image_id]: parseReactions(res, user_id, album_id)})
-    } else {
-      cb(err)
+  if(image_id) {
+    redisClient.hgetall(`order_id_${order_id}:files:${image_id}`, (err, res) => {
+      if(!err && res !== null) {
+        parseReactions(res, user_id, album_id, files[image_id])
+        cb(null)
+      } else {
+        cb(err)
+      }
+    })
+  } else {
+    const filesCount = Object.keys(files).length
+    let index = 0
+
+    for(let image_id in files) {
+      redisClient.hgetall(`order_id_${order_id}:files:${image_id}`, (err, res) => {
+        if(!err && res !== null) {
+          parseReactions(res, user_id, album_id, files[image_id])
+        }
+
+        if(err) {
+          cb(err)
+        }
+
+        if(++index > filesCount - 1) {
+          cb(null)
+        }
+      })
     }
-  })
+  }
 }
 
 export default imageReaction

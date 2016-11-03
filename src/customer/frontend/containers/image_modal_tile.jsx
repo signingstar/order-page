@@ -23,12 +23,12 @@ class ImageModalTileConfiguration extends Component {
   }
 
   updateLocalState(props) {
-    const { state, images, params: {fileName} } = props
+    const { state, imageIdList, params: {fileName} } = props
 
     if(state) {
       this.setState({index: state.index})
     } else {
-      const elemIndex = images.findIndex(entry => entry.filename === fileName)
+      const elemIndex = imageIdList.findIndex(entry => entry.filename === fileName)
       this.setState({index: elemIndex})
     }
 
@@ -39,8 +39,8 @@ class ImageModalTileConfiguration extends Component {
   }
 
   increment() {
-    const { images } = this.props
-    const lastElementIndex = images.length - 1
+    const { imageIdList } = this.props
+    const lastElementIndex = imageIdList.length - 1
 
     if(this.state.index < lastElementIndex ) {
       this.setState({index: this.state.index + 1})
@@ -54,18 +54,18 @@ class ImageModalTileConfiguration extends Component {
   }
 
   getNavLink(index, originalUrl, albumId, right) {
-    const { images } = this.props
+    const { imageIdList } = this.props
 
-    if((right && index >= images.length-1) || (!right && index <= 0)) {
+    if((right && index >= imageIdList.length-1) || (!right && index <= 0)) {
       return
     }
 
-    const nextImage = images[right ? index + 1 : index - 1]
+    const nextImage = imageIdList[right ? index + 1 : index - 1]
 
     return (
       <NavLinks
         originalUrl={originalUrl}
-        imageId={nextImage.id}
+        imageId={nextImage}
         albumId={albumId}
         index={index}
         next={right}
@@ -78,9 +78,9 @@ class ImageModalTileConfiguration extends Component {
   }
 
   render() {
-    const { onClose, isShowing, images, pathname, params, state, originalUrl, albumId } = this.props
+    const { onClose, isShowing, images, pathname, params, state, originalUrl, albumId, imageIdList } = this.props
     const { index } = this.state
-    const image = Object.assign({}, images[index], {index})
+    const image = Object.assign({}, images[imageIdList[index]], {index})
 
     const previousLink = this.getNavLink(index, originalUrl, albumId, false)
     const nextLink = this.getNavLink(index, originalUrl, albumId, true)
@@ -102,20 +102,21 @@ class ImageModalTileConfiguration extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { images } = store
+  const { images, albums } = store
   const { albumId } = ownProps
 
-  let imageList = []
+  let imageIdList = []
   if(albumId) {
-    imageList = images[albumId].files
+    imageIdList = albums[albumId].files
   } else {
-    for(let album in images) {
-      imageList = imageList.concat(images[album].files)
+    for(let album in albums) {
+      imageIdList = imageIdList.concat(albums[album].files)
     }
   }
 
   return {
-    images: imageList
+    images,
+    imageIdList
   }
 }
 

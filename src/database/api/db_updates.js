@@ -1,4 +1,4 @@
-import { updateOrderTable, addAdditionalUser, updateAdditionalUser, updateToConfirmOrder, saveAlbumnFile } from "../query/update"
+import { updateOrderTable, addAdditionalUser, updateAdditionalUser, updateToConfirmOrder, saveAlbumnFile, qualifyImage } from "../query/update"
 
 const updateDatabaseEntry = (query, params, modules, cb) => {
   const { queryDb, logger } = modules
@@ -25,3 +25,5 @@ export const updateUser = (...args) => updateDatabaseEntry(updateAdditionalUser,
 export const updateOrderToConfirm = (...args) => updateDatabaseEntry(updateToConfirmOrder, ...args)
 
 export const persistConfirmOrder = (...args) => updateDatabaseEntry(saveAlbumnFile, ...args)
+
+export const forceQualifyImage = (...args) => updateDatabaseEntry(qualifyImage, ...args)

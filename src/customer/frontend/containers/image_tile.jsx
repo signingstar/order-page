@@ -21,19 +21,10 @@ class ImageTileConfiguration extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { images } = store
+  const { images, albums } = store
   const { index, id, albumId } = ownProps
 
-  let imageList = []
-  if(albumId) {
-    imageList = images[albumId].files
-  } else {
-    for(let album in images) {
-      imageList = imageList.concat(images[album].files)
-    }
-  }
-
-  const image = Object.assign({}, imageList[index], {index})
+  const image = Object.assign({}, images[id], {index, id})
 
   return {
     image

@@ -44,47 +44,52 @@ class FinalizeSelection extends Component {
 
   // actual animation-related logic
   getDefaultStyles() {
-    const { images } = this.props
-    return images.map(image => ({data: image, key: image.id, style: {height: 0, opacity: 1}}))
+    const { images, imageIdList, albums } = this.props
+
+    return imageIdList.map(imageId => ({data: Object.assign({}, images[imageId], {imageId, albumName: albums[images[imageId]]}), key: imageId, style: {height: 0, opacity: 1}}))
   }
 
   isQualifyingImage(filter, score, forceQualified = {}) {
-    const {reaction_type} = forceQualified
+    const {reaction} = forceQualified
 
     switch(filter) {
       case ALL:
         return true
       case QUALIFIED:
-        return reaction_type === QUALIFIED || (reaction_type !== UNQUALIFIED && score > 0)
+        return reaction === QUALIFIED || (reaction !== UNQUALIFIED && score > 0)
       case UNQUALIFIED:
-        return reaction_type === UNQUALIFIED || (reaction_type !== QUALIFIED && !score)
+        return reaction === UNQUALIFIED || (reaction !== QUALIFIED && (!score || score < 1))
     }
 
     return true
   }
 
   getQualifiedImages() {
-    const { images } = this.props
+    const { images, imageIdList } = this.props
 
-    return images.filter(image => {
-      const {filename, score, forceQualify} = image
-      const qualified = this.isQualifyingImage(QUALIFIED, score, forceQualify)
+    return imageIdList.filter(imageId => {
+      const image = images[imageId]
+      const {filename, score, force_qualify} = image
+      const qualified = this.isQualifyingImage(QUALIFIED, score, force_qualify)
       image.qualified = qualified
       return qualified
     })
   }
 
   getStyles() {
-    const { images } = this.props
+    const { images, imageIdList, albums } = this.props
     const { value, filter, previewMode } = this.state;
-    const filteredImages = images.filter(({filename, score, forceQualify}) => {
-      return this.isQualifyingImage(filter, score, forceQualify)
-    })
 
-    return filteredImages.map((image, i) => {
+    return imageIdList.filter(imageId => {
+      const { score, force_qualify} = images[imageId]
+      return this.isQualifyingImage(filter, score, force_qualify)
+    })
+    .map((imageId, i) => {
+      const image = images[imageId]
+      const albumName = albums[image.album_id].name
       return {
-        data: Object.assign({}, image, {filter}),
-        key: image.id,
+        data: Object.assign({}, image, {filter, imageId, albumName}),
+        key: imageId,
         style: {
           height: spring(previewMode === 'thumbnail' ? 95 : 40, presets.gentle),
           opacity: spring(1, presets.gentle)
@@ -109,11 +114,12 @@ class FinalizeSelection extends Component {
   }
 
   assignScoreToImages() {
-    const { images, updateScoreInStore } = this.props
+    const { images, imageIdList, updateScoreInStore } = this.props
     const scores = {}
 
-    images.forEach(image => {
-      const { id, score, liked, album_id } = image
+    imageIdList.forEach(imageId => {
+      const image = images[imageId]
+      const { score, liked, album_id } = image
       let tempScore = 0
 
       if(!image.liked) {
@@ -125,7 +131,7 @@ class FinalizeSelection extends Component {
       })
 
       if(score !== tempScore) {
-        scores[image.id] = {score: tempScore, album_id}
+        scores[imageId] = {score: tempScore, album_id}
       }
     })
 
@@ -138,28 +144,33 @@ class FinalizeSelection extends Component {
     this.setState({filter})
   }
 
-  componentWillReceiveProps() {
-    this.setState({qualifiedCount: this.getQualifiedImages().length})
-  }
-
   qualifyImage(imageId, albumId) {
     const { updateImageQualificationInStore, order_id } = this.props
     updateImageQualificationInStore(imageId, albumId, QUALIFIED)
-    updateQualification({image_id: imageId, order_id, reaction: QUALIFIED}, ({res, err}) => console.log(res))
+    updateQualification({image_id: imageId, order_id, reaction: QUALIFIED}, ({res, err}) => {
+      if(err) {
+        updateImageQualificationInStore(imageId, albumId, UNQUALIFIED)
+        console.log(err)
+      }
+    })
   }
 
   unqualifyImage(imageId, albumId) {
     const { updateImageQualificationInStore, order_id } = this.props
     updateImageQualificationInStore(imageId, albumId, UNQUALIFIED)
-    updateQualification({image_id: imageId, order_id, reaction: UNQUALIFIED}, ({res, err}) => console.log(res))
+    updateQualification({image_id: imageId, order_id, reaction: UNQUALIFIED}, ({res, err}) => {
+      if(err) {
+        updateImageQualificationInStore(imageId, albumId, QUALIFIED)
+        console.log(err)
+      }
+    })
   }
 
   render() {
-    const { images } = this.props
+    const { imageIdList } = this.props
 
     return (
       <FinalizeSelectionComponent
-        images={images}
         handleChange={this.handleChange}
         willEnter={this.willEnter}
         willLeave={this.willLeave}
@@ -168,7 +179,7 @@ class FinalizeSelection extends Component {
         value={this.state.value}
         updateFilter={this.updateFilter}
         qualifiedCount={this.state.qualifiedCount}
-        totalCount={images.length}
+        totalCount={imageIdList.length}
         qualifyImage={this.qualifyImage}
         unqualifyImage={this.unqualifyImage}
         filter={this.state.filter}
@@ -180,16 +191,18 @@ class FinalizeSelection extends Component {
 }
 
 const mapStateToProps = (store) => {
-  const { images } = store
-  let imageList = []
+  const { images, albums } = store
+  let imageIdList = []
 
-  for(let album in images) {
-    imageList = imageList.concat(images[album].files)
+  for(let albumId in albums) {
+    imageIdList = imageIdList.concat(albums[albumId].files)
   }
 
   return {
     order_id: store.order.id,
-    images: imageList
+    imageIdList,
+    images,
+    albums
   }
 }
 

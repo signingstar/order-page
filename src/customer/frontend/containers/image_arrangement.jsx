@@ -16,25 +16,23 @@ class ImageConfiguration extends Component {
       return
     }
 
-    getImageFeedback({order_id}, ({res, err}) => {
-      if(!err) {
-        return onMergeReactions(res)
-      }
-
-      console.log(err)
-    })
+    // getImageFeedback({order_id}, ({res, err}) => {
+    //   if(!err) {
+    //     return onMergeReactions(res)
+    //   }
+    // })
   }
 
   render() {
-    const { images, pathname, location: {query} } = this.props
+    const { pathname, albums, location: {query} } = this.props
     const album_id = query && query.album ? query.album : undefined
     let imageList = []
 
     if(album_id) {
-      imageList = images[album_id].files
+      imageList = albums[album_id].files
     } else {
-      for(let album in images) {
-        imageList = imageList.concat(images[album].files)
+      for(let album in albums) {
+        imageList = imageList.concat(albums[album].files)
       }
     }
 
@@ -49,10 +47,10 @@ class ImageConfiguration extends Component {
 }
 
 const mapStateToProps = (store) => {
-  const { images, order } = store
+  const { images, order, albums } = store
 
   return {
-    images,
+    albums,
     order_id: order.id,
     mergeStatus: order.merged
   }

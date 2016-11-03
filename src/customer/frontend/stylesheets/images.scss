@@ -116,7 +116,7 @@
       &.thumbnail {
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
-        color: $button-bg-lightred;
+        color: $button-bg-lighterred;
         margin-bottom: 0;
 
         &.selected {
@@ -205,8 +205,8 @@
         height: 90px;
       }
 
-      .name {
-        flex-grow: 3;
+      .file-name {
+        flex-grow: 2;
         max-width: 400px;
       }
 
