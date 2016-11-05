@@ -23,15 +23,11 @@ class ImageModalTileConfiguration extends Component {
   }
 
   updateLocalState(props) {
-    const { state, imageIdList, params: {fileName} } = props
+    const { state } = props
 
     if(state) {
       this.setState({index: state.index})
-    } else {
-      const elemIndex = imageIdList.findIndex(entry => entry.filename === fileName)
-      this.setState({index: elemIndex})
     }
-
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,7 +38,7 @@ class ImageModalTileConfiguration extends Component {
     const { imageIdList } = this.props
     const lastElementIndex = imageIdList.length - 1
 
-    if(this.state.index < lastElementIndex ) {
+    if(typeof this.state.index !== 'undefined' && this.state.index < lastElementIndex ) {
       this.setState({index: this.state.index + 1})
     }
   }
@@ -56,7 +52,7 @@ class ImageModalTileConfiguration extends Component {
   getNavLink(index, originalUrl, albumId, right) {
     const { imageIdList } = this.props
 
-    if((right && index >= imageIdList.length-1) || (!right && index <= 0)) {
+    if(typeof index === 'undefined' || (right && index >= imageIdList.length-1) || (!right && index <= 0)) {
       return
     }
 
@@ -78,9 +74,9 @@ class ImageModalTileConfiguration extends Component {
   }
 
   render() {
-    const { onClose, isShowing, images, pathname, params, state, originalUrl, albumId, imageIdList } = this.props
+    const { onClose, isShowing, images, pathname, state, originalUrl, albumId, imageIdList, imageId } = this.props
     const { index } = this.state
-    const image = Object.assign({}, images[imageIdList[index]], {index})
+    const image = index > -1 ? Object.assign({}, images[imageIdList[index]], {index}) : images[imageId]
 
     const previousLink = this.getNavLink(index, originalUrl, albumId, false)
     const nextLink = this.getNavLink(index, originalUrl, albumId, true)

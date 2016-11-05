@@ -37,41 +37,18 @@ const findImage = (albumId, newState, index) => {
 
 }
 
-const updateReaction = (index, value, state, albumId) => {
-  const newState = Object.assign({}, state)
-
-  let album, image
-
-  if(albumId) {
-    album = Object.assign({}, newState[albumId])
-    album.files = album.files.slice()
-    image = album.files[index]
-  } else {
-    let currentIndex = 0
-    for(let album in newState) {
-      const currentAlbumLength = newState[album].files.length
-      if(index >= currentIndex + currentAlbumLength) {
-        currentIndex += currentAlbumLength
-      } else {
-        album = Object.assign({}, newState[album])
-        album.files = album.files.slice()
-        image = album.files[index - currentIndex]
-        break
-      }
-    }
-  }
+const updateReaction = (id, value, images) => {
+  if(!images[id]) return images
+  let image = Object.assign({}, images[id])
 
   image[LIKES] = value
   image[LIKED] = image[LIKED] || []
-  const reactionObj = image[LIKED].find(like => like.name === 'You')
 
-  if(reactionObj) {
-    reactionObj.reaction_type = value
-  } else {
-    image[LIKED].push({name: 'You', reaction_type: value})
-  }
+  image[LIKED] = image[LIKED].filter(likeElem => likeElem.name !== 'You')
 
-  return newState
+  image[LIKED].push({name: 'You', reaction_type: value})
+
+  return Object.assign({}, images, {[id]: image})
 }
 
 const mergeReactions = (obj, state) => {
@@ -126,7 +103,7 @@ const images = (state = {}, {type, params = {}}) => {
 
   switch (type) {
     case UPDATE_REACTION:
-      return updateReaction(index, value, state, albumId)
+      return updateReaction(id, value, state)
 
     case MERGE_REACTIONS:
       return mergeReactions(params, state)

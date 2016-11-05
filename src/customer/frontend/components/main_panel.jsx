@@ -6,6 +6,7 @@ import ImageTiles from "../containers/image_arrangement"
 import AddUser from "../containers/add_user"
 import AlbumList from "../containers/album_list"
 import FinalizeSelection from "../containers/finalize_selection"
+import ImagesLiked from "../containers/images_liked"
 
 const MainPanel = ({ order, usersHash, query }) => {
   const { role, id } = order
@@ -50,6 +51,15 @@ const MainPanel = ({ order, usersHash, query }) => {
                   Finalize Selection
                 </Link>
               </li>
+              <li className='nav-left'>
+                <Link
+                  to={`/order/${usersHash}/${id}/liked`}
+                  activeClassName='active'
+                >
+                  <span className='glyphicon glyphicon-thumbs-up icon'></span>
+                  Images Liked
+                </Link>
+              </li>
             </ul>
           : null
         }
@@ -58,6 +68,7 @@ const MainPanel = ({ order, usersHash, query }) => {
         <Match exactly pattern='/order/:usersHash/:orderId' component={ImageTiles} />
         <Match exactly pattern='/order/:usersHash/:orderId/adduser' component={AddUser} />
         <Match exactly pattern='/order/:usersHash/:orderId/finalize' component={FinalizeSelection} />
+        <Match exactly pattern='/order/:usersHash/:orderId/liked' component={ImagesLiked} />
       </div>
     </div>
   )

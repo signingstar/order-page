@@ -8,7 +8,7 @@ import { DISLIKE, LIKE, LOVE, ALL, QUALIFIED, UNQUALIFIED } from "../actions"
 
 const scoreMap = { [LIKE]: 1, [DISLIKE]: -1, [LOVE]: 2}
 
-class FinalizeSelection extends Component {
+class ConfigureFinalize extends Component {
   constructor() {
     super()
 
@@ -42,13 +42,6 @@ class FinalizeSelection extends Component {
     this.setState({previewMode: mode})
   }
 
-  // actual animation-related logic
-  getDefaultStyles() {
-    const { images, imageIdList, albums } = this.props
-
-    return imageIdList.map(imageId => ({data: Object.assign({}, images[imageId], {imageId, albumName: albums[images[imageId]]}), key: imageId, style: {height: 0, opacity: 1}}))
-  }
-
   isQualifyingImage(filter, score, forceQualified = {}) {
     const {reaction} = forceQualified
 
@@ -74,6 +67,17 @@ class FinalizeSelection extends Component {
       image.qualified = qualified
       return qualified
     })
+  }
+
+  // actual animation-related logic
+  getDefaultStyles() {
+    const { images, imageIdList, albums } = this.props
+
+    return imageIdList.map(imageId => ({
+      data: Object.assign({}, images[imageId], {imageId, albumName: albums[images[imageId]]}),
+      key: imageId,
+      style: {height: 0, opacity: 1}
+    }))
   }
 
   getStyles() {
@@ -166,8 +170,12 @@ class FinalizeSelection extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({qualifiedCount: this.getQualifiedImages().length})
+  }
+
   render() {
-    const { imageIdList } = this.props
+    const { imageIdList, pathname } = this.props
 
     return (
       <FinalizeSelectionComponent
@@ -185,6 +193,7 @@ class FinalizeSelection extends Component {
         filter={this.state.filter}
         handleModeChange={this.handleModeChange}
         viewMode={this.state.previewMode}
+        pathname={pathname}
       />
     )
   }
@@ -221,4 +230,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(FinalizeSelection)
+)(ConfigureFinalize)

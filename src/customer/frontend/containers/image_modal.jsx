@@ -2,18 +2,24 @@ import React, {Component} from "react"
 import { connect } from "react-redux"
 import Redirect from "react-router/Redirect"
 
-import ImageFull from "../containers/image_modal_tile"
+import ImageModalTile from "../containers/image_modal_tile"
 
 class ImageModal extends Component {
   constructor() {
     super()
 
-    this.state = {
-      isShowingModal: true
-    }
+    this.state = {}
 
     this.handleClose = this.handleClose.bind(this)
     this.handleClick = this.handleClick.bind(this)
+  }
+
+  componentWillMount() {
+    const { params } = this.props
+
+    if(params.fileName.length > 10) {
+      this.setState({isShowingModal: true})
+    }
   }
 
   handleClick() {
@@ -28,13 +34,14 @@ class ImageModal extends Component {
     const { params, pathname, location: {state} } = this.props
     const {isShowingModal} = this.state
     const { usersHash, orderId, fileName } = params
+    if(fileName.length < 10) return null
     const originalUrl = state ? state.originalUrl : `/order/${usersHash}/${orderId}`
     const albumId = state ? state.albumId : undefined
-    if(!state) return null
+    if(!state) return null // TODO: WTH
 
     return (
           isShowingModal ?
-            <ImageFull
+            <ImageModalTile
               onClick={this.handleClick}
               onClose={this.handleClose}
               isShowing={isShowingModal}
@@ -42,6 +49,7 @@ class ImageModal extends Component {
               state={state}
               originalUrl={originalUrl}
               albumId={albumId}
+              imageId={fileName}
             />
           : <Redirect to={{
             pathname: originalUrl,
@@ -52,14 +60,7 @@ class ImageModal extends Component {
 }
 
 const mapStateToProps = (store, ownProps) => {
-  const { images } = store
-  let imageList = []
-  for(let album in images) {
-    imageList = imageList.concat(images[album].files)
-  }
-
   return {
-    images: imageList
   }
 }
 

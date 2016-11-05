@@ -1,10 +1,11 @@
 import React from "react"
 import { TransitionMotion } from "react-motion"
+import Link from "react-router/Link"
 
 import FinalizeFilters from "./finalize_filters"
 import { ALL, QUALIFIED, UNQUALIFIED } from "../actions"
 
-const FinalizeSelection = ({filter, handleChange, willEnter, willLeave, getStyles, getDefaultStyles, value, updateFilter, totalCount, qualifiedCount, qualifyImage, unqualifyImage, handleModeChange, viewMode}) => {
+const FinalizeSelection = ({filter, pathname, handleChange, willEnter, willLeave, getStyles, getDefaultStyles, value, updateFilter, totalCount, qualifiedCount, qualifyImage, unqualifyImage, handleModeChange, viewMode}) => {
   const styles = getStyles()
 
   return (
@@ -29,7 +30,13 @@ const FinalizeSelection = ({filter, handleChange, willEnter, willLeave, getStyle
               <li key={key} style={Object.assign(style, {backgroundColor: `#fff`})} className='filtered-item'>
                 { viewMode === 'thumbnail' ?
                   <div className='order-entry-item image'>
-                    <img src={srcSet.thumbnail ? `/${srcSet.thumbnail}` :  `/${JSON.parse(srcSet).thumbnail}`} />
+                    <Link to={{
+                      pathname: `/order/abc/148/${imageId}`,
+                      state: { originalUrl: pathname, from: 'finalize' }
+                    }}
+                    >
+                      <img src={srcSet.thumbnail ? `/${srcSet.thumbnail}` :  `/${JSON.parse(srcSet).thumbnail}`} />
+                    </Link>
                     {/* TODO: Fix parsing */}
                   </div>
                   : ''
