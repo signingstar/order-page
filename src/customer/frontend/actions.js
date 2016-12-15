@@ -1,4 +1,4 @@
-import {ajax} from "jquery"
+import { ajax, posting } from "jquery"
 
 export const LIKES = 'likes'
 export const LIKED = 'liked'
@@ -11,6 +11,9 @@ export const DEFAULT_REACTION = -1
 export const ALL = 'all'
 export const QUALIFIED = 'qualified'
 export const UNQUALIFIED = 'unqualified'
+
+export const THUMBNAIL_VIEW = 'thumbnail'
+export const LIST_VIEW = 'list'
 
 // ------------------- Customer Portal Actions --------------------------
 export const UPDATE_REACTION = 'UPDATE_REACTION'
@@ -80,6 +83,20 @@ export const updateImageQualification = (imageId, albumId, qualified) => {
   }
 }
 
+export const updateReactionFirstLoad = (files, imageSet) => {
+  return {
+    type: 'FIRST_LOAD',
+    params: { files, imageSet }
+  }
+}
+
+export const updateReactionChangeUser = (files, imageSet, user) => {
+  return {
+    type: 'CHANGE_USER',
+    params: {files, imageSet, user}
+  }
+}
+
 
 //------------------------------ AJAX calls -------------------------------
 
@@ -136,5 +153,12 @@ export const updateQualification = (data, cb) => {
   })
   .done((res, textStatus) => cb({res, textStatus}))
   .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}
+
+export const fetchImagesByUser = (data, cb) => {
+  const posting = post('/order/customer/byuser', data)
+
+  posting.done((res, textStatus) => cb({res}))
+  posting.fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 
 }

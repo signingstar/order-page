@@ -42,33 +42,6 @@ class ConfigureFinalize extends Component {
     this.setState({previewMode: mode})
   }
 
-  isQualifyingImage(filter, score, forceQualified = {}) {
-    const {reaction} = forceQualified
-
-    switch(filter) {
-      case ALL:
-        return true
-      case QUALIFIED:
-        return reaction === QUALIFIED || (reaction !== UNQUALIFIED && score > 0)
-      case UNQUALIFIED:
-        return reaction === UNQUALIFIED || (reaction !== QUALIFIED && (!score || score < 1))
-    }
-
-    return true
-  }
-
-  getQualifiedImages() {
-    const { images, imageIdList } = this.props
-
-    return imageIdList.filter(imageId => {
-      const image = images[imageId]
-      const {filename, score, force_qualify} = image
-      const qualified = this.isQualifyingImage(QUALIFIED, score, force_qualify)
-      image.qualified = qualified
-      return qualified
-    })
-  }
-
   // actual animation-related logic
   getDefaultStyles() {
     const { images, imageIdList, albums } = this.props
@@ -115,6 +88,33 @@ class ConfigureFinalize extends Component {
       height: spring(0),
       opacity: spring(0),
     }
+  }
+
+  isQualifyingImage(filter, score, forceQualified = {}) {
+    const {reaction} = forceQualified
+
+    switch(filter) {
+      case ALL:
+        return true
+      case QUALIFIED:
+        return reaction === QUALIFIED || (reaction !== UNQUALIFIED && score > 0)
+      case UNQUALIFIED:
+        return reaction === UNQUALIFIED || (reaction !== QUALIFIED && (!score || score < 1))
+    }
+
+    return true
+  }
+
+  getQualifiedImages() {
+    const { images, imageIdList } = this.props
+
+    return imageIdList.filter(imageId => {
+      const image = images[imageId]
+      const {filename, score, force_qualify} = image
+      const qualified = this.isQualifyingImage(QUALIFIED, score, force_qualify)
+      image.qualified = qualified
+      return qualified
+    })
   }
 
   assignScoreToImages() {

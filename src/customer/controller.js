@@ -243,8 +243,24 @@ const controller = ({modules}) => {
         if(err) return res.status(500).end()
         res.status(200).end()
       })
-    }
+    },
 
+    fetchImagesByUser:({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { session, body } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      // handle duplicate user names
+      const { user_name, order_id } = body
+      const { fetchImagesByUser } = RequestBuilder
+
+      fetchImagesByUser({order_id, user, reaction, image_id}, (err, result) => {
+        if(err) return res.status(500).end()
+        res.status(200).end()
+      })
+    }
   }
 }
 

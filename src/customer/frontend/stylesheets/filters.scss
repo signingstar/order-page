@@ -1,0 +1,91 @@
+.right-panel {
+  .fields .filters {
+    button {
+      border-radius: 3px;
+      font-size: 0.8rem;
+      margin-right: 7px;
+      padding: 6px 10px 10px;
+      width: 170px;
+
+      span {
+        font-size: 1.1rem;
+        padding-right: 0.3rem;
+        top: 3px;
+
+        &.glyphicon-picture {
+          color: $button-bg-cranesbill;
+        }
+
+        &.glyphicon-ok-circle {
+          color: $button-bg-lightergreen;
+        }
+
+        &.glyphicon-exclamation-sign {
+          color: $button-bg-yellow;
+        }
+
+        &.glyphicon-thumbs-up {
+          color: $button-bg-green;
+        }
+
+        &.glyphicon-thumbs-down {
+          color: $button-bg-yellow;
+        }
+
+        &.glyphicon-heart {
+          color: $button-bg-love;
+        }
+      }
+
+      &.selected {
+        &.all {
+          background-color: $button-bg-cranesbill;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+
+        &.qualified {
+          background-color: $button-bg-lightergreen;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+
+        &.unqualified {
+          background-color: $button-bg-yellow;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+
+        &.liked {
+          background-color: $button-bg-green;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+
+        &.disliked {
+          background-color: $button-bg-yellow;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+
+        &.loved {
+          background-color: $button-bg-love;
+          color: $white;
+          span {
+            color: $white;
+          }
+        }
+      }
+    }
+  }
+}

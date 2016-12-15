@@ -6,7 +6,7 @@ import ImageTiles from "../containers/image_arrangement"
 import AddUser from "../containers/add_user"
 import AlbumList from "../containers/album_list"
 import FinalizeSelection from "../containers/finalize_selection"
-import ImagesLiked from "../containers/images_liked"
+import ImagesLiked from "../containers/images_liked_by_person"
 
 const MainPanel = ({ order, usersHash, query }) => {
   const { role, id } = order

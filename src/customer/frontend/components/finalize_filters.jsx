@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ALL, QUALIFIED, UNQUALIFIED } from "../actions"
+import PreviewModes from "./preview_modes"
 
 const FinalizeFilters = ({filter, updateFilter, totalCount, qualifiedCount, viewMode, handleModeChange}) => {
   const allClass = 'glyph filter all' + ( filter === ALL ? ' selected' : '')
@@ -39,15 +40,7 @@ const FinalizeFilters = ({filter, updateFilter, totalCount, qualifiedCount, view
           Filtered Out ({totalCount - qualifiedCount})
         </button>
       </div>
-      <div className='preview-mode'>
-        <button className={viewMode === 'list' ? 'selected list' : 'list'} type='button' onClick={()=> handleModeChange('list')} title='List View'>
-          <span className='glyphicon glyphicon-list'></span>
-        </button>
-        <button className={viewMode === 'thumbnail' ? 'selected thumbnail' : 'thumbnail'} type='button' onClick={()=> handleModeChange('thumbnail')} title='Thumbnail View'>
-          <span className='glyphicon glyphicon-th'></span>
-        </button>
-      </div>
-
+      <PreviewModes previewMode={viewMode} updatePreviewMode={handleModeChange} />
     </div>
   )
 }

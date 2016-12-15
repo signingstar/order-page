@@ -1,0 +1,81 @@
+.right-panel .thumbnail {
+  display: flex;
+  flex-wrap: wrap;
+
+  figure.multi-row {
+    display: inline-block;
+    margin: 15px 8px;
+
+    .item-tile {
+      align-items: center;
+      width: 237px;
+
+      h2 {
+        font-size: 18px;
+        font-weight: 400;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin-top: 5px;
+      }
+
+      .item-image {
+        background-color: $dark-gray;
+        height: 168px;
+        text-align: center;
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+        }
+        img{
+          height: auto;
+          max-width: 237px;
+          max-height: 168px;
+          width: auto;
+          vertical-align: middle;
+        }
+      }
+    }
+
+    figcaption {
+      background-color: $lightest-gray;
+      height: 75px;
+
+      .item-label {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .item-action {
+        margin-top: 10px;
+        text-align: center;
+
+        .button-style {
+          display: inline-block;
+
+          a {
+            background-color: $link-color-normal;
+            color: $link-color-bg;
+            display: block;
+            font-size: 16px;
+            line-height: 35px;
+            text-align: center;
+            width: 125px;
+
+            &:hover {
+              background-color: $link-color-hover;
+            }
+          }
+        }
+      }
+    }
+  }
+}
