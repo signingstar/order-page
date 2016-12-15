@@ -5,10 +5,10 @@ import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
 import { pick } from "underscore"
 
-import createStore from "./frontend/store";
-import CreateApp from "./frontend/components/app"
+import createStore from "./store";
+import CreateApp from "./components/app"
 import populateOrder from "./presenters/populate_order"
-import requestBuilder from "./request_builders"
+import requestBuilder from "../request_builders"
 
 const ReactComponent = ({location, userid, orderid}, {logger, queryDb, redisClient}, cb) => {
   let err = null

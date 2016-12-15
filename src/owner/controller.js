@@ -7,9 +7,9 @@ import path from "path"
 import layoutPresenter from "tisko-layout"
 import ReactComponent from "./react_server"
 import ReactComponentView from "./react_server_view"
-import { viewOwnerOrders } from "./database/api/view_order"
+import { viewOwnerOrders } from "../database/api/view_order"
 import { createOrder, processOrder, confirmOrder, viewOrderAsCustomer } from "./presenters/api_executor"
-import requestBuilder from "./request_builders"
+import requestBuilder from "../request_builders"
 
 
 let debug = require("debug")('Modules:Order:Controller')
@@ -29,7 +29,7 @@ const getUserObject = (session, responders, ajax, logger, location) => {
 
 const controller = ({modules}) => {
   const { pugCompiler, logger, jsAsset, cssAsset, queryDb, Mailer, redisClient } = modules
-  const srcPath = path.join(__dirname, '../', 'main')
+  const srcPath = path.join(__dirname, '../', '../', 'main')
   const renderHTML = pugCompiler(srcPath)
   const title = 'Tisko - Place an Order'
   const localModule = { logger, queryDb, redisClient }

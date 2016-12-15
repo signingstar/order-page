@@ -1,1 +1,1 @@
-module.exports = require('./lib/controller.js');
+module.exports = require('./lib/owner/controller.js');

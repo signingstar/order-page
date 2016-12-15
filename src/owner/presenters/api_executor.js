@@ -1,5 +1,5 @@
-import addOrder from "../database/api/add_order"
-import { updateOrder, updateOrderToConfirm } from "../database/api/db_updates"
+import addOrder from "../../database/api/add_order"
+import { updateOrder, updateOrderToConfirm } from "../../database/api/db_updates"
 
 import { validateOrderData, validateProcessOrderData, validateConfirmOrderData } from "./form_validator"
 const WEDDING = 'wedding'

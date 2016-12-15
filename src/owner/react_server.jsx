@@ -4,12 +4,11 @@ import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
 
-import createStore from "./frontend/store";
-import CreateApp from "./frontend/components/app"
-import OrderRequestBuilder from "./request_builders/creater/view_order"
-import { viewInProgressOrder } from "./database/api/view_order"
+import createStore from "./store"
+import CreateApp from "./components/app"
+import { viewInProgressOrder } from "../database/api/view_order"
 import populateOrder from "./presenters/populate_order"
-import requestBuilder from "./request_builders"
+import requestBuilder from "../request_builders"
 
 const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
@@ -37,7 +36,6 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
         if(pageInProgress) {
           if(orderid) {
             const orderInfo = viewOrder({orderid, userid})
-            // const requestOrderData = OrderRequestBuilder({userid, orderid}, {logger, queryDb, redisClient})
             Object.assign(requests, orderInfo)
           } else {
             return done({reason: 'order_not_found'})

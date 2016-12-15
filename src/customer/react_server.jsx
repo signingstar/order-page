@@ -5,8 +5,8 @@ import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
 import { pick } from "underscore"
 
-import createStore from "./frontend/store";
-import App from "./frontend/components/app"
+import createStore from "./store";
+import App from "./components/app"
 
 import { LIKES, LIKED } from "../globals"
 

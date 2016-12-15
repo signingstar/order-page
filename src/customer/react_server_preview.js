@@ -4,8 +4,8 @@ import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
 import { ServerRouter, createServerRenderContext } from "react-router"
 
-import createStore from "./frontend/preview/store";
-import App from "./frontend/preview/components/app"
+import createStore from "./preview/store";
+import App from "./preview/components/app"
 
 const albumifyImages = (imageList, albumList) => {
   let albums = {}
