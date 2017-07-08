@@ -1,8 +1,8 @@
 import async from "async"
-import React from "react";
+import React from "react"
 import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
-import { ServerRouter, createServerRenderContext } from "react-router"
+import { StaticRouter, createServerRenderContext } from "react-router"
 
 import createStore from "./store"
 import CreateApp from "./components/app"
@@ -54,9 +54,9 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
 
         let reactHTML = renderToString(
           <Provider store={store}>
-            <ServerRouter location={location} context={context}>
+            <StaticRouter location={location} context={context}>
               <CreateApp location={location} />
-            </ServerRouter>
+            </StaticRouter>
           </Provider>
         )
 

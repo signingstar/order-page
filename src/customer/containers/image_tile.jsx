@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 
-import ImageTile from "../components/image_tile"
+import ImageTile from "../components/image_tile/image_tile"
 
 class ImageTileConfiguration extends Component {
   constructor() {

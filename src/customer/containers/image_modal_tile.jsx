@@ -1,9 +1,9 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
-import Link from "react-router/Link"
+import Link from "react-router-dom/Link"
 
-import ImageModalTile from "../components/image_modal_tile"
-import NavLinks from "../components/nav_links"
+import ImageModalTile from "../components/modal/image_modal_tile"
+import NavLinks from "../components/modal/nav_links"
 
 class ImageModalTileConfiguration extends Component {
   constructor() {

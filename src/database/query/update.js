@@ -9,3 +9,5 @@ export const updateToConfirmOrder = `UPDATE orders.order SET status=$3, category
 export const saveAlbumnFile = `SELECT * FROM orders.persist_order($1, $2, $3, $4, $5, $6) AS customer_id;`
 
 export const qualifyImage = `UPDATE orders.order_item SET files=jsonb_set(files, array[$2, 'force_qualify'], $3::jsonb, true) WHERE order_id=$1`
+
+export const updateToFinalizeOrder = `UPDATE orders.order SET status=$3 WHERE on_behalf=$1 AND id=$2`

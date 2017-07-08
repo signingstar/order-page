@@ -1,5 +1,5 @@
 import React from "react"
-import Link from "react-router/Link"
+import Link from "react-router-dom/Link"
 
 const ChangeProduct = ({pathname, label, edit, orderId}) => {
   const orderLink = orderId ? <Link to={{pathname:`/orders/${orderId}`, state: {fromHeader: true}}}>#{orderId}</Link> : ''

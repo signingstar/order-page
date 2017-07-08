@@ -1,5 +1,5 @@
 import React from "react"
-import Link from "react-router/Link"
+import Link from "react-router-dom/Link"
 
 const ImageTile = ({pathname, albumId, image}) => {
   const { id, filename, destination, index, originalname } = image

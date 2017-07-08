@@ -1,12 +1,13 @@
 import React from "react"
-import Link from "react-router/Link"
-import Match from "react-router/Match"
+import {
+  Route,
+} from 'react-router-dom'
 
 import ImageTiles from "../containers/image_arrangement"
-import AddUser from "../containers/add_user"
+import AddUser from "../containers/users"
 import AlbumList from "../containers/album_list"
 import FinalizeSelection from "../containers/finalize_selection"
-import ImagesLiked from "../containers/images_liked_by_person"
+import ImagesLiked from "../containers/images_liked"
 
 const MainPanel = ({ order, usersHash, query }) => {
   const { role, id } = order
@@ -22,7 +23,7 @@ const MainPanel = ({ order, usersHash, query }) => {
               activeClassName='active'
               activeOnlyWhenExact
               isActive={(location) => (
-                (!location.query || !location.query.album) && location.pathname.match(/^\/order\/[a-z0-9]+\/[0-9]+$/)
+                (!location.query || !location.query.album) && location.pathname.Route(/^\/order\/[a-z0-9]+\/[0-9]+$/)
               )}
             >
               <span className='glyphicon glyphicon-picture icon'></span>
@@ -44,15 +45,6 @@ const MainPanel = ({ order, usersHash, query }) => {
               </li>
               <li className='nav-left'>
                 <Link
-                  to={`/order/${usersHash}/${id}/finalize`}
-                  activeClassName='active'
-                >
-                  <span className='glyphicon glyphicon-ok icon'></span>
-                  Finalize Selection
-                </Link>
-              </li>
-              <li className='nav-left'>
-                <Link
                   to={`/order/${usersHash}/${id}/liked`}
                   activeClassName='active'
                 >
@@ -60,15 +52,24 @@ const MainPanel = ({ order, usersHash, query }) => {
                   Images Liked
                 </Link>
               </li>
+              <li className='nav-left submit'>
+                <Link
+                  to={`/order/${usersHash}/${id}/finalize`}
+                  activeClassName='active'
+                >
+                  <span className='glyphicon glyphicon-ok icon'></span>
+                  Finalize & Submit
+                </Link>
+              </li>
             </ul>
           : null
         }
       </div>
       <div className='right-panel'>
-        <Match exactly pattern='/order/:usersHash/:orderId' component={ImageTiles} />
-        <Match exactly pattern='/order/:usersHash/:orderId/adduser' component={AddUser} />
-        <Match exactly pattern='/order/:usersHash/:orderId/finalize' component={FinalizeSelection} />
-        <Match exactly pattern='/order/:usersHash/:orderId/liked' component={ImagesLiked} />
+        <Route exact path='/order/:usersHash/:orderId' component={ImageTiles} />
+        <Route exact path='/order/:usersHash/:orderId/adduser' component={AddUser} />
+        <Route exact path='/order/:usersHash/:orderId/finalize' component={FinalizeSelection} />
+        <Route exact path='/order/:usersHash/:orderId/liked' component={ImagesLiked} />
       </div>
     </div>
   )

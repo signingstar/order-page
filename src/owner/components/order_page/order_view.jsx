@@ -1,5 +1,5 @@
 import React from "react"
-import Link from "react-router/Link"
+import Link from "react-router-dom/Link"
 
 import AlbumList from "../../containers/order_page/album_list"
 import PreviewOrder from "../../containers/order_page/preview"

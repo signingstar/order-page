@@ -1,5 +1,5 @@
 
-import { validateOrderDat, validateCustomerLinkData } from "./form_validator"
+import { updateOrderToFinalize } from "../../database/api/db_updates"
 
 export const createOrder = ({params, body, session}, { responders, logger, queryDb }) => {
   const {user} = session
@@ -48,5 +48,14 @@ export const viewOrderAsCustomer = ({orderId, session, location}, {responders, l
       responders.json(result)
     }
     responders.json(null, {message: 'Internal Server Error'}, 500 )
+  })
+}
+
+export const finalizeCustomerOrder = ({params, body, userId}, { logger, queryDb }, cb) => {
+  const { order_id } = body
+  const queryParams = [userId, order_id, 'review_complete']
+
+  updateOrderToFinalize(queryParams, {logger, queryDb}, (err, result) => {
+    cb({err, orderData, result})
   })
 }

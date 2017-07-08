@@ -162,3 +162,14 @@ export const fetchImagesByUser = (data, cb) => {
   posting.fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
 
 }
+
+export const finalizeOrder = (data, cb) => {
+  ajax({
+    method: 'POST',
+    url: '/order/customer/finalize',
+    data,
+    dataType: 'json'
+  })
+  .done((res, textStatus) => cb({res}))
+  .fail((xhr, status, err) => cb({err: xhr.responseJSON, status: xhr.status}))
+}

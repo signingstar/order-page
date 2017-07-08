@@ -1,6 +1,6 @@
-import { createStore, compose, applyMiddleware } from "redux";
+import { createStore, compose, applyMiddleware } from "redux"
 
-import orderApp from "./reducers";
+import orderApp from "./reducers"
 
 const configureStore = (initialState) => {
   const orderStore = createStore(
@@ -11,4 +11,4 @@ const configureStore = (initialState) => {
   return orderStore
 }
 
-export default configureStore;
+export default configureStore

@@ -101,6 +101,11 @@
         border-bottom: 1px dotted $light-gray;
         margin-top: 15px;
         padding: 5px 0;
+
+        .submit {
+          border-top: 1px dotted $light-gray;
+          padding-top: 15px;
+        }
       }
     }
   }

@@ -1,26 +1,35 @@
 import React from "react"
-import Match from 'react-router/Match'
-import Miss from 'react-router/Miss'
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from 'react-router-dom'
 
 import Home from "../containers/home"
 import ImageModal from "../containers/image_modal"
+import FinalizedOrder from "../containers/finalized_order"
 
 const App = ({pathname}) => (
-  <div className='main-section-content'>
-    <Match pattern="/order/:usersHash/:orderId" component={Home} />
-    <MatchImage pattern="/order/:usersHash/:orderId/:fileName" component={ImageModal} />
-  </div>
+  <Router>
+    <Switch>
+      <div className='main-section-content'>
+        <Route path="/order/:usersHash/:orderId" component={Home} />
+        <MatchImage path="/order/:usersHash/:orderId/:fileName" component={ImageModal} />
+        <Route exact path='/order/finalize' component={FinalizedOrder} />
+      </div>
+    </Switch>
+  </Router>
 )
 
 const MatchImage = ({ component:Component, ...rest }) => (
-  <Match {...rest}
+  <Route {...rest}
     render={(matchProps) => {
       const imageId = matchProps.params.fileName
 
       return (
-      imageId.match(/^[a-z0-9]{32}$/) ?
-        <Component {...matchProps}/>
-      : null
+        imageId.Route(/^[a-z0-9]{32}$/) ?
+          <Component {...matchProps}/>
+        : null
       )
     }}
   />

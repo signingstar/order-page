@@ -2,8 +2,8 @@ import React, {Component} from "react"
 import {connect} from "react-redux"
 import { spring, presets } from "react-motion"
 
-import FinalizeSelectionComponent from "../components/finalize_selection"
-import { updateScore, updateImageQualification, updateQualification } from "../actions"
+import FinalizeSelectionComponent from "../components/finalize/finalize_selection"
+import { updateScore, updateImageQualification, updateQualification, finalizeOrder } from "../actions"
 import { DISLIKE, LIKE, LOVE, ALL, QUALIFIED, UNQUALIFIED } from "../actions"
 
 const scoreMap = { [LIKE]: 1, [DISLIKE]: -1, [LOVE]: 2}
@@ -21,6 +21,7 @@ class ConfigureFinalize extends Component {
     this.qualifyImage = this.qualifyImage.bind(this)
     this.unqualifyImage = this.unqualifyImage.bind(this)
     this.handleModeChange = this.handleModeChange.bind(this)
+    this.finalizeOrder = this.finalizeOrder.bind(this)
 
     this.state = {
       value: '',
@@ -51,6 +52,13 @@ class ConfigureFinalize extends Component {
       key: imageId,
       style: {height: 0, opacity: 1}
     }))
+  }
+
+  finalizeOrder(e) {
+    e.preventDefault()
+    const { order_id, updateOrder } = this.props
+
+    updateOrder(order_id)
   }
 
   getStyles() {
@@ -194,6 +202,7 @@ class ConfigureFinalize extends Component {
         handleModeChange={this.handleModeChange}
         viewMode={this.state.previewMode}
         pathname={pathname}
+        finalizeOrder={this.finalizeOrder}
       />
     )
   }
@@ -223,6 +232,10 @@ const mapDispatchToProps = (dispatch) => {
 
     updateImageQualificationInStore: (imageId, albumId, qualify) => {
       dispatch(updateImageQualification(imageId, albumId, qualify))
+    },
+
+    updateOrder: (order_id) => {
+      dispatch(finalizeOrder({order_id}))
     }
   }
 }

@@ -9,6 +9,7 @@ import { viewCustomerOrder } from "../database/api/view_order"
 import { addUser, updateUser } from "../database/api/db_updates"
 import { validateOrderData, validateCustomerLinkData } from "./presenters/form_validator"
 import requestBuilder from "../request_builders"
+import { finalizeCustomerOrder } from "./presenters/api_executor"
 
 let debug = require("debug")('Modules:Order:Controller')
 
@@ -169,24 +170,7 @@ const controller = ({modules}) => {
       async.waterfall(
         [
           (done) => getImages(order_id, done),
-          (files, done) => {
-            let filesReactionMap = {}
-
-            files.forEach((file, index) => {
-              const { id, album_id } = file
-              getImageReactions({order_id, image_id: id, user_id: user.id, album_id}, (err, res) => {
-                if(err) return done(err)
-
-                if(res && res !== null) {
-                  filesReactionMap[id] = res[id]
-                }
-
-                if(index === files.length -1 ) {
-                  return done(null, filesReactionMap)
-                }
-              })
-            })
-          },
+          (files, done) => getImageReactions({order_id, undefined, user_id: user.id, files}, (err, res) => done(null, res)),
           (filesMap, done) => {
             responders.json(filesMap)
           }
@@ -245,7 +229,7 @@ const controller = ({modules}) => {
       })
     },
 
-    fetchImagesByUser:({attributes, responders, page}) => {
+    fetchImagesByUser: ({attributes, responders, page}) => {
       const { req, res } = attributes
       const { session, body } = req
 
@@ -259,6 +243,30 @@ const controller = ({modules}) => {
       fetchImagesByUser({order_id, user, reaction, image_id}, (err, result) => {
         if(err) return res.status(500).end()
         res.status(200).end()
+      })
+    },
+
+    finalizeOrderByCustomer: ({attributes, responders, page}) => {
+      const { req, res } = attributes
+      const { params, body, session, url: location } = req
+
+      const user = getUserObject(session, responders, true)
+      if (!user) return
+
+      finalizeCustomerOrder({params, body, userId: user.id}, {logger, queryDb }, ({err, orderData, result}) => {
+        if(err) {
+          return responders.json(null, err, err.statusCode || 500)
+        }
+
+        const { order_id } = orderData
+
+        redisClient.hget(`order_id_${order_id}`, 'albums', (err, res) => {
+          if(err) return responder.json(err)
+
+          redisClient.hmset(`order_id_${order_id}`, ['status', 'finalized'])
+        })
+
+        responders.json(result)
       })
     }
   }

@@ -1,6 +1,6 @@
 import React from "react"
-import Link from "react-router/Link"
-import Match from "react-router/Match"
+import Link from "react-router-dom/Link"
+import Route from "react-router/Route"
 
 import ImageTiles from "../containers/image_arrangement"
 import AddUser from "../containers/add_user"
@@ -20,7 +20,7 @@ const MainPanel = ({ order, usersHash, query }) => {
               activeClassName='active'
               activeOnlyWhenExact
               isActive={(location) => (
-                (!location.query || !location.query.album) && location.pathname.match(/^\/orders\/[a-z0-9]+\/preview$/)
+                (!location.query || !location.query.album) && location.pathname.Route(/^\/orders\/[a-z0-9]+\/preview$/)
               )}
             >
               All Photos
@@ -41,8 +41,8 @@ const MainPanel = ({ order, usersHash, query }) => {
         </ul>
       </div>
       <div className='right-panel'>
-        <Match exactly pattern='/orders/:orderId/preview' component={ImageTiles} />
-        <Match exactly pattern='/orders/:orderId/preview/addUser' component={AddUser} />
+        <Route exactly pattern='/orders/:orderId/preview' component={ImageTiles} />
+        <Route exactly pattern='/orders/:orderId/preview/addUser' component={AddUser} />
       </div>
     </div>
   )

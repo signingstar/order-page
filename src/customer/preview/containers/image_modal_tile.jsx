@@ -1,6 +1,6 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
-import Link from "react-router/Link"
+import Link from "react-router-dom/Link"
 
 import ImageModalTile from "../components/image_modal_tile"
 

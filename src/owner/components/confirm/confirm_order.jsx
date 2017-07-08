@@ -1,5 +1,5 @@
 import React, {Component} from "react"
-import Link from 'react-router/Link'
+import Link from 'react-router-dom/Link'
 import Select from "react-select"
 
 import AlbumList from "../../containers/confirm/album_list"

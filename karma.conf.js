@@ -1,4 +1,5 @@
-var webpackConfig = require('./webpack.config');
+var webpackConfig = require("./webpack.config")
+var path = require("path")
 
 module.exports = function (config) {
   config.set({
@@ -25,8 +26,8 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
-    autoWatch: false,
-    singleRun: true,
+    autoWatch: true,
+    singleRun: false,
     concurrency: Infinity
   })
 }

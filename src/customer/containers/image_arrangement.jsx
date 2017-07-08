@@ -1,7 +1,7 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 
-import ImageTiles from "../components/image_tiles"
+import ImageTiles from "../components/image_tile/image_tiles"
 import { getImageFeedback, mergeReactions } from "../actions"
 
 class ImageConfiguration extends Component {

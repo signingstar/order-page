@@ -1,6 +1,10 @@
 import React from "react"
-import Match from 'react-router/Match'
-import Miss from 'react-router/Miss'
+
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+} from 'react-router-dom'
 
 import Products from "../containers/product_list"
 import InitiateOrder from "../containers/initiate_order"
@@ -10,15 +14,19 @@ import SubmitOrder from "./submit_order"
 import ViewOrder from "../containers/order_page/order_view"
 
 const App = () => (
-    <div className='main-section-content'>
-      <Match exactly pattern="/orders/:orderId" component={ViewOrder} />
-      <Match exactly pattern="/order" component={InitiateOrder} />
-      <Match exactly pattern="/order/products" component={Products} />
-      <Match exactly pattern="/order/process" component={ProcessOrder} />
-      <Match pattern="/order/confirm" component={ConfirmOrder} />
-      <Match pattern="/order/submit" component={SubmitOrder} />
-      <Miss component={()=> <div>Not Found</div>} />
-    </div>
+  <Router>
+    <Switch>
+      <div className='main-section-content'>
+        <Route exact path="/orders/:orderId" component={ViewOrder} />
+        <Route exact path="/order" component={InitiateOrder} />
+        <Route exact path="/order/products" component={Products} />
+        <Route exact path="/order/process" component={ProcessOrder} />
+        <Route path="/order/confirm" component={ConfirmOrder} />
+        <Route path="/order/submit" component={SubmitOrder} />
+        <Route component={()=> <div>Not Found</div>} />
+      </div>
+    </Switch>
+  </Router>
 )
 
 export default App

@@ -1,8 +1,8 @@
 import React, {Component} from "react"
 import {connect} from "react-redux"
 
-import FeedbackPanel from "../components/feedback_panel"
-import FeedbackPanelInModel from "../components/feedback_panel_modal"
+import FeedbackPanel from "../components/feedback/feedback_panel"
+import FeedbackPanelInModel from "../components/feedback/feedback_panel_modal"
 import { updateReaction, commentOnImage, sendImageFeedback } from "../actions"
 import { DISLIKE, LIKE, LOVE, DEFAULT_REACTION } from "../actions"
 
