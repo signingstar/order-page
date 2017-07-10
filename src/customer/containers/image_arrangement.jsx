@@ -24,7 +24,7 @@ class ImageConfiguration extends Component {
   }
 
   render() {
-    const { pathname, albums, location: {query} } = this.props
+    const { location: {pathname}, albums, location: {query} } = this.props
     const album_id = query && query.album ? query.album : undefined
     let imageList = []
 

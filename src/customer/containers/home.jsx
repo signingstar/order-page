@@ -10,7 +10,7 @@ class Home extends Component {
   }
 
   render() {
-    const { order, images, pathname, pattern, params, location } = this.props
+    const { order, images, pathname, pattern, match: {params}, location } = this.props
     const { usersHash, orderId } = params
     const homePage = pattern !== '/order/:usersHash/:orderId/:fileName'
     const { role } = order

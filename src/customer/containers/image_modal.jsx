@@ -15,7 +15,7 @@ class ImageModal extends Component {
   }
 
   componentWillMount() {
-    const { params } = this.props
+    const { match: {params} } = this.props
 
     if(params.fileName.length > 10) {
       this.setState({isShowingModal: true})
@@ -31,10 +31,11 @@ class ImageModal extends Component {
   }
 
   render() {
-    const { params, pathname, location: {state} } = this.props
+    const { match: {params}, location: {pathname, state} } = this.props
+    console.log("params"+ JSON.stringify(params))
     const {isShowingModal} = this.state
     const { usersHash, orderId, fileName } = params
-    if(fileName.length < 10) return null
+    // if(fileName.length < 10) return null
     const originalUrl = state ? state.originalUrl : `/order/${usersHash}/${orderId}`
     const albumId = state ? state.albumId : undefined
     if(!state) return null // TODO: WTH

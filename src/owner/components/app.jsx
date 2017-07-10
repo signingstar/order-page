@@ -1,5 +1,4 @@
 import React from "react"
-
 import {
   BrowserRouter as Router,
   Route,
@@ -14,7 +13,6 @@ import SubmitOrder from "./submit_order"
 import ViewOrder from "../containers/order_page/order_view"
 
 const App = () => (
-  <Router>
     <Switch>
       <div className='main-section-content'>
         <Route exact path="/orders/:orderId" component={ViewOrder} />
@@ -26,7 +24,6 @@ const App = () => (
         <Route component={()=> <div>Not Found</div>} />
       </div>
     </Switch>
-  </Router>
 )
 
 export default App

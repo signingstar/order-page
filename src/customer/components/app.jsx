@@ -10,7 +10,6 @@ import ImageModal from "../containers/image_modal"
 import FinalizedOrder from "../containers/finalized_order"
 
 const App = ({pathname}) => (
-  <Router>
     <Switch>
       <div className='main-section-content'>
         <Route path="/order/:usersHash/:orderId" component={Home} />
@@ -18,17 +17,16 @@ const App = ({pathname}) => (
         <Route exact path='/order/finalize' component={FinalizedOrder} />
       </div>
     </Switch>
-  </Router>
 )
 
-const MatchImage = ({ component:Component, ...rest }) => (
+const MatchImage = ({ component: Component, ...rest }) => (
   <Route {...rest}
-    render={(matchProps) => {
-      const imageId = matchProps.params.fileName
+    render={(props) => {
+      const imageId = props.match.params.fileName
 
       return (
-        imageId.Route(/^[a-z0-9]{32}$/) ?
-          <Component {...matchProps}/>
+        imageId.match(/^[a-z0-9]{32}$/) ?
+          <Component {...props}/>
         : null
       )
     }}

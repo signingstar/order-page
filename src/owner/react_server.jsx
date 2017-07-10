@@ -2,7 +2,7 @@ import async from "async"
 import React from "react"
 import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
-import { StaticRouter, createServerRenderContext } from "react-router"
+import { StaticRouter } from "react-router"
 
 import createStore from "./store"
 import CreateApp from "./components/app"
@@ -12,7 +12,7 @@ import requestBuilder from "../request_builders"
 
 const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) => {
   let err = null
-  const context = createServerRenderContext()
+  const context = {}
   const pageInProgress = location === '/order/process' || location === '/order/confirm' ? true : false
   const { products, categories, viewOrder } = requestBuilder({redisClient, queryDb, logger})
 
@@ -60,28 +60,17 @@ const ReactComponent = ({location, userid}, {logger, queryDb, redisClient}, cb) 
           </Provider>
         )
 
-        const result = context.getResult()
+        const redirectUrl = context.url
 
-        if (result.redirect) {
-          err = {reason: 'redirect', location: result.redirect.pathname}
+        if (redirectUrl) {
+          err = {reason: 'redirect', location: redirectUrl}
           return cb(err)
         } else {
-          if (result.missed) {
-            reactHTML = renderToString(
-              <Provider store={store}>
-                <ServerRouter location={location} context={context}>
-                  <CreateApp location={location} />
-                </ServerRouter>
-              </Provider>
-            )
+          // Grab the initial state from our Redux store
+          const preloadedState = store.getState()
 
-            err = {reason: 'missed'}
-          }
+          cb(err, reactHTML, preloadedState)
         }
-        // Grab the initial state from our Redux store
-        const preloadedState = store.getState()
-
-        cb(err, reactHTML, preloadedState)
       }
     ],
     (err) => {

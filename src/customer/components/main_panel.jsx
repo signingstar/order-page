@@ -1,6 +1,8 @@
 import React from "react"
 import {
   Route,
+  Link,
+  NavLink
 } from 'react-router-dom'
 
 import ImageTiles from "../containers/image_arrangement"
@@ -18,48 +20,48 @@ const MainPanel = ({ order, usersHash, query }) => {
         <AlbumList usersHash={usersHash} id={id} />
         <ul className='all-images'>
           <li className='nav-left'>
-            <Link
+            <NavLink
               to={`/order/${usersHash}/${id}`}
               activeClassName='active'
               activeOnlyWhenExact
-              isActive={(location) => (
-                (!location.query || !location.query.album) && location.pathname.Route(/^\/order\/[a-z0-9]+\/[0-9]+$/)
+              isActive={(match, location) => (
+                (!location.query || !location.query.album) && location.pathname.match(/^\/order\/[a-z0-9]+\/[0-9]+$/)
               )}
             >
               <span className='glyphicon glyphicon-picture icon'></span>
               All Photos
-            </Link>
+            </NavLink>
           </li>
         </ul>
         {
           role === 5 ?
             <ul className='admin-panel'>
               <li className='nav-left'>
-                <Link
+                <NavLink
                   to={`/order/${usersHash}/${id}/adduser`}
                   activeClassName='active'
                 >
                   <span className='glyphicon glyphicon-user icon'></span>
                   Add Users
-                </Link>
+                </NavLink>
               </li>
               <li className='nav-left'>
-                <Link
+                <NavLink
                   to={`/order/${usersHash}/${id}/liked`}
                   activeClassName='active'
                 >
                   <span className='glyphicon glyphicon-thumbs-up icon'></span>
                   Images Liked
-                </Link>
+                </NavLink>
               </li>
               <li className='nav-left submit'>
-                <Link
+                <NavLink
                   to={`/order/${usersHash}/${id}/finalize`}
                   activeClassName='active'
                 >
                   <span className='glyphicon glyphicon-ok icon'></span>
                   Finalize & Submit
-                </Link>
+                </NavLink>
               </li>
             </ul>
           : null

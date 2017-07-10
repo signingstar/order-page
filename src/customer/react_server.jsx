@@ -2,7 +2,7 @@ import async from "async"
 import React from "react";
 import { renderToString } from 'react-dom/server'
 import { Provider } from "react-redux"
-import { ServerRouter, createServerRenderContext } from "react-router"
+import { StaticRouter } from "react-router"
 import { pick } from "underscore"
 
 import createStore from "./store"
@@ -63,40 +63,28 @@ export const mergeReaction = (reaction, images) => {
 const ReactComponent = (location, {orderResult, products, categories, imageReaction}, cb) => {
   let err = null
   const initialPayload = prepareInitialState(orderResult, products, categories, imageReaction)
-  const context = createServerRenderContext()
+  const context = {}
 
   // Create a new Redux store instance
   const store = createStore(initialPayload)
 
   let reactHTML = renderToString(
     <Provider store={store}>
-      <ServerRouter location={location} context={context}>
+      <StaticRouter location={location} context={context}>
         <App />
-      </ServerRouter>
+      </StaticRouter>
     </Provider>
   )
 
-  const result = context.getResult()
+  const redirectUrl = context.url
 
-  if (result.redirect) {
-    err = {reason: 'redirect', location: result.redirect.pathname}
-    cb(err)
-  } else {
-    if (result.missed) {
-      reactHTML = renderToString(
-        <Provider store={store}>
-          <ServerRouter location={location} context={context}>
-            <App />
-          </ServerRouter>
-        </Provider>
-      )
-
-      err = {reason: 'missed'}
-    }
+  if (redirectUrl) {
+    err = {reason: 'redirect', location: redirectUrl}
+    return cb(err)
   }
+
   // Grab the initial state from our Redux store
   const preloadedState = store.getState()
-
   cb(err, {reactHTML, preloadedState})
 }
 
